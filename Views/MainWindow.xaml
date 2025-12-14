@@ -395,6 +395,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0"
@@ -403,9 +404,46 @@
                                FontWeight="Light"
                                Foreground="#FFFFFF"
                                VerticalAlignment="Center"/>
+                    
+                    <!-- CURRENCIES - En el Header -->
+                    <StackPanel Grid.Column="1" 
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center" 
+                                Margin="0,0,24,0"
+                                Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+                        <!-- Glimmer -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                            <Border Width="18" Height="18" Background="#3B9BD9" CornerRadius="2" Margin="0,0,5,0">
+                                <TextBlock Text="G" FontWeight="Bold" FontSize="10" 
+                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="{Binding Glimmer, StringFormat='{}{0:N0}'}" 
+                                       FontSize="12" Foreground="#999999" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Bright Dust -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                            <Border Width="18" Height="18" Background="#5BA3D9" CornerRadius="2" Margin="0,0,5,0">
+                                <TextBlock Text="✧" FontWeight="Bold" FontSize="10" 
+                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="{Binding BrightDust, StringFormat='{}{0:N0}'}" 
+                                       FontSize="12" Foreground="#999999" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Enhancement Prisms -->
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="18" Height="18" Background="#D9A94B" CornerRadius="2" Margin="0,0,5,0">
+                                <TextBlock Text="⬡" FontWeight="Bold" FontSize="9" 
+                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="{Binding EnhancementCores, StringFormat='{}{0:N0}'}" 
+                                       FontSize="12" Foreground="#999999" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
 
                     <!-- Indicador de estado de API - ENHANCED ALERT STYLE -->
-                    <Border Grid.Column="1" 
+                    <Border Grid.Column="2" 
                             CornerRadius="4"
                             Padding="12,6"
                             BorderThickness="1">
@@ -454,53 +492,7 @@
                 </Grid>
             </Border>
             
-            <!-- CURRENCY BAR - Recursos del Guardián -->
-            <Border Grid.Row="1"
-                    Background="#0F0F0F"
-                    Padding="24,8"
-                    Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <!-- Glimmer -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
-                        <Border Width="20" Height="20" Background="#3B9BD9" CornerRadius="2" Margin="0,0,6,0">
-                            <TextBlock Text="G" FontWeight="Bold" FontSize="12" 
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="{Binding Glimmer, StringFormat='{}{0:N0}'}" 
-                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <!-- Legendary Shards -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
-                        <Border Width="20" Height="20" Background="#522C8E" CornerRadius="2" Margin="0,0,6,0">
-                            <TextBlock Text="◇" FontWeight="Bold" FontSize="10" 
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="{Binding LegendaryShards, StringFormat='{}{0:N0}'}" 
-                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <!-- Bright Dust -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
-                        <Border Width="20" Height="20" Background="#5BA3D9" CornerRadius="2" Margin="0,0,6,0">
-                            <TextBlock Text="✧" FontWeight="Bold" FontSize="12" 
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="{Binding BrightDust, StringFormat='{}{0:N0}'}" 
-                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <!-- Enhancement Cores -->
-                    <StackPanel Orientation="Horizontal">
-                        <Border Width="20" Height="20" Background="#D9A94B" CornerRadius="2" Margin="0,0,6,0">
-                            <TextBlock Text="⬡" FontWeight="Bold" FontSize="11" 
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="{Binding EnhancementCores, StringFormat='{}{0:N0}'}" 
-                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
+            <!-- Currency bar moved to header - see API Status area -->
 
             <!-- Área de Contenido Dinámico -->
             <ContentControl Grid.Row="2"

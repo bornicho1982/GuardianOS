@@ -102,11 +102,7 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private int _glimmer;
     
-    /// <summary>
-    /// Cantidad de Legendary Shards (Fragmentos Legendarios).
-    /// </summary>
-    [ObservableProperty]
-    private int _legendaryShards;
+
     
     /// <summary>
     /// Cantidad de Bright Dust (Polvo Luminoso).
@@ -237,7 +233,6 @@ public partial class MainViewModel : ViewModelBase
             {
                 // Currency hashes CAPTURADOS de la API real
                 const long GLIMMER_HASH = 3159615086;
-                const long LEGENDARY_SHARDS_HASH = 2718300701;   // Capturado: 11,038
                 const long BRIGHT_DUST_HASH = 2817410917;        // Capturado: 12,641
                 const long ENHANCEMENT_PRISMS_HASH = 3036656991; // Capturado: 45
                 
@@ -247,9 +242,6 @@ public partial class MainViewModel : ViewModelBase
                     {
                         case GLIMMER_HASH:
                             Glimmer = currency.Quantity;
-                            break;
-                        case LEGENDARY_SHARDS_HASH:
-                            LegendaryShards = currency.Quantity;
                             break;
                         case BRIGHT_DUST_HASH:
                             BrightDust = currency.Quantity;
