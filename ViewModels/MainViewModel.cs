@@ -235,26 +235,42 @@ public partial class MainViewModel : ViewModelBase
             // Extraer currencies del perfil
             if (profileData.ProfileCurrencies?.Data?.Items != null)
             {
-                // Currency hashes conocidos
+                // Currency hashes conocidos (actualizados)
+                // Glimmer
                 const long GLIMMER_HASH = 3159615086;
-                const long LEGENDARY_SHARDS_HASH = 1022552290;
-                const long BRIGHT_DUST_HASH = 2817410917;
+                // Legendary Shards (múltiples hashes posibles)
+                const long LEGENDARY_SHARDS_HASH_1 = 1022552290;
+                const long LEGENDARY_SHARDS_HASH_2 = 2534352370;
+                // Bright Dust
+                const long BRIGHT_DUST_HASH_1 = 2817410917;
+                const long BRIGHT_DUST_HASH_2 = 2125251645;
+                const long BRIGHT_DUST_HASH_3 = 1065442101;
+                // Enhancement Cores / Prisms / Ascendant materials
                 const long ENHANCEMENT_CORES_HASH = 3853748946;
+                const long ENHANCEMENT_PRISMS_HASH = 4257549984;
+                const long ASCENDANT_SHARDS_HASH = 4257549985;
                 
                 foreach (var currency in profileData.ProfileCurrencies.Data.Items)
                 {
+                    // Debug: Log all currency hashes to identify correct ones
+                    System.Diagnostics.Debug.WriteLine($"[Currency] Hash: {currency.ItemHash}, Qty: {currency.Quantity}");
+                    
                     switch (currency.ItemHash)
                     {
                         case GLIMMER_HASH:
                             Glimmer = currency.Quantity;
                             break;
-                        case LEGENDARY_SHARDS_HASH:
+                        case LEGENDARY_SHARDS_HASH_1:
+                        case LEGENDARY_SHARDS_HASH_2:
                             LegendaryShards = currency.Quantity;
                             break;
-                        case BRIGHT_DUST_HASH:
+                        case BRIGHT_DUST_HASH_1:
+                        case BRIGHT_DUST_HASH_2:
+                        case BRIGHT_DUST_HASH_3:
                             BrightDust = currency.Quantity;
                             break;
                         case ENHANCEMENT_CORES_HASH:
+                        case ENHANCEMENT_PRISMS_HASH:
                             EnhancementCores = currency.Quantity;
                             break;
                     }

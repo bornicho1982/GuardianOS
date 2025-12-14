@@ -796,9 +796,9 @@
             </Grid>
 
             <!-- Barra de Estado Inferior -->
-            <Border Grid.Row="2"
+            <Border Grid.Row="3"
                     Background="#0D0D0D"
-                    Padding="16,8">
+                    Padding="16,4">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
