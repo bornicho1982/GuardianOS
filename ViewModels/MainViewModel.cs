@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GuardianOS.Models;
 using GuardianOS.Services;
+using System.Linq; // Necesario para OrderByDescending y FirstOrDefault
 
 namespace GuardianOS.ViewModels;
 
@@ -107,15 +108,36 @@ public partial class MainViewModel : ViewModelBase
         if (isAuthenticated && _authService.CurrentToken != null)
         {
             MembershipId = _authService.CurrentToken.MembershipId;
-            // No podemos saber el nombre hasta cargar el perfil, Dashboard lo hará.
-            // O podemos mantener GuardianName aquí si Dash lo actualiza? 
-            // Por simplicidad, dejamos que Dash lo maneje o actualizamos aqui si es posible.
-            // Para mantener consistencia con versión anterior:
-            GuardianName = $"Guardian #{MembershipId?[..6]}..."; 
             
-            StatusMessage = "Autenticado. Cargando Dashboard...";
+            // 1. Obtener perfiles enlazados para determinar la plataforma correcta (Steam, Xbox, etc.)
+            var linkedProfiles = await _bungieApiService.GetLinkedProfilesAsync(MembershipId, _authService.CurrentToken.AccessToken);
             
-            // Instanciar y navegar al Dashboard
+            if (linkedProfiles != null && linkedProfiles.Profiles.Count > 0)
+            {
+                // Priorizar el perfil con CrossSave activado (si existe) o el que se haya jugado más recientemente
+                var bestProfile = linkedProfiles.Profiles.OrderByDescending(p => p.DateLastPlayed).FirstOrDefault();
+                
+                if (bestProfile != null)
+                {
+                    MembershipId = bestProfile.MembershipId;
+                    MembershipType = bestProfile.MembershipType;
+                    
+                    // Actualizar nombre con el DisplayName real de la plataforma
+                    GuardianName = string.IsNullOrEmpty(bestProfile.DisplayName) 
+                        ? $"Guardian #{MembershipId.Substring(0, 4)}..." 
+                        : bestProfile.DisplayName;
+                }
+            }
+            else
+            {
+                 StatusMessage = "Error: No se encontraron perfiles de Destiny vinculados.";
+                 IsUserAuthenticated = false; // Forzar logout si no hay perfil
+                 return;
+            }
+
+            StatusMessage = $"Autenticado como {GuardianName}. Cargando Dashboard...";
+            
+            // Instanciar y navegar al Dashboard con los IDs correctos
             var dashboardVm = new DashboardViewModel(_bungieApiService, _authService, MembershipId!, MembershipType);
             await dashboardVm.InitializeAsync();
             

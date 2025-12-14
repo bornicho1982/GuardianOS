@@ -78,25 +78,40 @@ public partial class App : Application
     /// Maneja el inicio de la aplicación.
     /// Resuelve y muestra la ventana principal.
     /// </summary>
+    /// <summary>
+    /// Maneja el inicio de la aplicación.
+    /// Resuelve y muestra la ventana principal.
+    /// </summary>
     protected override void OnStartup(StartupEventArgs e)
     {
-        base.OnStartup(e);
-        
-        // Resolver la ventana principal desde el contenedor
-        var mainWindow = _serviceProvider?.GetRequiredService<MainWindow>();
-        
-        if (mainWindow != null)
+        try
         {
-            mainWindow.Show();
-        }
-        else
-        {
-            MessageBox.Show(
-                "Error al inicializar la aplicación. No se pudo crear la ventana principal.",
-                "Error de Inicialización",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            base.OnStartup(e);
             
+            // Log simple para debug
+            System.IO.File.WriteAllText("start.log", "Iniciando aplicación...\n");
+            
+            // Resolver la ventana principal desde el contenedor
+            var mainWindow = _serviceProvider?.GetRequiredService<MainWindow>();
+            
+            if (mainWindow != null)
+            {
+                System.IO.File.AppendAllText("start.log", "MainWindow resuelta correctamente. Llamando a Show().\n");
+                mainWindow.Show();
+            }
+            else
+            {
+                var msg = "Error: MainWindow es null después de resolver del contenedor.";
+                System.IO.File.AppendAllText("start.log", msg + "\n");
+                MessageBox.Show(msg);
+                Shutdown(1);
+            }
+        }
+        catch (Exception ex)
+        {
+            var errorMsg = $"CRASH AL INICIO: {ex.Message}\nStack Trace: {ex.StackTrace}";
+            System.IO.File.AppendAllText("start.log", errorMsg);
+            MessageBox.Show($"Error fatal al iniciar: {ex.Message}");
             Shutdown(1);
         }
     }

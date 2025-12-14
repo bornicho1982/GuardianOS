@@ -37,6 +37,12 @@ public class DestinyProfile
     public List<DestinyCharacter> Characters { get; set; } = new();
     
     /// <summary>
+    /// Fecha de la última vez que se jugó en este perfil.
+    /// </summary>
+    [JsonProperty("dateLastPlayed")]
+    public DateTime DateLastPlayed { get; set; }
+
+    /// <summary>
     /// Nombre completo con código Bungie.
     /// </summary>
     public string FullBungieName => BungieNameCode.HasValue 

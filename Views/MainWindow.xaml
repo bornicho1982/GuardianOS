@@ -360,7 +360,7 @@
                                 BorderThickness="0"
                                 Padding="32,0">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Bungie" Width="24" Height="24" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                <materialDesign:PackIcon Kind="Web" Width="24" Height="24" Margin="0,0,12,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="CONECTAR CON BUNGIE" VerticalAlignment="Center"/>
                             </StackPanel>
                             <Button.Effect>

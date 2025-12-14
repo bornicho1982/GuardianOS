@@ -17,11 +17,27 @@
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel VerticalAlignment="Top"
-                    HorizontalAlignment="Center"
-                    MaxWidth="900"
-                    Margin="0,60,0,60">
+    <Grid>
+        <!-- Background Image Layer -->
+        <Border IsHitTestVisible="False">
+            <Border.Background>
+                <ImageBrush ImageSource="{Binding SelectedCharacter.EmblemBackgroundUrl}"
+                            Stretch="UniformToFill"
+                            Opacity="0.4"/>
+            </Border.Background>
+            <Border.Effect>
+                <BlurEffect Radius="40"/>
+            </Border.Effect>
+        </Border>
+        
+        <!-- Dark Overlay for Readability -->
+        <Border Background="#CC000000" IsHitTestVisible="False"/>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
+                        MaxWidth="900"
+                        Margin="0,60,0,60">
 
             <!-- Header Dashboard -->
             <materialDesign:PackIcon Kind="ShieldStar"
@@ -356,6 +372,7 @@
                     </WrapPanel>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>
