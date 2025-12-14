@@ -134,3 +134,31 @@ public class ToUpperConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
+
+/// <summary>
+/// Convierte un string de color hexadecimal a SolidColorBrush.
+/// </summary>
+public class StringToBrushConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is string colorString && !string.IsNullOrEmpty(colorString))
+        {
+            try
+            {
+                var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+                return new System.Windows.Media.SolidColorBrush(color);
+            }
+            catch
+            {
+                return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
+            }
+        }
+        return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}

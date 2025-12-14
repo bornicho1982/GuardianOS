@@ -23,6 +23,7 @@
             <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
             <converters:BoolToApiStatusConverter x:Key="BoolToApiStatusConverter"/>
             <converters:ToUpperConverter x:Key="ToUpperConverter"/>
+            <converters:StringToBrushConverter x:Key="StringToBrushConverter"/>
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
             
             <!-- ========== COLORES PERSONALIZADOS (TEMA DESTINY) ========== -->

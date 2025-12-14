@@ -148,6 +148,27 @@ public class DestinyCharacter
     /// Horas totales jugadas.
     /// </summary>
     public int HoursPlayed => int.TryParse(MinutesPlayedTotal, out var mins) ? mins / 60 : 0;
+    
+    /// <summary>
+    /// Tipo de daño de la subclase equipada (1=Kinetic, 2=Arc, 3=Solar, 4=Void, 6=Stasis, 7=Strand).
+    /// Se establece después de cargar el equipo.
+    /// </summary>
+    public int SubclassType { get; set; } = 0;
+    
+    /// <summary>
+    /// Color hexadecimal de la subclase para la barra visual.
+    /// Colores oficiales de Bungie API.
+    /// </summary>
+    public string SubclassColor => SubclassType switch
+    {
+        2 => "#337CFF",   // Arc - Azul (Bungie official)
+        3 => "#E55729",   // Solar - Naranja/Rojo (Bungie official)
+        4 => "#7D3FFF",   // Void - Morado (Bungie official)
+        6 => "#4DDCFF",   // Stasis - Cyan (Bungie official)
+        7 => "#3FE069",   // Strand - Verde (Bungie official)
+        8 => "#FF40EC",   // Prismatic - Rosa/Magenta (community approximation)
+        _ => "#444444"    // Default - Gris oscuro
+    };
 }
 
 /// <summary>

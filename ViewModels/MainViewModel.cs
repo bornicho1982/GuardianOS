@@ -180,6 +180,17 @@ public partial class MainViewModel : ViewModelBase
             Characters.Clear();
             foreach (var character in profileData.Characters.Data.Values.OrderByDescending(c => c.DateLastPlayed))
             {
+                // Extraer tipo de subclase del equipo
+                if (profileData.CharacterEquipment?.Data != null &&
+                    profileData.CharacterEquipment.Data.TryGetValue(character.CharacterId, out var equipment))
+                {
+                    // Bucket hash 3284755031 = Subclass slot
+                    var subclassItem = equipment.Items?.FirstOrDefault(i => i.BucketHash == 3284755031);
+                    if (subclassItem != null)
+                    {
+                        character.SubclassType = GetDamageTypeFromSubclassHash(subclassItem.ItemHash);
+                    }
+                }
                 Characters.Add(character);
             }
             
@@ -205,6 +216,64 @@ public partial class MainViewModel : ViewModelBase
         
         SelectedCharacter = character;
         StatusMessage = $"Personaje seleccionado: {character.ClassName} - {character.Light}✦";
+    }
+    
+    /// <summary>
+    /// Mapea el hash de una subclase a su tipo de daño.
+    /// Damage Types: 2=Arc, 3=Solar, 4=Void, 6=Stasis, 7=Strand, 8=Prismatic
+    /// </summary>
+    private static int GetDamageTypeFromSubclassHash(long itemHash)
+    {
+        // Subclass hashes conocidos de Destiny 2 (The Final Shape era)
+        // Los hashes pueden variar - estos son aproximados basados en data conocida
+        return itemHash switch
+        {
+            // === SOLAR (3) ===
+            2240888816 => 3, // Gunslinger (Hunter Solar)
+            2550323932 => 3, // Sunbreaker (Titan Solar)
+            3941205951 => 3, // Dawnblade (Warlock Solar)
+            
+            // === ARC (2) ===
+            2328211300 => 2, // Arcstrider (Hunter Arc)
+            2932390016 => 2, // Striker (Titan Arc) - legacy
+            1616346845 => 2, // Striker (Titan Arc) - Arc 3.0 confirmed
+            3168997075 => 2, // Stormcaller (Warlock Arc)
+            
+            // === VOID (4) ===
+            2453351420 => 4, // Nightstalker (Hunter Void)
+            2842471112 => 4, // Sentinel (Titan Void)
+            2849050827 => 4, // Voidwalker (Warlock Void)
+            
+            // === STASIS (6) ===
+            873720784 => 6,  // Revenant (Hunter Stasis)
+            613647804 => 6,  // Behemoth (Titan Stasis)
+            3291545503 => 6, // Shadebinder (Warlock Stasis)
+            
+            // === STRAND (7) ===
+            3785442599 => 7, // Threadrunner (Hunter Strand)
+            242419885 => 7,  // Berserker (Titan Strand)
+            4204413574 => 7, // Broodweaver (Warlock Strand)
+            
+            // === PRISMATIC (8) ===
+            // Prismatic subclasses (Lightfall/Final Shape)
+            _ when IsPrismaticHash(itemHash) => 8,
+            
+            _ => 0 // Desconocido
+        };
+    }
+    
+    /// <summary>
+    /// Determina si el hash corresponde a una subclase Prismática.
+    /// </summary>
+    private static bool IsPrismaticHash(long itemHash)
+    {
+        // Hashes conocidos de Prismatic (The Final Shape)
+        // Capturados de la API real
+        return itemHash is 
+            4282591831 or // Hunter Prismatic (confirmed)
+            2806466524 or // Hunter Prismatic (alt)
+            3979749617 or // Titan Prismatic
+            1946006466;   // Warlock Prismatic
     }
     
     #region Navigation Commands

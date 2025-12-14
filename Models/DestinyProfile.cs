@@ -66,6 +66,9 @@ public class DestinyProfileResponse
     
     [JsonProperty("characters")]
     public CharactersComponent? Characters { get; set; }
+    
+    [JsonProperty("characterEquipment")]
+    public CharacterEquipmentComponent? CharacterEquipment { get; set; }
 }
 
 public class ProfileComponent
@@ -102,4 +105,31 @@ public class CharactersComponent
 {
     [JsonProperty("data")]
     public Dictionary<string, DestinyCharacter>? Data { get; set; }
+}
+
+/// <summary>
+/// Componente de equipo de personajes.
+/// </summary>
+public class CharacterEquipmentComponent
+{
+    [JsonProperty("data")]
+    public Dictionary<string, CharacterEquipmentData>? Data { get; set; }
+}
+
+public class CharacterEquipmentData
+{
+    [JsonProperty("items")]
+    public List<EquippedItem>? Items { get; set; }
+}
+
+public class EquippedItem
+{
+    [JsonProperty("itemHash")]
+    public long ItemHash { get; set; }
+    
+    [JsonProperty("itemInstanceId")]
+    public string? ItemInstanceId { get; set; }
+    
+    [JsonProperty("bucketHash")]
+    public long BucketHash { get; set; }
 }

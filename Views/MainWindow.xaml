@@ -454,107 +454,112 @@
                                                 Background="Transparent"
                                                 HorizontalContentAlignment="Stretch"
                                                 VerticalContentAlignment="Stretch">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </Button.Style>
-                                            
-                                            <!-- Contenido de la tarjeta -->
-                                            <Border x:Name="CardBorder"
-                                                    CornerRadius="8"
-                                                    BorderThickness="2"
-                                                    BorderBrush="Transparent">
-                                                <Border.Effect>
-                                                    <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.4" Color="Black"/>
-                                                </Border.Effect>
-                                                <Border.Style>
-                                                    <Style TargetType="Border">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="BorderBrush" Value="#F5DC56"/>
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                
-                                                <Grid>
-                                                    <!-- Fondo: Emblema -->
-                                                    <Border CornerRadius="6">
-                                                        <Border.Background>
-                                                            <ImageBrush ImageSource="{Binding EmblemBackgroundUrl}" Stretch="UniformToFill"/>
-                                                        </Border.Background>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <!-- Tarjeta con efectos hover -->
+                                                    <Border x:Name="CardBorder"
+                                                            CornerRadius="8"
+                                                            BorderThickness="2"
+                                                            BorderBrush="Transparent"
+                                                            RenderTransformOrigin="0.5,0.5">
+                                                        <Border.RenderTransform>
+                                                            <ScaleTransform x:Name="CardScale" ScaleX="1" ScaleY="1"/>
+                                                        </Border.RenderTransform>
+                                                        <Border.Effect>
+                                                            <DropShadowEffect x:Name="CardShadow" BlurRadius="15" ShadowDepth="3" Opacity="0.4" Color="Black"/>
+                                                        </Border.Effect>
+                                                        
+                                                        <Grid>
+                                                            <!-- Fondo: Emblema -->
+                                                            <Border CornerRadius="6">
+                                                                <Border.Background>
+                                                                    <ImageBrush ImageSource="{Binding EmblemBackgroundUrl}" Stretch="UniformToFill"/>
+                                                                </Border.Background>
+                                                            </Border>
+                                                            
+                                                            <!-- Capa oscura -->
+                                                            <Border CornerRadius="6" Background="#99000000"/>
+                                                            
+                                                            <!-- Contenido -->
+                                                            <DockPanel>
+                                                                <!-- Barra de subclase (línea fina de color dinámico) -->
+                                                                <Border DockPanel.Dock="Bottom" 
+                                                                        Height="4"
+                                                                        CornerRadius="0,0,6,6"
+                                                                        Background="{Binding SubclassColor, Converter={StaticResource StringToBrushConverter}}"/>
+                                                                
+                                                                <!-- Barra inferior de stats -->
+                                                                <Border DockPanel.Dock="Bottom" 
+                                                                        Background="#CC000000"
+                                                                        Padding="12,8"
+                                                                        CornerRadius="0,0,0,0">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        
+                                                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                                                            <materialDesign:PackIcon Kind="Clock" Width="14" Height="14"
+                                                                                                     Foreground="#888888" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                                            <TextBlock Text="{Binding HoursPlayed, StringFormat='{}{0}h'}"
+                                                                                       FontSize="12" FontWeight="SemiBold" Foreground="#DDDDDD" VerticalAlignment="Center"/>
+                                                                        </StackPanel>
+                                                                        
+                                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                                            <materialDesign:PackIcon Kind="Calendar" Width="14" Height="14"
+                                                                                                     Foreground="#888888" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                                            <TextBlock Text="{Binding DateLastPlayed, StringFormat='{}{0:dd/MM}'}"
+                                                                                       FontSize="12" FontWeight="SemiBold" Foreground="#DDDDDD" VerticalAlignment="Center"/>
+                                                                        </StackPanel>
+                                                                    </Grid>
+                                                                </Border>
+                                                                
+                                                                <!-- Zona principal -->
+                                                                <Grid Margin="14,14,14,8" VerticalAlignment="Top">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    
+                                                                    <!-- Clase + Raza -->
+                                                                    <StackPanel Grid.Column="0">
+                                                                        <TextBlock FontSize="18" FontWeight="Bold" Foreground="White">
+                                                                            <TextBlock.Text>
+                                                                                <Binding Path="ClassName" 
+                                                                                         Converter="{StaticResource ToUpperConverter}"
+                                                                                         FallbackValue="CAZADOR"/>
+                                                                            </TextBlock.Text>
+                                                                        </TextBlock>
+                                                                        <TextBlock Text="{Binding RaceName}"
+                                                                                   FontSize="12" Foreground="#AAAAAA" Margin="0,2,0,0"/>
+                                                                    </StackPanel>
+                                                                    
+                                                                    <!-- Nivel de Luz -->
+                                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                                        <TextBlock Text="✦" FontSize="22" Foreground="#F5DC56"
+                                                                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                                        <TextBlock Text="{Binding Light}"
+                                                                                   FontSize="28" FontWeight="Bold" Foreground="#F5DC56"/>
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </DockPanel>
+                                                        </Grid>
                                                     </Border>
                                                     
-                                                    <!-- Capa oscura -->
-                                                    <Border CornerRadius="6" Background="#99000000"/>
-                                                    
-                                                    <!-- Contenido -->
-                                                    <DockPanel>
-                                                        <!-- Barra inferior -->
-                                                        <Border DockPanel.Dock="Bottom" 
-                                                                Background="#CC000000"
-                                                                Padding="16,10"
-                                                                CornerRadius="0,0,6,6">
-                                                            <Grid>
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                
-                                                                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                                                    <materialDesign:PackIcon Kind="Clock" Width="16" Height="16"
-                                                                                             Foreground="#888888" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                                    <TextBlock Text="{Binding HoursPlayed, StringFormat='{}{0}h'}"
-                                                                               FontSize="14" FontWeight="SemiBold" Foreground="#DDDDDD" VerticalAlignment="Center"/>
-                                                                </StackPanel>
-                                                                
-                                                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                    <materialDesign:PackIcon Kind="Calendar" Width="16" Height="16"
-                                                                                             Foreground="#888888" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                                    <TextBlock Text="{Binding DateLastPlayed, StringFormat='{}{0:dd/MM}'}"
-                                                                               FontSize="14" FontWeight="SemiBold" Foreground="#DDDDDD" VerticalAlignment="Center"/>
-                                                                </StackPanel>
-                                                            </Grid>
-                                                        </Border>
-                                                        
-                                                        <!-- Zona principal -->
-                                                        <Grid Margin="16,16,16,8" VerticalAlignment="Top">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            
-                                                            <!-- Clase + Raza -->
-                                                            <StackPanel Grid.Column="0">
-                                                                <TextBlock FontSize="22" FontWeight="Bold" Foreground="White">
-                                                                    <TextBlock.Text>
-                                                                        <Binding Path="ClassName" 
-                                                                                 Converter="{StaticResource ToUpperConverter}"
-                                                                                 FallbackValue="CAZADOR"/>
-                                                                    </TextBlock.Text>
-                                                                </TextBlock>
-                                                                <TextBlock Text="{Binding RaceName}"
-                                                                           FontSize="13" Foreground="#AAAAAA" Margin="0,4,0,0"/>
-                                                            </StackPanel>
-                                                            
-                                                            <!-- Nivel de Luz -->
-                                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                                <TextBlock Text="✦" FontSize="26" Foreground="#F5DC56"
-                                                                           VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                                <TextBlock Text="{Binding Light}"
-                                                                           FontSize="36" FontWeight="Bold" Foreground="#F5DC56"/>
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </DockPanel>
-                                                </Grid>
-                                            </Border>
+                                                    <!-- Hover Triggers -->
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="#F5DC56"/>
+                                                            <Setter TargetName="CardBorder" Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect BlurRadius="25" ShadowDepth="5" Opacity="0.6" Color="#F5DC56"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
                                         </Button>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
