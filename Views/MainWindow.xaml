@@ -3,47 +3,53 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:GuardianOS"
         xmlns:viewModels="clr-namespace:GuardianOS.ViewModels"
+        xmlns:views="clr-namespace:GuardianOS.Views"
+        xmlns:converters="clr-namespace:GuardianOS.Core.Converters"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="GuardianOS - Destiny 2 Suite"
-        Height="800" Width="1280"
-        MinHeight="600" MinWidth="1000"
+        Title="GuardianOS" Height="900" Width="1440"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource MaterialDesignDarkBackground}"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="14"
-        TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="Auto"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-        d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}">
+        Background="#000000"
+        FontFamily="Segoe UI">
 
+    <!-- Resources -->
     <Window.Resources>
-        <!-- Estilo personalizado para botones del menú lateral -->
-        <Style x:Key="NavButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
-            <Setter Property="Height" Value="64"/>
-            <Setter Property="Padding" Value="16,8"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Foreground" Value="#B0B0B0"/>
+        <!-- Converters -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisConverter"/>
+        <converters:BoolToApiStatusConverter x:Key="BoolToApiStatusConverter"/>
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:StringToBrushConverter x:Key="StringToBrushConverter"/>
+        <converters:ToUpperConverter x:Key="ToUpperConverter"/>
+        
+        <!-- Styles -->
+        <Style x:Key="NavButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="Foreground" Value="#AAAAAA"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#2A2A2A"/>
-                    <Setter Property="Foreground" Value="#FFD700"/>
+                    <Setter Property="Background" Value="#1A1A1A"/>
+                    <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
-
-        <!-- Estilo para botón seleccionado -->
-        <Style x:Key="NavButtonSelectedStyle" TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
-            <Setter Property="Background" Value="#1A1A2E"/>
-            <Setter Property="Foreground" Value="#FFD700"/>
-        </Style>
-
-        <!-- Convertidor de visibilidad booleana invertida -->
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     </Window.Resources>
 
     <Grid>
@@ -53,7 +59,7 @@
             <!-- Área de contenido principal -->
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <!-- ========== PANEL DE NAVEGACIÓN LATERAL ========== -->
         <Border Grid.Column="0" 
                 Background="#0D0D0D"
@@ -98,235 +104,150 @@
                         CornerRadius="8"
                         Background="#1A1A1A">
                     <Grid>
-                        <!-- Mostrar cuando NO está autenticado -->
-                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                Command="{Binding ConnectWithBungieCommand}"
-                                IsEnabled="{Binding IsConnecting, Converter={StaticResource InvertBoolConverter}, FallbackValue=True}"
-                                Visibility="{Binding IsUserAuthenticated, Converter={StaticResource InvertedBoolToVisConverter}, FallbackValue=Visible}"
-                                Height="44"
-                                Background="#7B68EE"
-                                BorderBrush="#7B68EE"
-                                Foreground="White">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Link" 
-                                                         VerticalAlignment="Center"
-                                                         Width="20" Height="20"
-                                                         Margin="0,0,8,0"/>
-                                <TextBlock Text="Conectar con Bungie"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Medium"/>
-                            </StackPanel>
-                        </Button>
-
-                        <!-- Mostrar cuando está conectando -->
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center"
-                                    Visibility="{Binding IsConnecting, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
-                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                         IsIndeterminate="True"
-                                         Width="24" Height="24"
-                                         Margin="0,0,12,0"/>
-                            <TextBlock Text="Conectando..."
-                                       Foreground="#888888"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Indicador visual tipo LED -->
+                        <Border Grid.Column="0" 
+                                Width="8" Height="8" 
+                                CornerRadius="4" 
+                                Background="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}" 
+                                Margin="0,2,8,0"
+                                VerticalAlignment="Center"/>
+                        
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding IsApiAvailable, Converter={StaticResource BoolToApiStatusConverter}}" 
+                                   FontSize="11" 
+                                   Foreground="#AAAAAA"
+                                   VerticalAlignment="Center"/>
                     </Grid>
                 </Border>
 
                 <!-- Menú de Navegación -->
-                <ScrollViewer Grid.Row="2" 
-                              VerticalScrollBarVisibility="Auto"
-                              Margin="8,0">
-                    <StackPanel>
-                        <!-- Sección: Gestión -->
-                        <TextBlock Text="GESTIÓN"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   Foreground="#555555"
-                                   Margin="16,16,0,8"/>
-
-                        <!-- Inventario -->
-                        <Button Style="{StaticResource NavButtonStyle}"
-                                Command="{Binding NavigateToInventoryCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Backpack"
-                                                         Width="24" Height="24"
-                                                         VerticalAlignment="Center"/>
-                                <StackPanel Margin="16,0,0,0">
-                                    <TextBlock Text="Inventario"
-                                               FontSize="14"
-                                               FontWeight="Medium"/>
-                                    <TextBlock Text="Gestión de ítems"
-                                               FontSize="11"
-                                               Foreground="#666666"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Button>
-
-                        <!-- Armas -->
-                        <Button Style="{StaticResource NavButtonStyle}"
-                                Command="{Binding NavigateToWeaponsCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Pistol"
-                                                         Width="24" Height="24"
-                                                         VerticalAlignment="Center"/>
-                                <StackPanel Margin="16,0,0,0">
-                                    <TextBlock Text="Evaluación de Armas"
-                                               FontSize="14"
-                                               FontWeight="Medium"/>
-                                    <TextBlock Text="God Rolls y Perks"
-                                               FontSize="11"
-                                               Foreground="#666666"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Button>
-
-                        <!-- Separador visual entre secciones -->
-                        <Border Margin="16,20,16,8" 
-                                Height="1" 
-                                Background="#1A1A1A"
-                                CornerRadius="1"/>
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="12,0">
                         
-                        <!-- Sección: Herramientas -->
-                        <TextBlock Text="HERRAMIENTAS"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   Foreground="#555555"
-                                   Margin="16,8,0,8"/>
+                        <!-- SECCIÓN GESTIÓN -->
+                        <TextBlock Text="GESTIÓN" 
+                                   FontSize="10" 
+                                   Foreground="#444444" 
+                                   Margin="12,16,0,8" 
+                                   FontWeight="Bold"/>
 
-                        <!-- Constructor de Builds -->
-                        <Button Style="{StaticResource NavButtonStyle}"
-                                Command="{Binding NavigateToBuildGeneratorCommand}">
+                        <!-- Botón Inventario -->
+                        <Button Command="{Binding NavigateToInventoryCommand}"
+                                Style="{StaticResource NavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Creation"
-                                                         Width="24" Height="24"
-                                                         VerticalAlignment="Center"
-                                                         Foreground="#9B59B6"/>
-                                <StackPanel Margin="16,0,0,0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Constructor de Builds"
-                                                   FontSize="14"
-                                                   FontWeight="Medium"/>
-                                        <Border Background="#9B59B6"
-                                                CornerRadius="4"
-                                                Padding="6,2"
-                                                Margin="8,0,0,0">
-                                            <TextBlock Text="IA"
-                                                       FontSize="9"
-                                                       FontWeight="Bold"
-                                                       Foreground="White"/>
+                                <materialDesign:PackIcon Kind="Backpack" Width="20" Height="20" Margin="0,0,16,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Inventario" FontWeight="Medium"/>
+                                    <TextBlock Text="Gestión de ítems" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Botón Armas -->
+                        <Button Command="{Binding NavigateToWeaponsCommand}"
+                                Style="{StaticResource NavButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Pistol" Width="20" Height="20" Margin="0,0,16,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Evaluación de Armas" FontWeight="Medium"/>
+                                    <TextBlock Text="God Rolls y Perks" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- SECCIÓN HERRAMIENTAS -->
+                        <TextBlock Text="HERRAMIENTAS" 
+                                   FontSize="10" 
+                                   Foreground="#444444" 
+                                   Margin="12,24,0,8" 
+                                   FontWeight="Bold"/>
+
+                        <!-- Botón Builds -->
+                        <Button Command="{Binding NavigateToBuildGeneratorCommand}"
+                                Style="{StaticResource NavButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AutoFix" Width="20" Height="20" Margin="0,0,16,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <Grid>
+                                        <TextBlock Text="Constructor de Builds" FontWeight="Medium"/>
+                                        <Border Background="#9C27B0" CornerRadius="3" HorizontalAlignment="Right" Margin="110,-2,-30,0" Padding="4,1">
+                                            <TextBlock Text="IA" FontSize="8" FontWeight="Bold" Foreground="White"/>
                                         </Border>
-                                    </StackPanel>
-                                    <TextBlock Text="Optimización de armadura"
-                                               FontSize="11"
-                                               Foreground="#666666"/>
+                                    </Grid>
+                                    <TextBlock Text="Optimización de armadura" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </Button>
 
-                        <!-- Mapas -->
-                        <Button Style="{StaticResource NavButtonStyle}"
-                                Command="{Binding NavigateToMapsCommand}">
+                        <!-- Botón Mapas -->
+                        <Button Command="{Binding NavigateToMapsCommand}"
+                                Style="{StaticResource NavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Map"
-                                                         Width="24" Height="24"
-                                                         VerticalAlignment="Center"/>
-                                <StackPanel Margin="16,0,0,0">
-                                    <TextBlock Text="Mapas y Coleccionables"
-                                               FontSize="14"
-                                               FontWeight="Medium"/>
-                                    <TextBlock Text="Checklists interactivos"
-                                               FontSize="11"
-                                               Foreground="#666666"/>
+                                <materialDesign:PackIcon Kind="Map" Width="20" Height="20" Margin="0,0,16,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Mapas y Coleccionables" FontWeight="Medium"/>
+                                    <TextBlock Text="Checklists interactivos" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </Button>
 
-                        <!-- Eventos -->
-                        <Button Style="{StaticResource NavButtonStyle}"
-                                Command="{Binding NavigateToEventsCommand}">
+                        <!-- Botón Eventos -->
+                        <Button Command="{Binding NavigateToEventsCommand}"
+                                Style="{StaticResource NavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="CalendarClock"
-                                                         Width="24" Height="24"
-                                                         VerticalAlignment="Center"/>
-                                <StackPanel Margin="16,0,0,0">
-                                    <TextBlock Text="Eventos y Vendedores"
-                                               FontSize="14"
-                                               FontWeight="Medium"/>
-                                    <TextBlock Text="Rotaciones semanales"
-                                               FontSize="11"
-                                               Foreground="#666666"/>
+                                <materialDesign:PackIcon Kind="CalendarClock" Width="20" Height="20" Margin="0,0,16,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Eventos y Vendedores" FontWeight="Medium"/>
+                                    <TextBlock Text="Rotaciones semanales" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </Button>
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- Información del Usuario - PREMIUM STYLE -->
-                <Border Grid.Row="3"
-                        Padding="16,12"
-                        Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#0A0A0A" Offset="0"/>
-                            <GradientStop Color="#0D0D0D" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
+                <!-- Perfil de Usuario (Footer) -->
+                <Border Grid.Row="3" Margin="16" Padding="12" Background="#161616" CornerRadius="8">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-
-                        <!-- Avatar del Guardián con borde brillante -->
-                        <Grid Grid.Column="0">
-                            <!-- Borde exterior brillante -->
-                            <Ellipse Width="48" Height="48">
-                                <Ellipse.Fill>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#FFD700" Offset="0"/>
-                                        <GradientStop Color="#B8860B" Offset="0.5"/>
-                                        <GradientStop Color="#FFD700" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Ellipse.Fill>
-                            </Ellipse>
-                            <!-- Avatar interior -->
-                            <Ellipse Width="42" Height="42" Fill="#1A1A1A">
-                                <Ellipse.Effect>
-                                    <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.5" Color="#FFD700"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <!-- Icono -->
-                            <materialDesign:PackIcon Kind="AccountCircle"
-                                                     Width="32" Height="32"
-                                                     HorizontalAlignment="Center"
-                                                     VerticalAlignment="Center"
-                                                     Foreground="#888888"/>
-                        </Grid>
-
-                        <!-- Nombre del Guardián -->
+                        
+                        <!-- Avatar / Icono -->
+                        <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16" Background="#FFD700">
+                             <materialDesign:PackIcon Kind="Account" Width="20" Height="20" 
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                      Foreground="Black"/>
+                        </Border>
+                        
+                        <!-- Nombre y Estado -->
                         <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding GuardianName, FallbackValue='Guardián'}"
-                                       FontWeight="SemiBold"
-                                       FontSize="13"
-                                       Foreground="#FFFFFF"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <Ellipse Width="6" Height="6" Fill="#27AE60" Margin="0,0,6,0"/>
-                                <TextBlock Text="Conectado"
-                                           FontSize="11"
-                                           Foreground="#27AE60"/>
+                            <TextBlock Text="{Binding GuardianName, FallbackValue='Guardián'}" 
+                                       FontSize="12" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="6" Height="6" Fill="{Binding IsUserAuthenticated, Converter={StaticResource BoolToColorConverter}}" Margin="0,1,6,0"/>
+                                <TextBlock Text="{Binding IsUserAuthenticated, Converter={StaticResource BoolToApiStatusConverter}}" 
+                                           FontSize="10" 
+                                           Foreground="#888888"/>
                             </StackPanel>
                         </StackPanel>
-
-                        <!-- Botón de Logout con hover mejorado -->
-                        <Button Grid.Column="2"
-                                Style="{StaticResource MaterialDesignIconButton}"
+                        
+                        <!-- Botón Logout -->
+                        <Button Grid.Column="2" 
+                                Style="{StaticResource MaterialDesignIconForegroundButton}"
                                 Command="{Binding LogoutCommand}"
-                                ToolTip="Cerrar sesión"
-                                Foreground="#666666"
-                                Width="36" Height="36">
-                            <materialDesign:PackIcon Kind="Logout" Width="20" Height="20"/>
+                                ToolTip="Cerrar Sesión"
+                                Width="24" Height="24">
+                            <materialDesign:PackIcon Kind="Logout" Width="16" Height="16" Foreground="#666666"/>
                         </Button>
                     </Grid>
                 </Border>
@@ -335,203 +256,116 @@
 
         <!-- ========== ÁREA DE CONTENIDO PRINCIPAL ========== -->
         <Grid Grid.Column="1">
-            <!-- Fondo base oscuro -->
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#0D0D0D" Offset="0"/>
-                    <GradientStop Color="#121216" Offset="0.5"/>
-                    <GradientStop Color="#0A0A0F" Offset="1"/>
-                </LinearGradientBrush>
-            </Grid.Background>
-            
             <Grid.RowDefinitions>
-                <!-- Header con título del módulo -->
+                <!-- Header -->
                 <RowDefinition Height="Auto"/>
-                <!-- Currency bar -->
-                <RowDefinition Height="Auto"/>
-                <!-- Contenido principal -->
+                <!-- Contenido Dinámico -->
                 <RowDefinition Height="*"/>
-                <!-- Barra de estado -->
+                <!-- Barra de Estado Inferior -->
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <!-- Patrón geométrico sutil (Destiny-style triangles) -->
-            <Canvas Grid.RowSpan="3" IsHitTestVisible="False" Opacity="0.03">
-                <!-- Triángulos decorativos -->
-                <Polygon Points="0,0 100,0 50,80" Fill="#FFD700" Canvas.Left="50" Canvas.Top="100"/>
-                <Polygon Points="0,0 120,0 60,100" Fill="#7D3FFF" Canvas.Left="200" Canvas.Top="50"/>
-                <Polygon Points="0,0 80,0 40,60" Fill="#337CFF" Canvas.Left="400" Canvas.Top="150"/>
-                <Polygon Points="0,0 150,0 75,120" Fill="#E55729" Canvas.Left="600" Canvas.Top="30"/>
-                <Polygon Points="0,0 90,0 45,70" Fill="#3FE069" Canvas.Left="100" Canvas.Top="300"/>
-                <Polygon Points="0,0 110,0 55,85" Fill="#4DDCFF" Canvas.Left="350" Canvas.Top="350"/>
-                <Polygon Points="0,0 70,0 35,55" Fill="#FF40EC" Canvas.Left="550" Canvas.Top="250"/>
-                <Polygon Points="0,0 130,0 65,105" Fill="#FFD700" Canvas.Left="700" Canvas.Top="180"/>
-                <!-- Más triángulos para cubrir -->
-                <Polygon Points="0,0 100,0 50,80" Fill="#7D3FFF" Canvas.Left="800" Canvas.Top="80"/>
-                <Polygon Points="0,0 85,0 42,65" Fill="#337CFF" Canvas.Left="150" Canvas.Top="450"/>
-                <Polygon Points="0,0 95,0 47,75" Fill="#E55729" Canvas.Left="450" Canvas.Top="500"/>
-                <Polygon Points="0,0 75,0 37,60" Fill="#3FE069" Canvas.Left="650" Canvas.Top="400"/>
-            </Canvas>
-            
-            <!-- Líneas diagonales sutiles (como la UI de Destiny) -->
-            <Canvas Grid.RowSpan="3" IsHitTestVisible="False" Opacity="0.015">
-                <Line X1="0" Y1="0" X2="900" Y2="600" Stroke="#FFD700" StrokeThickness="1"/>
-                <Line X1="100" Y1="0" X2="1000" Y2="600" Stroke="#FFD700" StrokeThickness="1"/>
-                <Line X1="200" Y1="0" X2="1100" Y2="600" Stroke="#FFD700" StrokeThickness="1"/>
-                <Line X1="0" Y1="100" X2="800" Y2="700" Stroke="#7D3FFF" StrokeThickness="1"/>
-                <Line X1="0" Y1="200" X2="700" Y2="800" Stroke="#337CFF" StrokeThickness="1"/>
-            </Canvas>
 
-            <!-- Header del Módulo Actual - PREMIUM STYLE -->
-            <Border Grid.Row="0"
-                    Padding="24,16">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#1A1A1A" Offset="0"/>
-                        <GradientStop Color="#151518" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <!-- HEADER -->
+            <Grid Grid.Row="0" Margin="32,32,32,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding CurrentModuleTitle}"
-                               FontSize="24"
-                               FontWeight="Light"
-                               Foreground="#FFFFFF"
-                               VerticalAlignment="Center"/>
+                <!-- Título del Módulo Actual -->
+                <TextBlock Grid.Column="0"
+                           Text="{Binding CurrentModuleTitle}"
+                           FontSize="24"
+                           FontWeight="Light"
+                           Foreground="#DDDDDD"
+                           VerticalAlignment="Center"/>
+
+                <!-- CURRENCIES - En el Header -->
+                <!-- SOLO VISIBLES CUANDO ESTÁ AUTENTICADO -->
+                <StackPanel Grid.Column="1" 
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center" 
+                            Margin="0,0,24,0"
+                            Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
                     
-                    <!-- CURRENCIES - En el Header -->
-                    <StackPanel Grid.Column="1" 
-                                Orientation="Horizontal" 
-                                VerticalAlignment="Center" 
-                                Margin="0,0,24,0"
-                                Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
-                        <!-- Glimmer -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
-                            <Border Width="18" Height="18" Background="#3B9BD9" CornerRadius="2" Margin="0,0,5,0">
-                                <TextBlock Text="G" FontWeight="Bold" FontSize="10" 
-                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <TextBlock Text="{Binding Glimmer, StringFormat='{}{0:N0}'}" 
-                                       FontSize="12" Foreground="#999999" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        
-                        <!-- Bright Dust -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
-                            <Border Width="18" Height="18" Background="#5BA3D9" CornerRadius="2" Margin="0,0,5,0">
-                                <TextBlock Text="✧" FontWeight="Bold" FontSize="10" 
-                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <TextBlock Text="{Binding BrightDust, StringFormat='{}{0:N0}'}" 
-                                       FontSize="12" Foreground="#999999" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        
-                        <!-- Enhancement Prisms -->
-                        <StackPanel Orientation="Horizontal">
-                            <Border Width="18" Height="18" Background="#D9A94B" CornerRadius="2" Margin="0,0,5,0">
-                                <TextBlock Text="⬡" FontWeight="Bold" FontSize="9" 
-                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <TextBlock Text="{Binding EnhancementCores, StringFormat='{}{0:N0}'}" 
-                                       FontSize="12" Foreground="#999999" VerticalAlignment="Center"/>
-                        </StackPanel>
+                    <!-- Glimmer -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                        <Border Width="20" Height="20" Background="#3B9BD9" CornerRadius="2" Margin="0,0,6,0">
+                            <TextBlock Text="G" FontWeight="Bold" FontSize="12" 
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding CurrentViewModel.Glimmer, StringFormat='{}{0:N0}'}" 
+                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
                     </StackPanel>
+                    
+                    <!-- Bright Dust -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                        <Border Width="20" Height="20" Background="#5BA3D9" CornerRadius="2" Margin="0,0,6,0">
+                            <TextBlock Text="✧" FontWeight="Bold" FontSize="12" 
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding CurrentViewModel.BrightDust, StringFormat='{}{0:N0}'}" 
+                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Enhancement Prisms -->
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="20" Height="20" Background="#D9A94B" CornerRadius="2" Margin="0,0,6,0">
+                            <TextBlock Text="⬡" FontWeight="Bold" FontSize="11" 
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding CurrentViewModel.EnhancementCores, StringFormat='{}{0:N0}'}" 
+                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
 
-                    <!-- Indicador de estado de API - ENHANCED ALERT STYLE -->
-                    <Border Grid.Column="2" 
-                            CornerRadius="4"
-                            Padding="12,6"
-                            BorderThickness="1">
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Background" Value="#1A2D1A"/>
-                                <Setter Property="BorderBrush" Value="#2D5A2D"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsApiAvailable}" Value="False">
-                                        <Setter Property="Background" Value="#2D1A1A"/>
-                                        <Setter Property="BorderBrush" Value="#5A2D2D"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Ellipse Width="8" Height="8"
-                                     Margin="0,0,8,0">
-                                <Ellipse.Style>
-                                    <Style TargetType="Ellipse">
-                                        <Setter Property="Fill" Value="#4CAF50"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsApiAvailable}" Value="False">
-                                                <Setter Property="Fill" Value="#EF5350"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Ellipse.Style>
-                            </Ellipse>
-                            <TextBlock FontSize="12" FontWeight="Medium">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Text" Value="Sistemas Operativos"/>
-                                        <Setter Property="Foreground" Value="#4CAF50"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsApiAvailable}" Value="False">
-                                                <Setter Property="Text" Value="API Desconectada"/>
-                                                <Setter Property="Foreground" Value="#EF5350"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </Border>
-            
-            <!-- Currency bar moved to header - see API Status area -->
+                <!-- Indicador de estado de API - ENHANCED ALERT STYLE -->
+                <Border Grid.Column="2" 
+                        Background="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}" 
+                        Opacity="0.2"
+                        CornerRadius="4"
+                        Width="140"
+                        Height="28">
+                </Border>
+                <Border Grid.Column="2" 
+                        BorderBrush="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}" 
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Width="140"
+                        Height="28">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Ellipse Width="6" Height="6" Fill="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}" Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding IsApiAvailable, Converter={StaticResource BoolToApiStatusConverter}}" 
+                                   FontSize="10" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
 
             <!-- Área de Contenido Dinámico -->
-            <ContentControl Grid.Row="2"
+            <!-- 1. Layout para Vistas Dinámicas (Dashboard, Inventory, etc.) -->
+            <!-- Visible si IsUserAuthenticated = true -->
+            <ContentControl Grid.Row="1"
                             Content="{Binding CurrentViewModel}"
-                            Margin="24">
-                <!-- Contenido por defecto cuando no hay módulo seleccionado -->
+                            Margin="24"
+                            Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
                 <ContentControl.Resources>
-                    <DataTemplate DataType="{x:Type viewModels:ViewModelBase}">
-                        <Grid>
-                            <StackPanel VerticalAlignment="Center"
-                                        HorizontalAlignment="Center">
-                                <materialDesign:PackIcon Kind="ShieldStar"
-                                                         Width="120" Height="120"
-                                                         Foreground="#2A2A2A"
-                                                         HorizontalAlignment="Center"/>
-                                <TextBlock Text="Bienvenido a GuardianOS"
-                                           FontSize="28"
-                                           FontWeight="Light"
-                                           Foreground="#4A4A4A"
-                                           HorizontalAlignment="Center"
-                                           Margin="0,24,0,8"/>
-                                <TextBlock Text="Selecciona un módulo del menú lateral para comenzar"
-                                           FontSize="14"
-                                           Foreground="#3A3A3A"
-                                           HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
+                    <DataTemplate DataType="{x:Type viewModels:DashboardViewModel}">
+                        <views:DashboardView />
                     </DataTemplate>
+                    <!-- Aquí irán otros DataTemplates (Inventory, Maps, etc) -->
                 </ContentControl.Resources>
             </ContentControl>
 
-            <!-- Contenido de bienvenida cuando no hay ViewModel -->
+            <!-- 2. LOGIN / WELCOME SCREEN (Fallback cuando no está autenticado) -->
+            <!-- Visible si IsUserAuthenticated = false -->
             <Grid Grid.Row="1"
-                  Visibility="{Binding CurrentViewModel, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Visible}">
+                  Visibility="{Binding IsUserAuthenticated, Converter={StaticResource InvertedBoolToVisConverter}, FallbackValue=Visible}">
+                
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel VerticalAlignment="Top"
-                                HorizontalAlignment="Center"
-                                MaxWidth="900"
-                                Margin="0,60,0,60">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,60">
                         <materialDesign:PackIcon Kind="ShieldStar"
                                                  Width="120" Height="120"
                                                  Foreground="#2A2A2A"
@@ -539,345 +373,41 @@
                         <TextBlock Text="Bienvenido a GuardianOS"
                                    FontSize="28"
                                    FontWeight="Light"
-                                   Foreground="#4A4A4A"
+                                   Foreground="#CCCCCC"
                                    HorizontalAlignment="Center"
                                    Margin="0,24,0,8"/>
-                        <TextBlock Text="Selecciona un módulo del menú lateral para comenzar"
-                                   FontSize="14"
-                                   Foreground="#3A3A3A"
+                        
+                        <!-- Texto promocional -->
+                        <TextBlock Text="Inicia sesión con Bungie para acceder a tu Guardián"
+                                   FontSize="16"
+                                   Foreground="#888888"
                                    HorizontalAlignment="Center"
-                                   Margin="0,0,0,32"/>
+                                   Margin="0,0,0,40"/>
                         
-                        <!-- Llamada a la acción cuando no está conectado -->
-                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                Command="{Binding ConnectWithBungieCommand}"
-                                Visibility="{Binding IsUserAuthenticated, Converter={StaticResource InvertedBoolToVisConverter}, FallbackValue=Visible}"
-                                Background="#7B68EE"
-                                BorderBrush="#7B68EE"
-                                Foreground="White"
-                                Padding="24,12">
+                        <!-- Botón de Login -->
+                        <Button Command="{Binding ConnectWithBungieCommand}"
+                                Height="50"
+                                materialDesign:ButtonAssist.CornerRadius="25"
+                                Background="#FFD700"
+                                Foreground="Black"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                BorderThickness="0"
+                                Padding="32,0">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Login" 
-                                                         VerticalAlignment="Center"
-                                                         Width="20" Height="20"
-                                                         Margin="0,0,12,0"/>
-                                <TextBlock Text="Conectar con Bungie para comenzar"
-                                           VerticalAlignment="Center"
-                                           FontSize="14"/>
+                                <materialDesign:PackIcon Kind="Bungie" Width="24" Height="24" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="CONECTAR CON BUNGIE" VerticalAlignment="Center"/>
                             </StackPanel>
+                            <Button.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3" Color="#FFD700"/>
+                            </Button.Effect>
                         </Button>
-                        
-                        <!-- Tarjetas de Personajes (cuando está autenticado) -->
-                        <StackPanel Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}"
-                                    Margin="0,32,0,0">
-                            
-                            <TextBlock Text="SELECCIONA TU GUARDIÁN"
-                                       FontSize="14"
-                                       FontWeight="SemiBold"
-                                       Foreground="#666666"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,0,0,24"/>
-                            
-                            <!-- SKELETON LOADING CARDS -->
-                            <StackPanel Orientation="Horizontal" 
-                                        HorizontalAlignment="Center"
-                                        Visibility="{Binding IsLoadingCharacters, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
-                                <!-- Skeleton Card 1 -->
-                                <Border Width="260" Height="150" Margin="8" CornerRadius="6" Background="#1A1A1A">
-                                    <Border.Triggers>
-                                        <EventTrigger RoutedEvent="Loaded">
-                                            <BeginStoryboard>
-                                                <Storyboard RepeatBehavior="Forever">
-                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                                     From="0.3" To="1.0" Duration="0:0:0.8"
-                                                                     AutoReverse="True"/>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </Border.Triggers>
-                                    <StackPanel VerticalAlignment="Center" Margin="16">
-                                        <Border Height="20" Width="80" Background="#2A2A2A" CornerRadius="3" HorizontalAlignment="Left"/>
-                                        <Border Height="14" Width="50" Background="#222222" CornerRadius="2" HorizontalAlignment="Left" Margin="0,8,0,0"/>
-                                        <Border Height="30" Width="60" Background="#2A2A2A" CornerRadius="4" HorizontalAlignment="Right" Margin="0,16,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                                <!-- Skeleton Card 2 -->
-                                <Border Width="260" Height="150" Margin="8" CornerRadius="6" Background="#1A1A1A">
-                                    <Border.Triggers>
-                                        <EventTrigger RoutedEvent="Loaded">
-                                            <BeginStoryboard>
-                                                <Storyboard RepeatBehavior="Forever">
-                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                                     From="0.3" To="1.0" Duration="0:0:0.8"
-                                                                     AutoReverse="True" BeginTime="0:0:0.2"/>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </Border.Triggers>
-                                    <StackPanel VerticalAlignment="Center" Margin="16">
-                                        <Border Height="20" Width="80" Background="#2A2A2A" CornerRadius="3" HorizontalAlignment="Left"/>
-                                        <Border Height="14" Width="50" Background="#222222" CornerRadius="2" HorizontalAlignment="Left" Margin="0,8,0,0"/>
-                                        <Border Height="30" Width="60" Background="#2A2A2A" CornerRadius="4" HorizontalAlignment="Right" Margin="0,16,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                                <!-- Skeleton Card 3 -->
-                                <Border Width="260" Height="150" Margin="8" CornerRadius="6" Background="#1A1A1A">
-                                    <Border.Triggers>
-                                        <EventTrigger RoutedEvent="Loaded">
-                                            <BeginStoryboard>
-                                                <Storyboard RepeatBehavior="Forever">
-                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                                     From="0.3" To="1.0" Duration="0:0:0.8"
-                                                                     AutoReverse="True" BeginTime="0:0:0.4"/>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </Border.Triggers>
-                                    <StackPanel VerticalAlignment="Center" Margin="16">
-                                        <Border Height="20" Width="80" Background="#2A2A2A" CornerRadius="3" HorizontalAlignment="Left"/>
-                                        <Border Height="14" Width="50" Background="#222222" CornerRadius="2" HorizontalAlignment="Left" Margin="0,8,0,0"/>
-                                        <Border Height="30" Width="60" Background="#2A2A2A" CornerRadius="4" HorizontalAlignment="Right" Margin="0,16,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                            
-                            <!-- Lista de personajes (oculta durante carga) -->
-                            <ItemsControl ItemsSource="{Binding Characters}"
-                                          HorizontalAlignment="Center"
-                                          Visibility="{Binding IsLoadingCharacters, Converter={StaticResource InvertedBoolToVisConverter}, FallbackValue=Visible}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <!-- Tarjeta de Personaje - Enfoque Simple -->
-                                        <Button Command="{Binding DataContext.SelectCharacterCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                CommandParameter="{Binding}"
-                                                Cursor="Hand"
-                                                Margin="8"
-                                                Width="260"
-                                                Height="150"
-                                                Padding="0"
-                                                BorderThickness="0"
-                                                Background="Transparent"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <!-- Tarjeta con efectos hover -->
-                                                    <Border x:Name="CardBorder"
-                                                            CornerRadius="8"
-                                                            BorderThickness="2"
-                                                            BorderBrush="Transparent"
-                                                            RenderTransformOrigin="0.5,0.5">
-                                                        <Border.RenderTransform>
-                                                            <ScaleTransform x:Name="CardScale" ScaleX="1" ScaleY="1"/>
-                                                        </Border.RenderTransform>
-                                                        <Border.Effect>
-                                                            <DropShadowEffect x:Name="CardShadow" BlurRadius="15" ShadowDepth="3" Opacity="0.4" Color="Black"/>
-                                                        </Border.Effect>
-                                                        
-                                                        <Grid>
-                                                            <!-- Fondo: Emblema -->
-                                                            <Border CornerRadius="6">
-                                                                <Border.Background>
-                                                                    <ImageBrush ImageSource="{Binding EmblemBackgroundUrl}" Stretch="UniformToFill"/>
-                                                                </Border.Background>
-                                                            </Border>
-                                                            
-                                                            <!-- Capa oscura -->
-                                                            <Border CornerRadius="6" Background="#99000000"/>
-                                                            
-                                                            <!-- Contenido -->
-                                                            <DockPanel>
-                                                                <!-- Barra de subclase (línea fina de color dinámico) -->
-                                                                <Border DockPanel.Dock="Bottom" 
-                                                                        Height="4"
-                                                                        CornerRadius="0,0,6,6"
-                                                                        Background="{Binding SubclassColor, Converter={StaticResource StringToBrushConverter}}"/>
-                                                                
-                                                                <!-- Barra inferior de stats -->
-                                                                <Border DockPanel.Dock="Bottom" 
-                                                                        Background="#CC000000"
-                                                                        Padding="12,8"
-                                                                        CornerRadius="0,0,0,0">
-                                                                    <Grid>
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="*"/>
-                                                                            <ColumnDefinition Width="*"/>
-                                                                        </Grid.ColumnDefinitions>
-                                                                        
-                                                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                                                            <materialDesign:PackIcon Kind="Clock" Width="14" Height="14"
-                                                                                                     Foreground="#888888" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                                            <TextBlock Text="{Binding HoursPlayed, StringFormat='{}{0}h'}"
-                                                                                       FontSize="12" FontWeight="SemiBold" Foreground="#DDDDDD" VerticalAlignment="Center"/>
-                                                                        </StackPanel>
-                                                                        
-                                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                            <materialDesign:PackIcon Kind="Calendar" Width="14" Height="14"
-                                                                                                     Foreground="#888888" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                                            <TextBlock Text="{Binding DateLastPlayed, StringFormat='{}{0:dd/MM}'}"
-                                                                                       FontSize="12" FontWeight="SemiBold" Foreground="#DDDDDD" VerticalAlignment="Center"/>
-                                                                        </StackPanel>
-                                                                    </Grid>
-                                                                </Border>
-                                                                
-                                                                <!-- Zona principal -->
-                                                                <Grid Margin="14,14,14,8" VerticalAlignment="Top">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    
-                                                                    <!-- Clase + Raza -->
-                                                                    <StackPanel Grid.Column="0">
-                                                                        <TextBlock FontSize="18" FontWeight="Bold" Foreground="White">
-                                                                            <TextBlock.Text>
-                                                                                <Binding Path="ClassName" 
-                                                                                         Converter="{StaticResource ToUpperConverter}"
-                                                                                         FallbackValue="CAZADOR"/>
-                                                                            </TextBlock.Text>
-                                                                        </TextBlock>
-                                                                        <TextBlock Text="{Binding RaceName, Converter={StaticResource ToUpperConverter}}"
-                                                                                   FontSize="11" Foreground="White" Opacity="0.7" Margin="0,2,0,0"/>
-                                                                    </StackPanel>
-                                                                    
-                                                                    <!-- Nivel de Luz -->
-                                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                                        <TextBlock Text="✦" FontSize="22" Foreground="#F5DC56"
-                                                                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                                        <TextBlock Text="{Binding Light}"
-                                                                                   FontSize="28" FontWeight="Bold" Foreground="#F5DC56"/>
-                                                                    </StackPanel>
-                                                                </Grid>
-                                                            </DockPanel>
-                                                        </Grid>
-                                                    </Border>
-                                                    
-                                                    <!-- Hover Triggers -->
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="#F5DC56"/>
-                                                            <Setter TargetName="CardBorder" Property="Effect">
-                                                                <Setter.Value>
-                                                                    <DropShadowEffect BlurRadius="25" ShadowDepth="5" Opacity="0.6" Color="#F5DC56"/>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            
-                            <!-- Indicador de personaje seleccionado -->
-                            <TextBlock Text="{Binding SelectedCharacter.ShortDescription, FallbackValue=''}"
-                                       FontSize="14"
-                                       Foreground="#888888"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,16,0,0"
-                                       Visibility="{Binding SelectedCharacter, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}"/>
-                            
-                            <!-- WEEKLY ROTATIONS PANEL -->
-                            <StackPanel Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}"
-                                        Margin="0,40,0,0">
-                                <TextBlock Text="ESTA SEMANA EN DESTINY"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           Foreground="#666666"
-                                           HorizontalAlignment="Center"
-                                           Margin="0,0,0,16"/>
-                                
-                                <!-- Rotation Cards -->
-                                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <!-- Nightfall Card -->
-                                    <Border Width="200" Height="100" Margin="8" CornerRadius="6"
-                                            BorderBrush="#333333" BorderThickness="1">
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="/Assets/nightfall_bg.png" Opacity="0.3" Stretch="UniformToFill"/>
-                                        </Border.Background>
-                                        <Grid>
-                                            <Border Background="#000000" Opacity="0.4" CornerRadius="5"/>
-                                            <StackPanel Margin="12">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Border Width="24" Height="24" Background="#3B82F6" CornerRadius="4" Margin="0,0,8,0">
-                                                        <TextBlock Text="⚔" FontSize="14" Foreground="White" 
-                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                    <TextBlock Text="NIGHTFALL" FontSize="11" FontWeight="Bold" 
-                                                               Foreground="#3B82F6" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                                <TextBlock Text="The Disgraced" FontSize="14" FontWeight="Medium" 
-                                                           Foreground="#FFFFFF" Margin="0,8,0,0"/>
-                                                <TextBlock Text="Grandmaster disponible" FontSize="10" 
-                                                           Foreground="#CCCCCC" Margin="0,2,0,0"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    
-                                    <!-- Featured Raid Card -->
-                                    <Border Width="200" Height="100" Margin="8" CornerRadius="6"
-                                            BorderBrush="#333333" BorderThickness="1">
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="/Assets/raid_bg.png" Opacity="0.3" Stretch="UniformToFill"/>
-                                        </Border.Background>
-                                        <Grid>
-                                            <Border Background="#000000" Opacity="0.4" CornerRadius="5"/>
-                                            <StackPanel Margin="12">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Border Width="24" Height="24" Background="#F59E0B" CornerRadius="4" Margin="0,0,8,0">
-                                                        <TextBlock Text="👑" FontSize="12" Foreground="White" 
-                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                    <TextBlock Text="RAID DESTACADA" FontSize="11" FontWeight="Bold" 
-                                                               Foreground="#F59E0B" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                                <TextBlock Text="Last Wish" FontSize="14" FontWeight="Medium" 
-                                                           Foreground="#FFFFFF" Margin="0,8,0,0"/>
-                                                <TextBlock Text="Farmeable esta semana" FontSize="10" 
-                                                           Foreground="#CCCCCC" Margin="0,2,0,0"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    
-                                    <!-- Dungeon Card -->
-                                    <Border Width="200" Height="100" Margin="8" CornerRadius="6"
-                                            BorderBrush="#333333" BorderThickness="1">
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="/Assets/dungeon_bg.png" Opacity="0.3" Stretch="UniformToFill"/>
-                                        </Border.Background>
-                                        <Grid>
-                                            <Border Background="#000000" Opacity="0.4" CornerRadius="5"/>
-                                            <StackPanel Margin="12">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Border Width="24" Height="24" Background="#10B981" CornerRadius="4" Margin="0,0,8,0">
-                                                        <TextBlock Text="🏰" FontSize="12" Foreground="White" 
-                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                    <TextBlock Text="DUNGEON" FontSize="11" FontWeight="Bold" 
-                                                               Foreground="#10B981" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                                <TextBlock Text="Warlord's Ruin" FontSize="14" FontWeight="Medium" 
-                                                           Foreground="#FFFFFF" Margin="0,8,0,0"/>
-                                                <TextBlock Text="Pinnacle activo" FontSize="10" 
-                                                           Foreground="#CCCCCC" Margin="0,2,0,0"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </WrapPanel>
-                            </StackPanel>
-                        </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
 
             <!-- Barra de Estado Inferior -->
-            <Border Grid.Row="3"
+            <Border Grid.Row="2"
                     Background="#0D0D0D"
                     Padding="16,4">
                 <Grid>
