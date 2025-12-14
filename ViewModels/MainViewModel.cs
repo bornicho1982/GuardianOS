@@ -18,6 +18,7 @@ public partial class MainViewModel : ViewModelBase
     private readonly IBungieApiService _bungieApiService;
     private readonly IAuthService _authService;
     private readonly IManifestService _manifestService;
+    private readonly IManifestRepository _manifestRepository;
     
     #region Observable Properties
     
@@ -108,12 +109,13 @@ public partial class MainViewModel : ViewModelBase
     
     #endregion
     
-    public MainViewModel(IAuthService authService, IManifestService manifestService)
+    public MainViewModel(IAuthService authService, IManifestService manifestService, IManifestRepository manifestRepository)
     {
         // Crear BungieApiService directamente (podríamos inyectarlo también)
         _bungieApiService = new BungieApiService();
         _authService = authService;
         _manifestService = manifestService;
+        _manifestRepository = manifestRepository;
         
         Title = "GuardianOS";
 // ...
@@ -123,12 +125,15 @@ public partial class MainViewModel : ViewModelBase
         _authService.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
         // Registrar mensajes de navegación
-        WeakReferenceMessenger.Default.Register<CharacterSelectedMessage>(this, (r, m) =>
-        {
-            CurrentViewModel = new CharacterDetailViewModel(m.Value);
-            CurrentModuleTitle = "Equipamiento";
-            SelectedNavigationIndex = -1; // Deseleccionar menú lateral
-        });
+        WeakReferenceMessenger.Default.Register<CharacterSelectedMessage>(this, (r, m) => OnCharacterSelected(m.Value));
+        WeakReferenceMessenger.Default.Register<NavigateToDashboardMessage>(this, (r, m) => NavigateToHome());
+    }
+    
+    private void OnCharacterSelected(DestinyCharacter character)
+    {
+        CurrentViewModel = new CharacterDetailViewModel(character);
+        CurrentModuleTitle = "Equipamiento de Guardián";
+        SelectedNavigationIndex = -1; // Deseleccionar menú lateral
     }
     
     /// <summary>
@@ -194,12 +199,17 @@ public partial class MainViewModel : ViewModelBase
     #region Navigation Commands
     
     [RelayCommand]
-    private void NavigateToInventory()
+    private async Task NavigateToInventory()
     {
+        if (MembershipId == null) return;
+
         SelectedNavigationIndex = 0;
         CurrentModuleTitle = "Inventario";
-        StatusMessage = "Módulo de Inventario (En construcción)";
-        // TODO: CurrentViewModel = new InventoryViewModel(...);
+        StatusMessage = "Cargando inventario...";
+        
+        var inventoryVm = new InventoryViewModel(_bungieApiService, _authService, _manifestService, _manifestRepository, MembershipId, MembershipType);
+        CurrentViewModel = inventoryVm;
+        await inventoryVm.InitializeAsync();
     }
     
     [RelayCommand]
@@ -237,6 +247,7 @@ public partial class MainViewModel : ViewModelBase
     /// <summary>
     /// Vuelve al Dashboard / Home
     /// </summary>
+    [RelayCommand]
     public void NavigateToHome()
     {
         if (IsUserAuthenticated && MembershipId != null)

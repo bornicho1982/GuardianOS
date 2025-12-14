@@ -22,6 +22,9 @@ public class InventoryItemDefinition
     [JsonProperty("classType")]
     public int ClassType { get; set; }
 
+    [JsonProperty("itemTypeDisplayName")]
+    public string ItemTypeDisplayName { get; set; } = string.Empty;
+
     [JsonProperty("inventory")]
     public InventoryDefinition Inventory { get; set; } = new();
     

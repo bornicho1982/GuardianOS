@@ -143,13 +143,16 @@ public class BungieApiService : IBungieApiService
     }
     
     /// <inheritdoc/>
-    public async Task<DestinyProfileResponse?> GetProfileAsync(int membershipType, string membershipId, string accessToken)
+    public async Task<DestinyProfileResponse?> GetProfileAsync(int membershipType, string membershipId, string accessToken, int[]? components = null)
     {
         try
         {
-            // Components: 100=Profiles, 103=ProfileCurrencies, 200=Characters, 205=CharacterEquipment
-            var components = "100,103,200,205";
-            var url = $"{Constants.BUNGIE_API_BASE_URL}/Destiny2/{membershipType}/Profile/{membershipId}/?components={components}";
+            // Components: 100=Profiles, 103=ProfileCurrencies, 200=Characters, 205=CharacterEquipment, 102=Vault, 201=CharInventories, 300=ItemInstances
+            var componentsList = components != null && components.Length > 0 
+                ? string.Join(",", components) 
+                : "100,103,200,205"; // Default básico
+                
+            var url = $"{Constants.BUNGIE_API_BASE_URL}/Destiny2/{membershipType}/Profile/{membershipId}/?components={componentsList}";
             Debug.WriteLine($"[BungieAPI] GET {url}");
             
             using var request = new HttpRequestMessage(HttpMethod.Get, url);

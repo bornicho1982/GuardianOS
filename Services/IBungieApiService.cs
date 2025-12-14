@@ -41,13 +41,9 @@ public interface IBungieApiService
     Task<LinkedProfilesResponse?> GetLinkedProfilesAsync(string membershipId, string accessToken);
     
     /// <summary>
-    /// Obtiene el perfil de Destiny 2 con datos de personajes.
-    /// Requiere token de autenticación.
+    /// Obtiene información del perfil del usuario (personajes, inventario, etc).
     /// </summary>
-    /// <param name="membershipType">Tipo de plataforma (3=Steam, etc.)</param>
-    /// <param name="membershipId">ID de membresía de Destiny</param>
-    /// <param name="accessToken">Token OAuth</param>
-    Task<DestinyProfileResponse?> GetProfileAsync(int membershipType, string membershipId, string accessToken);
+    Task<DestinyProfileResponse?> GetProfileAsync(int membershipType, string membershipId, string accessToken, int[]? components = null);
     
     #endregion
 }

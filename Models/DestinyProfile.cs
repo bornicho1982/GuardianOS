@@ -78,6 +78,108 @@ public class DestinyProfileResponse
     
     [JsonProperty("characterEquipment")]
     public CharacterEquipmentComponent? CharacterEquipment { get; set; }
+
+    [JsonProperty("profileInventory")]
+    public ProfileInventoryComponent? ProfileInventory { get; set; }
+
+    [JsonProperty("characterInventories")]
+    public CharacterInventoriesComponent? CharacterInventories { get; set; }
+
+    [JsonProperty("itemComponents")]
+    public ItemComponentsComponent? ItemComponents { get; set; }
+}
+
+public class ProfileInventoryComponent
+{
+    [JsonProperty("data")]
+    public InventoryData? Data { get; set; }
+}
+
+public class CharacterInventoriesComponent
+{
+    [JsonProperty("data")]
+    public Dictionary<string, InventoryData>? Data { get; set; }
+}
+
+public class InventoryData
+{
+    [JsonProperty("items")]
+    public List<DestinyItemComponent>? Items { get; set; }
+}
+
+public class DestinyItemComponent
+{
+    [JsonProperty("itemHash")]
+    public uint ItemHash { get; set; }
+
+    [JsonProperty("itemInstanceId")]
+    public long? ItemInstanceId { get; set; }
+
+    [JsonProperty("quantity")]
+    public int Quantity { get; set; }
+
+    [JsonProperty("bindStatus")]
+    public int BindStatus { get; set; }
+
+    [JsonProperty("location")]
+    public int Location { get; set; }
+
+    [JsonProperty("bucketHash")]
+    public uint BucketHash { get; set; }
+
+    [JsonProperty("transferStatus")]
+    public int TransferStatus { get; set; }
+    
+    [JsonProperty("lockable")]
+    public bool Lockable { get; set; }
+    
+    [JsonProperty("state")]
+    public int State { get; set; }
+}
+
+public class ItemComponentsComponent
+{
+    [JsonProperty("instances")]
+    public ItemInstancesComponent? Instances { get; set; }
+}
+
+public class ItemInstancesComponent
+{
+    [JsonProperty("data")]
+    public Dictionary<string, ItemInstanceData>? Data { get; set; }
+}
+
+public class ItemInstanceData
+{
+    [JsonProperty("damageType")]
+    public int DamageType { get; set; }
+
+    [JsonProperty("primaryStat")]
+    public PrimaryStat? PrimaryStat { get; set; }
+
+    [JsonProperty("itemLevel")]
+    public int ItemLevel { get; set; }
+
+    [JsonProperty("quality")]
+    public int Quality { get; set; }
+    
+    [JsonProperty("isEquipped")]
+    public bool IsEquipped { get; set; }
+    
+    [JsonProperty("canEquip")]
+    public bool CanEquip { get; set; }
+    
+    [JsonProperty("equipRequiredLevel")]
+    public int EquipRequiredLevel { get; set; }
+}
+
+public class PrimaryStat
+{
+    [JsonProperty("statHash")]
+    public uint StatHash { get; set; }
+
+    [JsonProperty("value")]
+    public int Value { get; set; }
 }
 
 /// <summary>

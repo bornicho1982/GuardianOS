@@ -146,6 +146,19 @@
                                    Margin="12,16,0,12" 
                                    FontWeight="Bold"/>
 
+                        <!-- Botón Dashboard (Inicio) -->
+                        <RadioButton Command="{Binding NavigateToHomeCommand}"
+                                     Style="{StaticResource NavButtonStyle}"
+                                     IsChecked="{Binding SelectedNavigationIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=-1}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ViewDashboard" Width="20" Height="20" Margin="0,0,16,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Inicio" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Resumen de cuenta" FontSize="10" Foreground="#888888"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </RadioButton>
+
                         <!-- Botón Inventario -->
                         <RadioButton Command="{Binding NavigateToInventoryCommand}"
                                      Style="{StaticResource NavButtonStyle}"
@@ -405,6 +418,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type viewModels:CharacterDetailViewModel}">
                         <views:CharacterDetailView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewModels:InventoryViewModel}">
+                        <views:InventoryView />
                     </DataTemplate>
                     <!-- Aquí irán otros DataTemplates (Inventory, Maps, etc) -->
                 </ContentControl.Resources>

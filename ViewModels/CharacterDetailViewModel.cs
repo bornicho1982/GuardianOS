@@ -1,4 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using GuardianOS.Messages;
 using GuardianOS.Models;
 
 namespace GuardianOS.ViewModels;
@@ -13,7 +16,13 @@ public partial class CharacterDetailViewModel : ViewModelBase
 
     public CharacterDetailViewModel(DestinyCharacter character)
     {
-        _character = character;
+        Character = character;
+    }
+
+    [RelayCommand]
+    private void GoBack()
+    {
+        WeakReferenceMessenger.Default.Send(new NavigateToDashboardMessage());
     }
 
     public override Task InitializeAsync()

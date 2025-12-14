@@ -1,25 +1,41 @@
   Determinando los proyectos que se van a restaurar...
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
 E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
 E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
-  Todos los proyectos est├ín actualizados para la restauraci├│n.
+  Todos los proyectos están actualizados para la restauración.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
 E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
 E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
-E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
-E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
-E:\GuardianOS\Services\BungieApiService.cs(14,22): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
-E:\GuardianOS\Services\BungieApiService.cs(21,29): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\ViewModels\MainViewModel.cs(117,9): error CS0103: El nombre '_manifestRepository' no existe en el contexto actual [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
+E:\GuardianOS\ViewModels\MainViewModel.cs(151,43): warning CS8602: Desreferencia de una referencia posiblemente NULL. [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
+E:\GuardianOS\ViewModels\MainViewModel.cs(208,101): error CS0103: El nombre '_manifestRepository' no existe en el contexto actual [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
+E:\GuardianOS\ViewModels\InventoryViewModel.cs(180,39): error CS1061: "InventoryItemDefinition" no contiene una definición para "ItemTypeDisplayName" ni un método de extensión accesible "ItemTypeDisplayName" que acepte un primer argumento del tipo "InventoryItemDefinition" (¿falta alguna directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
 
 ERROR al compilar.
 
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
 E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
 E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
 E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
 E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
-E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
-E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
-E:\GuardianOS\Services\BungieApiService.cs(14,22): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
-E:\GuardianOS\Services\BungieApiService.cs(21,29): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
-    6 Advertencia(s)
-    2 Errores
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\ViewModels\MainViewModel.cs(151,43): warning CS8602: Desreferencia de una referencia posiblemente NULL. [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
+E:\GuardianOS\ViewModels\MainViewModel.cs(117,9): error CS0103: El nombre '_manifestRepository' no existe en el contexto actual [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
+E:\GuardianOS\ViewModels\MainViewModel.cs(208,101): error CS0103: El nombre '_manifestRepository' no existe en el contexto actual [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
+E:\GuardianOS\ViewModels\InventoryViewModel.cs(180,39): error CS1061: "InventoryItemDefinition" no contiene una definición para "ItemTypeDisplayName" ni un método de extensión accesible "ItemTypeDisplayName" que acepte un primer argumento del tipo "InventoryItemDefinition" (¿falta alguna directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_akm0dsfk_wpftmp.csproj]
+    13 Advertencia(s)
+    3 Errores
 
-Tiempo transcurrido 00:00:02.08
+Tiempo transcurrido 00:00:03.01
