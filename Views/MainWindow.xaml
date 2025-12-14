@@ -790,6 +790,101 @@
                                        HorizontalAlignment="Center"
                                        Margin="0,16,0,0"
                                        Visibility="{Binding SelectedCharacter, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}"/>
+                            
+                            <!-- WEEKLY ROTATIONS PANEL -->
+                            <StackPanel Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}"
+                                        Margin="0,40,0,0">
+                                <TextBlock Text="ESTA SEMANA EN DESTINY"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#666666"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,16"/>
+                                
+                                <!-- Rotation Cards -->
+                                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <!-- Nightfall Card -->
+                                    <Border Width="200" Height="100" Margin="8" CornerRadius="6"
+                                            BorderBrush="#333333" BorderThickness="1">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#1A1A2A" Offset="0"/>
+                                                <GradientStop Color="#151520" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <Grid>
+                                            <StackPanel Margin="12">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Border Width="24" Height="24" Background="#3B82F6" CornerRadius="4" Margin="0,0,8,0">
+                                                        <TextBlock Text="⚔" FontSize="14" Foreground="White" 
+                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <TextBlock Text="NIGHTFALL" FontSize="11" FontWeight="Bold" 
+                                                               Foreground="#3B82F6" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <TextBlock Text="The Disgraced" FontSize="14" FontWeight="Medium" 
+                                                           Foreground="#FFFFFF" Margin="0,8,0,0"/>
+                                                <TextBlock Text="Grandmaster disponible" FontSize="10" 
+                                                           Foreground="#666666" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    
+                                    <!-- Featured Raid Card -->
+                                    <Border Width="200" Height="100" Margin="8" CornerRadius="6"
+                                            BorderBrush="#333333" BorderThickness="1">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#2A1A1A" Offset="0"/>
+                                                <GradientStop Color="#201515" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <Grid>
+                                            <StackPanel Margin="12">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Border Width="24" Height="24" Background="#F59E0B" CornerRadius="4" Margin="0,0,8,0">
+                                                        <TextBlock Text="👑" FontSize="12" Foreground="White" 
+                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <TextBlock Text="RAID DESTACADA" FontSize="11" FontWeight="Bold" 
+                                                               Foreground="#F59E0B" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <TextBlock Text="Last Wish" FontSize="14" FontWeight="Medium" 
+                                                           Foreground="#FFFFFF" Margin="0,8,0,0"/>
+                                                <TextBlock Text="Farmeable esta semana" FontSize="10" 
+                                                           Foreground="#666666" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                    
+                                    <!-- Dungeon Card -->
+                                    <Border Width="200" Height="100" Margin="8" CornerRadius="6"
+                                            BorderBrush="#333333" BorderThickness="1">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#1A2A1A" Offset="0"/>
+                                                <GradientStop Color="#152015" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <Grid>
+                                            <StackPanel Margin="12">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Border Width="24" Height="24" Background="#10B981" CornerRadius="4" Margin="0,0,8,0">
+                                                        <TextBlock Text="🏰" FontSize="12" Foreground="White" 
+                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <TextBlock Text="DUNGEON" FontSize="11" FontWeight="Bold" 
+                                                               Foreground="#10B981" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <TextBlock Text="Warlord's Ruin" FontSize="14" FontWeight="Medium" 
+                                                           Foreground="#FFFFFF" Margin="0,8,0,0"/>
+                                                <TextBlock Text="Pinnacle activo" FontSize="10" 
+                                                           Foreground="#666666" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </WrapPanel>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
