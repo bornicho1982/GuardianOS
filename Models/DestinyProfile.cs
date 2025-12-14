@@ -64,11 +64,38 @@ public class DestinyProfileResponse
     [JsonProperty("profile")]
     public ProfileComponent? Profile { get; set; }
     
+    [JsonProperty("profileCurrencies")]
+    public ProfileCurrenciesComponent? ProfileCurrencies { get; set; }
+    
     [JsonProperty("characters")]
     public CharactersComponent? Characters { get; set; }
     
     [JsonProperty("characterEquipment")]
     public CharacterEquipmentComponent? CharacterEquipment { get; set; }
+}
+
+/// <summary>
+/// Componente de monedas del perfil.
+/// </summary>
+public class ProfileCurrenciesComponent
+{
+    [JsonProperty("data")]
+    public ProfileCurrenciesData? Data { get; set; }
+}
+
+public class ProfileCurrenciesData
+{
+    [JsonProperty("items")]
+    public List<CurrencyItem>? Items { get; set; }
+}
+
+public class CurrencyItem
+{
+    [JsonProperty("itemHash")]
+    public long ItemHash { get; set; }
+    
+    [JsonProperty("quantity")]
+    public int Quantity { get; set; }
 }
 
 public class ProfileComponent

@@ -347,6 +347,8 @@
             <Grid.RowDefinitions>
                 <!-- Header con título del módulo -->
                 <RowDefinition Height="Auto"/>
+                <!-- Currency bar -->
+                <RowDefinition Height="Auto"/>
                 <!-- Contenido principal -->
                 <RowDefinition Height="*"/>
                 <!-- Barra de estado -->
@@ -451,9 +453,57 @@
                     </Border>
                 </Grid>
             </Border>
+            
+            <!-- CURRENCY BAR - Recursos del Guardián -->
+            <Border Grid.Row="1"
+                    Background="#0F0F0F"
+                    Padding="24,8"
+                    Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <!-- Glimmer -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
+                        <Border Width="20" Height="20" Background="#3B9BD9" CornerRadius="2" Margin="0,0,6,0">
+                            <TextBlock Text="G" FontWeight="Bold" FontSize="12" 
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding Glimmer, StringFormat='{}{0:N0}'}" 
+                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Legendary Shards -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
+                        <Border Width="20" Height="20" Background="#522C8E" CornerRadius="2" Margin="0,0,6,0">
+                            <TextBlock Text="◇" FontWeight="Bold" FontSize="10" 
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding LegendaryShards, StringFormat='{}{0:N0}'}" 
+                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Bright Dust -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
+                        <Border Width="20" Height="20" Background="#5BA3D9" CornerRadius="2" Margin="0,0,6,0">
+                            <TextBlock Text="✧" FontWeight="Bold" FontSize="12" 
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding BrightDust, StringFormat='{}{0:N0}'}" 
+                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Enhancement Cores -->
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="20" Height="20" Background="#D9A94B" CornerRadius="2" Margin="0,0,6,0">
+                            <TextBlock Text="⬡" FontWeight="Bold" FontSize="11" 
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="{Binding EnhancementCores, StringFormat='{}{0:N0}'}" 
+                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
 
             <!-- Área de Contenido Dinámico -->
-            <ContentControl Grid.Row="1"
+            <ContentControl Grid.Row="2"
                             Content="{Binding CurrentViewModel}"
                             Margin="24">
                 <!-- Contenido por defecto cuando no hay módulo seleccionado -->
@@ -536,9 +586,73 @@
                                        HorizontalAlignment="Center"
                                        Margin="0,0,0,24"/>
                             
-                            <!-- Lista de personajes -->
+                            <!-- SKELETON LOADING CARDS -->
+                            <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Center"
+                                        Visibility="{Binding IsLoadingCharacters, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+                                <!-- Skeleton Card 1 -->
+                                <Border Width="260" Height="150" Margin="8" CornerRadius="6" Background="#1A1A1A">
+                                    <Border.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                     From="0.3" To="1.0" Duration="0:0:0.8"
+                                                                     AutoReverse="True"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Border.Triggers>
+                                    <StackPanel VerticalAlignment="Center" Margin="16">
+                                        <Border Height="20" Width="80" Background="#2A2A2A" CornerRadius="3" HorizontalAlignment="Left"/>
+                                        <Border Height="14" Width="50" Background="#222222" CornerRadius="2" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                        <Border Height="30" Width="60" Background="#2A2A2A" CornerRadius="4" HorizontalAlignment="Right" Margin="0,16,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Skeleton Card 2 -->
+                                <Border Width="260" Height="150" Margin="8" CornerRadius="6" Background="#1A1A1A">
+                                    <Border.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                     From="0.3" To="1.0" Duration="0:0:0.8"
+                                                                     AutoReverse="True" BeginTime="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Border.Triggers>
+                                    <StackPanel VerticalAlignment="Center" Margin="16">
+                                        <Border Height="20" Width="80" Background="#2A2A2A" CornerRadius="3" HorizontalAlignment="Left"/>
+                                        <Border Height="14" Width="50" Background="#222222" CornerRadius="2" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                        <Border Height="30" Width="60" Background="#2A2A2A" CornerRadius="4" HorizontalAlignment="Right" Margin="0,16,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Skeleton Card 3 -->
+                                <Border Width="260" Height="150" Margin="8" CornerRadius="6" Background="#1A1A1A">
+                                    <Border.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                     From="0.3" To="1.0" Duration="0:0:0.8"
+                                                                     AutoReverse="True" BeginTime="0:0:0.4"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Border.Triggers>
+                                    <StackPanel VerticalAlignment="Center" Margin="16">
+                                        <Border Height="20" Width="80" Background="#2A2A2A" CornerRadius="3" HorizontalAlignment="Left"/>
+                                        <Border Height="14" Width="50" Background="#222222" CornerRadius="2" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                        <Border Height="30" Width="60" Background="#2A2A2A" CornerRadius="4" HorizontalAlignment="Right" Margin="0,16,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            
+                            <!-- Lista de personajes (oculta durante carga) -->
                             <ItemsControl ItemsSource="{Binding Characters}"
-                                          HorizontalAlignment="Center">
+                                          HorizontalAlignment="Center"
+                                          Visibility="{Binding IsLoadingCharacters, Converter={StaticResource InvertedBoolToVisConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>

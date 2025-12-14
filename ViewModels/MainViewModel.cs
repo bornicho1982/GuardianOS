@@ -90,6 +90,36 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private DestinyCharacter? _selectedCharacter;
     
+    /// <summary>
+    /// Indica si se están cargando los personajes (para mostrar skeletons).
+    /// </summary>
+    [ObservableProperty]
+    private bool _isLoadingCharacters;
+    
+    /// <summary>
+    /// Cantidad de Glimmer del jugador.
+    /// </summary>
+    [ObservableProperty]
+    private int _glimmer;
+    
+    /// <summary>
+    /// Cantidad de Legendary Shards (Fragmentos Legendarios).
+    /// </summary>
+    [ObservableProperty]
+    private int _legendaryShards;
+    
+    /// <summary>
+    /// Cantidad de Bright Dust (Polvo Luminoso).
+    /// </summary>
+    [ObservableProperty]
+    private int _brightDust;
+    
+    /// <summary>
+    /// Cantidad de Enhancement Cores (Núcleos de Mejora).
+    /// </summary>
+    [ObservableProperty]
+    private int _enhancementCores;
+    
     #endregion
     
     /// <summary>
@@ -142,9 +172,14 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
+            IsLoadingCharacters = true;
+            
             var token = await _authService.GetValidAccessTokenAsync();
             if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(MembershipId))
+            {
+                IsLoadingCharacters = false;
                 return;
+            }
             
             StatusMessage = "Obteniendo cuentas vinculadas...";
             
@@ -197,12 +232,45 @@ public partial class MainViewModel : ViewModelBase
             // Seleccionar el último jugado
             SelectedCharacter = Characters.FirstOrDefault();
             
+            // Extraer currencies del perfil
+            if (profileData.ProfileCurrencies?.Data?.Items != null)
+            {
+                // Currency hashes conocidos
+                const long GLIMMER_HASH = 3159615086;
+                const long LEGENDARY_SHARDS_HASH = 1022552290;
+                const long BRIGHT_DUST_HASH = 2817410917;
+                const long ENHANCEMENT_CORES_HASH = 3853748946;
+                
+                foreach (var currency in profileData.ProfileCurrencies.Data.Items)
+                {
+                    switch (currency.ItemHash)
+                    {
+                        case GLIMMER_HASH:
+                            Glimmer = currency.Quantity;
+                            break;
+                        case LEGENDARY_SHARDS_HASH:
+                            LegendaryShards = currency.Quantity;
+                            break;
+                        case BRIGHT_DUST_HASH:
+                            BrightDust = currency.Quantity;
+                            break;
+                        case ENHANCEMENT_CORES_HASH:
+                            EnhancementCores = currency.Quantity;
+                            break;
+                    }
+                }
+            }
+            
             StatusMessage = $"{Characters.Count} personaje(s) cargados";
         }
         catch (Exception ex)
         {
             StatusMessage = $"Error al cargar personajes: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"[VM] LoadCharacters error: {ex.Message}");
+        }
+        finally
+        {
+            IsLoadingCharacters = false;
         }
     }
     

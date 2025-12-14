@@ -147,8 +147,8 @@ public class BungieApiService : IBungieApiService
     {
         try
         {
-            // Components: 100=Profiles, 200=Characters, 205=CharacterEquipment
-            var components = "100,200,205";
+            // Components: 100=Profiles, 103=ProfileCurrencies, 200=Characters, 205=CharacterEquipment
+            var components = "100,103,200,205";
             var url = $"{Constants.BUNGIE_API_BASE_URL}/Destiny2/{membershipType}/Profile/{membershipId}/?components={components}";
             Debug.WriteLine($"[BungieAPI] GET {url}");
             
