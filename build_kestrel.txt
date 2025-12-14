@@ -1,0 +1,35 @@
+  Determinando los proyectos que se van a restaurar...
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+  Se ha restaurado E:\GuardianOS\GuardianOS.csproj (en 390 ms).
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\Services\AuthService.cs(287,26): error CS9006: El literal de cadena sin formato interpolado no comienza con suficientes caracteres \"$\" para permitir tantos corchetes de apertura consecutivos como contenido. [E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj]
+
+ERROR al compilar.
+
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.DependencyInjection no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1510: PackageReference Microsoft.Extensions.Http no se eliminar├í. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\Services\AuthService.cs(287,26): error CS9006: El literal de cadena sin formato interpolado no comienza con suficientes caracteres \"$\" para permitir tantos corchetes de apertura consecutivos como contenido. [E:\GuardianOS\GuardianOS_zbg0vakh_wpftmp.csproj]
+    12 Advertencia(s)
+    1 Errores
+
+Tiempo transcurrido 00:00:03.21

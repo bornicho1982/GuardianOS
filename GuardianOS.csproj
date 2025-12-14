@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Configuración del proyecto .NET 8 WPF -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon></ApplicationIcon>
+    
+    <!-- Información de ensamblado -->
+    <AssemblyName>GuardianOS</AssemblyName>
+    <RootNamespace>GuardianOS</RootNamespace>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Title>GuardianOS</Title>
+    <Description>Suite definitiva para jugadores de Destiny 2</Description>
+    <Company>GuardianOS</Company>
+    <Product>GuardianOS</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- MVVM Toolkit - Proporciona ObservableObject, RelayCommand, etc. -->
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    
+    <!-- JSON Serialization - Para parsear respuestas de la API de Bungie -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    
+    <!-- Material Design - Tema moderno y oscuro estilo Gamer/Sci-Fi -->
+    <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
+    
+    <!-- SQLite - Para manejar la base de datos del Manifest de Destiny -->
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    
+    <!-- Dependency Injection - Contenedor de IoC de Microsoft -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    
+    <!-- HTTP Client con Polly - Para manejo de reintentos y resiliencia -->
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="9.0.0" />
+    
+    <!-- HTTP Client Factory -->
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    
+    <!-- ASP.NET Core para servidor HTTPS local (Kestrel) -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>

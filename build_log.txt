@@ -1,0 +1,25 @@
+  Determinando los proyectos que se van a restaurar...
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+  Todos los proyectos est├ín actualizados para la restauraci├│n.
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\Services\BungieApiService.cs(14,22): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
+E:\GuardianOS\Services\BungieApiService.cs(21,29): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
+
+ERROR al compilar.
+
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\GuardianOS.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1902: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad moderada conocida, https://github.com/advisories/GHSA-8g2p-5pqh-5jmc
+E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj : warning NU1903: El paquete "System.Data.SqlClient" 4.8.1 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-98g6-xh36-x2p7
+E:\GuardianOS\Services\BungieApiService.cs(14,22): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
+E:\GuardianOS\Services\BungieApiService.cs(21,29): error CS0246: El nombre del tipo o del espacio de nombres 'HttpClient' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [E:\GuardianOS\GuardianOS_5rebhmng_wpftmp.csproj]
+    6 Advertencia(s)
+    2 Errores
+
+Tiempo transcurrido 00:00:02.08
