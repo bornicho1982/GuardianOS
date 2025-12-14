@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GuardianOS.Models;
 using GuardianOS.Services;
+using CommunityToolkit.Mvvm.Messaging;
+using GuardianOS.Messages;
 
 namespace GuardianOS.ViewModels;
 
@@ -173,7 +175,9 @@ public partial class DashboardViewModel : ViewModelBase
     {
         if (character == null) return;
         SelectedCharacter = character;
-        // Podríamos notificar al MainViewModel si fuera necesario, o usar un servicio de estado global.
+        
+        // Navegar a la vista de detalles
+        WeakReferenceMessenger.Default.Send(new CharacterSelectedMessage(character));
     }
 
     /// <summary>

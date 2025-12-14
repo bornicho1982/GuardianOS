@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using GuardianOS.Models;
 using GuardianOS.Services;
 using System.Linq; // Necesario para OrderByDescending y FirstOrDefault
+using CommunityToolkit.Mvvm.Messaging;
+using GuardianOS.Messages;
 
 namespace GuardianOS.ViewModels;
 
@@ -15,6 +17,7 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly IBungieApiService _bungieApiService;
     private readonly IAuthService _authService;
+    private readonly IManifestService _manifestService;
     
     #region Observable Properties
     
@@ -79,23 +82,53 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private int _membershipType;
     
-    #endregion
+    /// <summary>
+    /// Indica si se está descargando el manifiesto de Destiny 2.
+    /// </summary>
+    [ObservableProperty]
+    private bool _isDownloadingManifest;
     
     /// <summary>
-    /// Constructor con inyección de dependencias.
+    /// Progreso de la descarga del manifiesto (0-100).
     /// </summary>
-    /// <param name="authService">Servicio de autenticación OAuth.</param>
-    public MainViewModel(IAuthService authService)
+    [ObservableProperty]
+    private double _downloadProgress;
+
+     /// <summary>
+    /// Rango de Guardián (Ej. 11).
+    /// </summary>
+    [ObservableProperty]
+    private int _guardianRank = 11; // Hardcodeado por ahora para demo visual
+
+    /// <summary>
+    /// Nivel de pase de temporada (Ej. 50).
+    /// </summary>
+    [ObservableProperty]
+    private int _seasonRank = 50; // Hardcodeado por ahora para demo visual
+    
+    #endregion
+    
+    public MainViewModel(IAuthService authService, IManifestService manifestService)
     {
-        // Crear BungieApiService directamente
+        // Crear BungieApiService directamente (podríamos inyectarlo también)
         _bungieApiService = new BungieApiService();
         _authService = authService;
+        _manifestService = manifestService;
         
         Title = "GuardianOS";
+// ...
         StatusMessage = "Listo";
         
         // Suscribirse a cambios de estado de autenticación
         _authService.AuthenticationStateChanged += OnAuthenticationStateChanged;
+
+        // Registrar mensajes de navegación
+        WeakReferenceMessenger.Default.Register<CharacterSelectedMessage>(this, (r, m) =>
+        {
+            CurrentViewModel = new CharacterDetailViewModel(m.Value);
+            CurrentModuleTitle = "Equipamiento";
+            SelectedNavigationIndex = -1; // Deseleccionar menú lateral
+        });
     }
     
     /// <summary>
@@ -296,6 +329,12 @@ public partial class MainViewModel : ViewModelBase
         
         try
         {
+            // Inicializar Manifiesto (descarga si es necesario)
+            StatusMessage = "Verificando base de datos de Destiny 2...";
+            IsDownloadingManifest = true; // Activar spinner
+            await _manifestService.InitializeAsync();
+            IsDownloadingManifest = false; // Desactivar spinner
+            
             StatusMessage = "Verificando sesión anterior...";
             var sessionRestored = await _authService.TryRestoreSessionAsync();
             

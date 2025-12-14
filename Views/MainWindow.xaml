@@ -24,20 +24,25 @@
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <converters:StringToBrushConverter x:Key="StringToBrushConverter"/>
         <converters:ToUpperConverter x:Key="ToUpperConverter"/>
+        <converters:IndexToBoolConverter x:Key="IndexToBoolConverter"/>
         
         <!-- Styles -->
-        <Style x:Key="NavButtonStyle" TargetType="Button">
+        <Style x:Key="NavButtonStyle" TargetType="RadioButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#AAAAAA"/>
             <Setter Property="Height" Value="48"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Padding" Value="16,0"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="4,0,0,0"/> <!-- Borde izquierdo para selección -->
+            <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Margin" Value="0,0,0,4"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
                             <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                         </Border>
                     </ControlTemplate>
@@ -47,6 +52,11 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#1A1A1A"/>
                     <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Foreground" Value="#FFD700"/>
+                    <Setter Property="Background" Value="#1F1F1F"/>
+                    <Setter Property="BorderBrush" Value="#FFD700"/> <!-- Línea dorada a la izquierda -->
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -127,30 +137,32 @@
 
                 <!-- Menú de Navegación -->
                 <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="12,0">
+                    <StackPanel Margin="12,0,12,24">
                         
                         <!-- SECCIÓN GESTIÓN -->
                         <TextBlock Text="GESTIÓN" 
-                                   FontSize="10" 
-                                   Foreground="#444444" 
-                                   Margin="12,16,0,8" 
+                                   FontSize="11" 
+                                   Foreground="#666666" 
+                                   Margin="12,16,0,12" 
                                    FontWeight="Bold"/>
 
                         <!-- Botón Inventario -->
-                        <Button Command="{Binding NavigateToInventoryCommand}"
-                                Style="{StaticResource NavButtonStyle}">
+                        <RadioButton Command="{Binding NavigateToInventoryCommand}"
+                                     Style="{StaticResource NavButtonStyle}"
+                                     IsChecked="{Binding SelectedNavigationIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=0}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Backpack" Width="20" Height="20" Margin="0,0,16,0"/>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Inventario" FontWeight="Medium"/>
-                                    <TextBlock Text="Gestión de ítems" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
+                                    <TextBlock Text="Inventario" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Gestión de items" FontSize="10" Foreground="#888888"/>
                                 </StackPanel>
                             </StackPanel>
-                        </Button>
+                        </RadioButton>
 
                         <!-- Botón Armas -->
-                        <Button Command="{Binding NavigateToWeaponsCommand}"
-                                Style="{StaticResource NavButtonStyle}">
+                        <RadioButton Command="{Binding NavigateToWeaponsCommand}"
+                                     Style="{StaticResource NavButtonStyle}"
+                                     IsChecked="{Binding SelectedNavigationIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=4}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Pistol" Width="20" Height="20" Margin="0,0,16,0"/>
                                 <StackPanel VerticalAlignment="Center">
@@ -158,18 +170,22 @@
                                     <TextBlock Text="God Rolls y Perks" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
-                        </Button>
+                        </RadioButton>
+
+                        <!-- Separador -->
+                        <Border Height="1" Background="#262626" Margin="8,16,8,8"/>
 
                         <!-- SECCIÓN HERRAMIENTAS -->
                         <TextBlock Text="HERRAMIENTAS" 
-                                   FontSize="10" 
-                                   Foreground="#444444" 
-                                   Margin="12,24,0,8" 
+                                   FontSize="11" 
+                                   Foreground="#666666" 
+                                   Margin="12,8,0,12" 
                                    FontWeight="Bold"/>
 
                         <!-- Botón Builds -->
-                        <Button Command="{Binding NavigateToBuildGeneratorCommand}"
-                                Style="{StaticResource NavButtonStyle}">
+                        <RadioButton Command="{Binding NavigateToBuildGeneratorCommand}"
+                                     Style="{StaticResource NavButtonStyle}"
+                                     IsChecked="{Binding SelectedNavigationIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=2}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="AutoFix" Width="20" Height="20" Margin="0,0,16,0"/>
                                 <StackPanel VerticalAlignment="Center">
@@ -182,11 +198,12 @@
                                     <TextBlock Text="Optimización de armadura" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
-                        </Button>
+                        </RadioButton>
 
                         <!-- Botón Mapas -->
-                        <Button Command="{Binding NavigateToMapsCommand}"
-                                Style="{StaticResource NavButtonStyle}">
+                        <RadioButton Command="{Binding NavigateToMapsCommand}"
+                                     Style="{StaticResource NavButtonStyle}"
+                                     IsChecked="{Binding SelectedNavigationIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=1}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Map" Width="20" Height="20" Margin="0,0,16,0"/>
                                 <StackPanel VerticalAlignment="Center">
@@ -194,11 +211,12 @@
                                     <TextBlock Text="Checklists interactivos" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
-                        </Button>
+                        </RadioButton>
 
                         <!-- Botón Eventos -->
-                        <Button Command="{Binding NavigateToEventsCommand}"
-                                Style="{StaticResource NavButtonStyle}">
+                        <RadioButton Command="{Binding NavigateToEventsCommand}"
+                                     Style="{StaticResource NavButtonStyle}"
+                                     IsChecked="{Binding SelectedNavigationIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=3}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="CalendarClock" Width="20" Height="20" Margin="0,0,16,0"/>
                                 <StackPanel VerticalAlignment="Center">
@@ -206,7 +224,7 @@
                                     <TextBlock Text="Rotaciones semanales" FontSize="10" Foreground="#666666" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </StackPanel>
-                        </Button>
+                        </RadioButton>
                     </StackPanel>
                 </ScrollViewer>
 
@@ -233,11 +251,15 @@
                                        FontWeight="Bold" 
                                        Foreground="White"
                                        TextTrimming="CharacterEllipsis"/>
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse Width="6" Height="6" Fill="{Binding IsUserAuthenticated, Converter={StaticResource BoolToColorConverter}}" Margin="0,1,6,0"/>
-                                <TextBlock Text="{Binding IsUserAuthenticated, Converter={StaticResource BoolToApiStatusConverter}}" 
-                                           FontSize="10" 
-                                           Foreground="#888888"/>
+                            
+                            <!-- Rango de Guardián -->
+                            <Grid Margin="0,4,0,0">
+                                <ProgressBar Value="{Binding GuardianRank}" Maximum="11" Height="2" Background="#333333" Foreground="#F5DC56" BorderThickness="0"/>
+                            </Grid>
+                            
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="Rango" FontSize="9" Foreground="#888888" Margin="0,0,4,0"/>
+                                <TextBlock Text="{Binding GuardianRank}" FontSize="9" FontWeight="Bold" Foreground="#F5DC56"/>
                             </StackPanel>
                         </StackPanel>
                         
@@ -288,23 +310,84 @@
                 <!-- Indicador de estado de API - ENHANCED ALERT STYLE -->
                 <Border Grid.Column="2" 
                         Background="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}" 
-                        Opacity="0.2"
+                        Opacity="0.1"
                         CornerRadius="4"
-                        Width="140"
+                        Width="160"
                         Height="28">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                             <Style.Triggers>
+                                 <DataTrigger Binding="{Binding IsDownloadingManifest}" Value="True">
+                                     <Setter Property="Background" Value="#F5DC56"/>
+                                     <Setter Property="Opacity" Value="0.2"/>
+                                 </DataTrigger>
+                             </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
                 <Border Grid.Column="2" 
                         BorderBrush="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}" 
                         BorderThickness="1"
                         CornerRadius="4"
-                        Width="140"
+                        Width="160"
                         Height="28">
+                     <Border.Style>
+                        <Style TargetType="Border">
+                             <Style.Triggers>
+                                 <DataTrigger Binding="{Binding IsDownloadingManifest}" Value="True">
+                                     <Setter Property="BorderBrush" Value="#F5DC56"/>
+                                 </DataTrigger>
+                             </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Ellipse Width="6" Height="6" Fill="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}" Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding IsApiAvailable, Converter={StaticResource BoolToApiStatusConverter}}" 
-                                   FontSize="10" 
-                                   FontWeight="SemiBold"
-                                   Foreground="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}"/>
+                        <!-- Botito / Spinner -->
+                        <Grid Margin="0,0,8,0">
+                             <Ellipse Width="6" Height="6" Fill="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}">
+                                 <Ellipse.Style>
+                                     <Style TargetType="Ellipse">
+                                         <Style.Triggers>
+                                             <DataTrigger Binding="{Binding IsDownloadingManifest}" Value="True">
+                                                 <Setter Property="Fill" Value="#F5DC56"/>
+                                                 <Setter Property="Visibility" Value="Collapsed"/> <!-- Ocultar punto estático -->
+                                             </DataTrigger>
+                                         </Style.Triggers>
+                                     </Style>
+                                 </Ellipse.Style>
+                             </Ellipse>
+                             
+                             <!-- Spinner real -->
+                             <materialDesign:PackIcon Kind="Loading" Width="10" Height="10" Foreground="#F5DC56" Visibility="{Binding IsDownloadingManifest, Converter={StaticResource BoolToVisibility}}">
+                                 <materialDesign:PackIcon.RenderTransform>
+                                     <RotateTransform CenterX="5" CenterY="5"/>
+                                 </materialDesign:PackIcon.RenderTransform>
+                                 <materialDesign:PackIcon.Triggers>
+                                     <EventTrigger RoutedEvent="Loaded">
+                                         <BeginStoryboard>
+                                             <Storyboard>
+                                                 <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever"/>
+                                             </Storyboard>
+                                         </BeginStoryboard>
+                                     </EventTrigger>
+                                 </materialDesign:PackIcon.Triggers>
+                             </materialDesign:PackIcon>
+                        </Grid>
+
+                        <TextBlock FontSize="10" FontWeight="SemiBold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{Binding IsApiAvailable, Converter={StaticResource BoolToApiStatusConverter}}"/>
+                                    <Setter Property="Foreground" Value="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDownloadingManifest}" Value="True">
+                                            <Setter Property="Text" Value="DESCARGANDO DB..."/>
+                                            <Setter Property="Foreground" Value="#F5DC56"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -319,6 +402,9 @@
                 <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type viewModels:DashboardViewModel}">
                         <views:DashboardView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewModels:CharacterDetailViewModel}">
+                        <views:CharacterDetailView />
                     </DataTemplate>
                     <!-- Aquí irán otros DataTemplates (Inventory, Maps, etc) -->
                 </ContentControl.Resources>

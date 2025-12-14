@@ -33,12 +33,38 @@ public partial class App : Application
     /// </summary>
     public App()
     {
+        // Configurar manejo global de excepciones
+        this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
         // Configurar servicios
         var services = new ServiceCollection();
         ConfigureServices(services);
         
         _serviceProvider = services.BuildServiceProvider();
         Services = _serviceProvider;
+    }
+
+    private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        LogCrash(e.Exception);
+        e.Handled = true; // Intentar evitar el cierre total si es posible, o al menos mostrar el error
+        MessageBox.Show($"Error inesperado: {e.Exception.Message}\nVer crash.log para más detalles.");
+    }
+
+    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        if (e.ExceptionObject is Exception ex)
+        {
+            LogCrash(ex);
+            MessageBox.Show($"Error fatal (Dominio): {ex.Message}\nVer crash.log para más detalles.");
+        }
+    }
+
+    private void LogCrash(Exception ex)
+    {
+        var error = $"[{DateTime.Now}] CRASH: {ex.Message}\nStack Trace: {ex.StackTrace}\nInner Exception: {ex.InnerException?.Message}\n--------------------------\n";
+        System.IO.File.AppendAllText("crash.log", error);
     }
     
     /// <summary>
@@ -57,6 +83,10 @@ public partial class App : Application
         
         // TokenStorage - Singleton porque maneja estado persistente
         services.AddSingleton<TokenStorageService>();
+
+        // Manifest Services
+        services.AddSingleton<IManifestService, ManifestService>();
+        services.AddSingleton<IManifestRepository, ManifestRepository>();
         
         // AuthService - Singleton para mantener estado de autenticación
         services.AddSingleton<IAuthService>(sp =>
