@@ -45,5 +45,9 @@
     <!-- ASP.NET Core para servidor HTTPS local (Kestrel) -->
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Assets\**" />
+  </ItemGroup>
 
 </Project>

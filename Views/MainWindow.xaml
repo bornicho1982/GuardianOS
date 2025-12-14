@@ -741,8 +741,8 @@
                                                                                          FallbackValue="CAZADOR"/>
                                                                             </TextBlock.Text>
                                                                         </TextBlock>
-                                                                        <TextBlock Text="{Binding RaceName}"
-                                                                                   FontSize="12" Foreground="#AAAAAA" Margin="0,2,0,0"/>
+                                                                        <TextBlock Text="{Binding RaceName, Converter={StaticResource ToUpperConverter}}"
+                                                                                   FontSize="11" Foreground="White" Opacity="0.7" Margin="0,2,0,0"/>
                                                                     </StackPanel>
                                                                     
                                                                     <!-- Nivel de Luz -->
@@ -799,12 +799,10 @@
                                     <Border Width="200" Height="100" Margin="8" CornerRadius="6"
                                             BorderBrush="#333333" BorderThickness="1">
                                         <Border.Background>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                <GradientStop Color="#1A1A2A" Offset="0"/>
-                                                <GradientStop Color="#151520" Offset="1"/>
-                                            </LinearGradientBrush>
+                                            <ImageBrush ImageSource="/Assets/nightfall_bg.png" Opacity="0.3" Stretch="UniformToFill"/>
                                         </Border.Background>
                                         <Grid>
+                                            <Border Background="#000000" Opacity="0.4" CornerRadius="5"/>
                                             <StackPanel Margin="12">
                                                 <StackPanel Orientation="Horizontal">
                                                     <Border Width="24" Height="24" Background="#3B82F6" CornerRadius="4" Margin="0,0,8,0">
@@ -817,7 +815,7 @@
                                                 <TextBlock Text="The Disgraced" FontSize="14" FontWeight="Medium" 
                                                            Foreground="#FFFFFF" Margin="0,8,0,0"/>
                                                 <TextBlock Text="Grandmaster disponible" FontSize="10" 
-                                                           Foreground="#666666" Margin="0,2,0,0"/>
+                                                           Foreground="#CCCCCC" Margin="0,2,0,0"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
@@ -826,12 +824,10 @@
                                     <Border Width="200" Height="100" Margin="8" CornerRadius="6"
                                             BorderBrush="#333333" BorderThickness="1">
                                         <Border.Background>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                <GradientStop Color="#2A1A1A" Offset="0"/>
-                                                <GradientStop Color="#201515" Offset="1"/>
-                                            </LinearGradientBrush>
+                                            <ImageBrush ImageSource="/Assets/raid_bg.png" Opacity="0.3" Stretch="UniformToFill"/>
                                         </Border.Background>
                                         <Grid>
+                                            <Border Background="#000000" Opacity="0.4" CornerRadius="5"/>
                                             <StackPanel Margin="12">
                                                 <StackPanel Orientation="Horizontal">
                                                     <Border Width="24" Height="24" Background="#F59E0B" CornerRadius="4" Margin="0,0,8,0">
@@ -844,7 +840,7 @@
                                                 <TextBlock Text="Last Wish" FontSize="14" FontWeight="Medium" 
                                                            Foreground="#FFFFFF" Margin="0,8,0,0"/>
                                                 <TextBlock Text="Farmeable esta semana" FontSize="10" 
-                                                           Foreground="#666666" Margin="0,2,0,0"/>
+                                                           Foreground="#CCCCCC" Margin="0,2,0,0"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
@@ -853,12 +849,10 @@
                                     <Border Width="200" Height="100" Margin="8" CornerRadius="6"
                                             BorderBrush="#333333" BorderThickness="1">
                                         <Border.Background>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                <GradientStop Color="#1A2A1A" Offset="0"/>
-                                                <GradientStop Color="#152015" Offset="1"/>
-                                            </LinearGradientBrush>
+                                            <ImageBrush ImageSource="/Assets/dungeon_bg.png" Opacity="0.3" Stretch="UniformToFill"/>
                                         </Border.Background>
                                         <Grid>
+                                            <Border Background="#000000" Opacity="0.4" CornerRadius="5"/>
                                             <StackPanel Margin="12">
                                                 <StackPanel Orientation="Horizontal">
                                                     <Border Width="24" Height="24" Background="#10B981" CornerRadius="4" Margin="0,0,8,0">
@@ -871,7 +865,7 @@
                                                 <TextBlock Text="Warlord's Ruin" FontSize="14" FontWeight="Medium" 
                                                            Foreground="#FFFFFF" Margin="0,8,0,0"/>
                                                 <TextBlock Text="Pinnacle activo" FontSize="10" 
-                                                           Foreground="#666666" Margin="0,2,0,0"/>
+                                                           Foreground="#CCCCCC" Margin="0,2,0,0"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>

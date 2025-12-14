@@ -490,6 +490,7 @@ public partial class MainViewModel : ViewModelBase
             
             if (sessionRestored)
             {
+                IsApiAvailable = true;
                 StatusMessage = "Sesión restaurada. ¡Bienvenido de nuevo, Guardián!";
                 return;
             }
