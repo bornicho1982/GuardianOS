@@ -34,6 +34,42 @@
                        Foreground="#4A4A4A"
                        HorizontalAlignment="Center"
                        Margin="0,24,0,8"/>
+
+            <!-- CURRENCY BAR - Moved from MainWindow -->
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center"
+                        Margin="0,16,0,16">
+                
+                <!-- Glimmer -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                    <Border Width="20" Height="20" Background="#3B9BD9" CornerRadius="2" Margin="0,0,6,0">
+                        <TextBlock Text="G" FontWeight="Bold" FontSize="12" 
+                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding Glimmer, StringFormat='{}{0:N0}'}" 
+                               FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Bright Dust -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                    <Border Width="20" Height="20" Background="#5BA3D9" CornerRadius="2" Margin="0,0,6,0">
+                        <TextBlock Text="✧" FontWeight="Bold" FontSize="12" 
+                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding BrightDust, StringFormat='{}{0:N0}'}" 
+                               FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Enhancement Prisms -->
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="20" Height="20" Background="#D9A94B" CornerRadius="2" Margin="0,0,6,0">
+                        <TextBlock Text="⬡" FontWeight="Bold" FontSize="11" 
+                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding EnhancementCores, StringFormat='{}{0:N0}'}" 
+                               FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
             <TextBlock Text="Selecciona un módulo del menú lateral para comenzar"
                        FontSize="14"
                        Foreground="#3A3A3A"

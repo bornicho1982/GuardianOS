@@ -283,42 +283,7 @@
 
                 <!-- CURRENCIES - En el Header -->
                 <!-- SOLO VISIBLES CUANDO ESTÁ AUTENTICADO -->
-                <StackPanel Grid.Column="1" 
-                            Orientation="Horizontal" 
-                            VerticalAlignment="Center" 
-                            Margin="0,0,24,0"
-                            Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
-                    
-                    <!-- Glimmer -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
-                        <Border Width="20" Height="20" Background="#3B9BD9" CornerRadius="2" Margin="0,0,6,0">
-                            <TextBlock Text="G" FontWeight="Bold" FontSize="12" 
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="{Binding CurrentViewModel.Glimmer, StringFormat='{}{0:N0}'}" 
-                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <!-- Bright Dust -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
-                        <Border Width="20" Height="20" Background="#5BA3D9" CornerRadius="2" Margin="0,0,6,0">
-                            <TextBlock Text="✧" FontWeight="Bold" FontSize="12" 
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="{Binding CurrentViewModel.BrightDust, StringFormat='{}{0:N0}'}" 
-                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <!-- Enhancement Prisms -->
-                    <StackPanel Orientation="Horizontal">
-                        <Border Width="20" Height="20" Background="#D9A94B" CornerRadius="2" Margin="0,0,6,0">
-                            <TextBlock Text="⬡" FontWeight="Bold" FontSize="11" 
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="{Binding CurrentViewModel.EnhancementCores, StringFormat='{}{0:N0}'}" 
-                                   FontSize="13" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </StackPanel>
+                <!-- CURRENCIES REMOVED - MOVED TO DASHBOARD -->
 
                 <!-- Indicador de estado de API - ENHANCED ALERT STYLE -->
                 <Border Grid.Column="2" 
