@@ -129,11 +129,22 @@ public partial class MainViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Register<NavigateToDashboardMessage>(this, (r, m) => NavigateToHome());
     }
     
-    private void OnCharacterSelected(DestinyCharacter character)
+    private async void OnCharacterSelected(DestinyCharacter character)
     {
-        CurrentViewModel = new CharacterDetailViewModel(character);
+        var detailVm = new CharacterDetailViewModel(
+            character,
+            _bungieApiService,
+            _authService,
+            _manifestRepository,
+            MembershipId ?? "",
+            MembershipType);
+        
+        CurrentViewModel = detailVm;
         CurrentModuleTitle = "Equipamiento de Guardián";
-        SelectedNavigationIndex = -1; // Deseleccionar menú lateral
+        SelectedNavigationIndex = -1;
+        
+        // Cargar equipamiento
+        await detailVm.InitializeAsync();
     }
     
     /// <summary>

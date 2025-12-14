@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using GuardianOS.Messages;
 using GuardianOS.Models;
+using GuardianOS.Services;
 
 namespace GuardianOS.ViewModels;
 
@@ -11,12 +13,85 @@ namespace GuardianOS.ViewModels;
 /// </summary>
 public partial class CharacterDetailViewModel : ViewModelBase
 {
+    private readonly IBungieApiService _bungieApiService;
+    private readonly IAuthService _authService;
+    private readonly IManifestRepository _manifestRepository;
+    private readonly string _membershipId;
+    private readonly int _membershipType;
+
+    // Bucket Hashes de Destiny 2
+    private const long BUCKET_KINETIC = 1498876634;
+    private const long BUCKET_ENERGY = 2465295065;
+    private const long BUCKET_POWER = 953998645;
+    private const long BUCKET_HELMET = 3448274439;
+    private const long BUCKET_GAUNTLETS = 3551918588;
+    private const long BUCKET_CHEST = 14239492;
+    private const long BUCKET_LEGS = 20886954;
+    private const long BUCKET_CLASS_ITEM = 1585787867;
+
+    #region Observable Properties
+
     [ObservableProperty]
     private DestinyCharacter _character;
 
+    [ObservableProperty]
+    private bool _isLoadingEquipment;
+
+    // Armas
+    [ObservableProperty]
+    private InventoryItem? _kineticWeapon;
+
+    [ObservableProperty]
+    private InventoryItem? _energyWeapon;
+
+    [ObservableProperty]
+    private InventoryItem? _powerWeapon;
+
+    // Armadura
+    [ObservableProperty]
+    private InventoryItem? _helmet;
+
+    [ObservableProperty]
+    private InventoryItem? _gauntlets;
+
+    [ObservableProperty]
+    private InventoryItem? _chestArmor;
+
+    [ObservableProperty]
+    private InventoryItem? _legArmor;
+
+    [ObservableProperty]
+    private InventoryItem? _classItem;
+
+    #endregion
+
+    public CharacterDetailViewModel(
+        DestinyCharacter character,
+        IBungieApiService bungieApiService,
+        IAuthService authService,
+        IManifestRepository manifestRepository,
+        string membershipId,
+        int membershipType)
+    {
+        Character = character;
+        _bungieApiService = bungieApiService;
+        _authService = authService;
+        _manifestRepository = manifestRepository;
+        _membershipId = membershipId;
+        _membershipType = membershipType;
+    }
+
+    // Constructor simple para compatibilidad temporal (sin carga de datos)
     public CharacterDetailViewModel(DestinyCharacter character)
     {
         Character = character;
+        _bungieApiService = new BungieApiService();
+        _authService = App.Services?.GetService(typeof(IAuthService)) as IAuthService 
+                       ?? throw new InvalidOperationException("AuthService not available");
+        _manifestRepository = App.Services?.GetService(typeof(IManifestRepository)) as IManifestRepository
+                              ?? throw new InvalidOperationException("ManifestRepository not available");
+        _membershipId = character.CharacterId; // Fallback, idealmente pasar el correcto
+        _membershipType = 3; // Steam por defecto
     }
 
     [RelayCommand]
@@ -25,9 +100,131 @@ public partial class CharacterDetailViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new NavigateToDashboardMessage());
     }
 
-    public override Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        // Aquí cargaremos el inventario más adelante
-        return Task.CompletedTask;
+        await LoadEquipmentAsync();
+    }
+
+    private async Task LoadEquipmentAsync()
+    {
+        try
+        {
+            IsLoadingEquipment = true;
+            Debug.WriteLine($"[CharacterDetail] Loading equipment for character {Character.CharacterId}");
+
+            var token = await _authService.GetValidAccessTokenAsync();
+            if (string.IsNullOrEmpty(token))
+            {
+                Debug.WriteLine("[CharacterDetail] No valid token");
+                return;
+            }
+
+            // Solicitar componentes 205 (CharacterEquipment) y 300 (ItemInstances)
+            var components = new[] { 205, 300 };
+            var profileResponse = await _bungieApiService.GetProfileAsync(_membershipType, _membershipId, token, components);
+
+            if (profileResponse?.CharacterEquipment?.Data == null)
+            {
+                Debug.WriteLine("[CharacterDetail] No equipment data in response");
+                return;
+            }
+
+            // Buscar equipo del personaje actual
+            if (!profileResponse.CharacterEquipment.Data.TryGetValue(Character.CharacterId, out var equipmentData))
+            {
+                Debug.WriteLine($"[CharacterDetail] Character {Character.CharacterId} not found in equipment data");
+                return;
+            }
+
+            var itemInstances = profileResponse.ItemComponents?.Instances?.Data;
+
+            // Procesar cada ítem equipado
+            foreach (var item in equipmentData.Items ?? Enumerable.Empty<EquippedItem>())
+            {
+                var invItem = await CreateInventoryItemAsync(item, itemInstances);
+                if (invItem == null) continue;
+
+                // Asignar al slot correcto según BucketHash
+                switch (item.BucketHash)
+                {
+                    case BUCKET_KINETIC:
+                        KineticWeapon = invItem;
+                        break;
+                    case BUCKET_ENERGY:
+                        EnergyWeapon = invItem;
+                        break;
+                    case BUCKET_POWER:
+                        PowerWeapon = invItem;
+                        break;
+                    case BUCKET_HELMET:
+                        Helmet = invItem;
+                        break;
+                    case BUCKET_GAUNTLETS:
+                        Gauntlets = invItem;
+                        break;
+                    case BUCKET_CHEST:
+                        ChestArmor = invItem;
+                        break;
+                    case BUCKET_LEGS:
+                        LegArmor = invItem;
+                        break;
+                    case BUCKET_CLASS_ITEM:
+                        ClassItem = invItem;
+                        break;
+                }
+            }
+
+            Debug.WriteLine($"[CharacterDetail] Equipment loaded: K={KineticWeapon?.Name}, E={EnergyWeapon?.Name}, P={PowerWeapon?.Name}");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[CharacterDetail] Error loading equipment: {ex.Message}");
+        }
+        finally
+        {
+            IsLoadingEquipment = false;
+        }
+    }
+
+    private async Task<InventoryItem?> CreateInventoryItemAsync(
+        EquippedItem item, 
+        Dictionary<string, ItemInstanceData>? instances)
+    {
+        var invItem = new InventoryItem
+        {
+            ItemHash = item.ItemHash,
+            ItemInstanceId = long.TryParse(item.ItemInstanceId, out var id) ? id : null,
+            BucketHash = item.BucketHash,
+            IsEquipped = true,
+            Name = "Cargando...",
+            Icon = null // Usará fallback en IconUrl
+        };
+
+        // Intentar obtener definición del Manifest
+        try
+        {
+            var def = await _manifestRepository.GetItemDefinitionAsync((uint)item.ItemHash);
+            if (def != null)
+            {
+                invItem.Name = def.Name;
+                invItem.Icon = def.Icon;
+                invItem.TierType = def.Inventory.TierTypeName;
+                invItem.ItemTypeDisplayName = def.ItemTypeDisplayName;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[CharacterDetail] Error getting item definition for {item.ItemHash}: {ex.Message}");
+        }
+
+        // Obtener nivel de luz de ItemInstances
+        if (item.ItemInstanceId != null && instances != null &&
+            instances.TryGetValue(item.ItemInstanceId, out var instanceData))
+        {
+            invItem.PrimaryStatValue = instanceData.PrimaryStat?.Value ?? 0;
+            invItem.DamageType = instanceData.DamageType;
+        }
+
+        return invItem;
     }
 }

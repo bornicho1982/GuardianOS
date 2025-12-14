@@ -5,28 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GuardianOS.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:GuardianOS.Core.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1200">
 
     <UserControl.Resources>
+        <!-- Converters -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
+
         <!-- Estilo para Slots de Equipo -->
         <Style x:Key="EquipmentSlotStyle" TargetType="Border">
-            <Setter Property="Width" Value="80"/>
-            <Setter Property="Height" Value="80"/>
-            <Setter Property="Background" Value="#CC000000"/>
+            <Setter Property="Width" Value="90"/>
+            <Setter Property="Height" Value="90"/>
+            <Setter Property="Background" Value="#33FFFFFF"/>
             <Setter Property="BorderBrush" Value="#444444"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="Margin" Value="0,0,0,12"/>
-        </Style>
-
-        <!-- Estilo para Iconos Placeholder -->
-        <Style x:Key="SlotIconStyle" TargetType="materialDesign:PackIcon">
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Foreground" Value="#666666"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
 
         <!-- Estilo para Barra de Stats -->
@@ -40,19 +36,19 @@
         </Style>
     </UserControl.Resources>
 
-    <!-- Contenedor Principal con Fondo de Emblema -->
+    <!-- Contenedor Principal -->
     <Grid>
-        <!-- Fondo con Emblema (Blur + Opacidad) -->
+        <!-- Fondo con Emblema -->
         <Grid.Background>
             <ImageBrush ImageSource="{Binding Character.EmblemBackgroundUrl}" 
                         Stretch="UniformToFill" 
                         Opacity="0.15"/>
         </Grid.Background>
 
-        <!-- Overlay Oscuro para Legibilidad -->
+        <!-- Overlay Oscuro -->
         <Rectangle Fill="#141414" Opacity="0.85"/>
 
-        <!-- Botón Cerrar (Esquina Superior Derecha) -->
+        <!-- Botón Cerrar -->
         <Button Command="{Binding GoBackCommand}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
@@ -63,217 +59,210 @@
             <materialDesign:PackIcon Kind="Close" Width="28" Height="28" Foreground="White"/>
         </Button>
 
-        <!-- Layout Principal de 3 Columnas -->
+        <!-- Layout 3 Columnas -->
         <Grid Margin="40,60,40,40">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="320"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="320"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ========== COLUMNA IZQUIERDA: ARMAS ========== -->
+            <!-- ARMAS -->
             <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="ARMAS" 
-                           FontSize="12" 
-                           FontWeight="Bold" 
-                           Foreground="#888888" 
-                           Margin="0,0,0,16"
-                           HorizontalAlignment="Center"/>
+                <TextBlock Text="ARMAS" FontSize="12" FontWeight="Bold" Foreground="#888888" 
+                           Margin="0,0,0,16" HorizontalAlignment="Center"/>
 
-                <!-- Slot: Cinética -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Arma Cinética">
+                <!-- Cinética -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding KineticWeapon.Name, FallbackValue='Cinética'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="Pistol" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="CINÉTICA" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding KineticWeapon.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding KineticWeapon.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="Pistol" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding KineticWeapon, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
 
-                <!-- Slot: Energética -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Arma Energética">
+                <!-- Energética -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding EnergyWeapon.Name, FallbackValue='Energética'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="Flash" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="ENERGÉTICA" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding EnergyWeapon.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding EnergyWeapon.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="Flash" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding EnergyWeapon, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
 
-                <!-- Slot: Destructiva -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Arma Destructiva">
+                <!-- Destructiva -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding PowerWeapon.Name, FallbackValue='Destructiva'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="Sword" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="DESTRUCTIVA" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding PowerWeapon.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding PowerWeapon.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="Sword" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding PowerWeapon, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
             </StackPanel>
 
-            <!-- ========== COLUMNA CENTRAL: INFO + STATS ========== -->
+            <!-- INFO CENTRAL -->
             <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                
-                <!-- Clase del Personaje -->
-                <TextBlock Text="{Binding Character.ClassName}" 
-                           FontSize="42" 
-                           FontWeight="Bold" 
-                           Foreground="White" 
-                           HorizontalAlignment="Center"/>
-
-                <!-- Nivel de Luz -->
+                <TextBlock Text="{Binding Character.ClassName}" FontSize="48" FontWeight="Bold" 
+                           Foreground="White" HorizontalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,32">
-                    <TextBlock Text="{Binding Character.Light}" 
-                               FontSize="28" 
-                               FontWeight="SemiBold" 
-                               Foreground="#FFD700"/>
-                    <TextBlock Text="✦" 
-                               FontSize="24" 
-                               Foreground="#FFD700" 
-                               Margin="6,0,0,0"/>
+                    <TextBlock Text="{Binding Character.Light}" FontSize="32" FontWeight="SemiBold" Foreground="#FFD700"/>
+                    <TextBlock Text="✦" FontSize="28" Foreground="#FFD700" Margin="6,0,0,0"/>
                 </StackPanel>
-
-                <!-- Raza y Género -->
                 <TextBlock HorizontalAlignment="Center" Margin="0,0,0,40">
                     <Run Text="{Binding Character.RaceName, Mode=OneWay}" Foreground="#AAAAAA"/>
                     <Run Text=" · " Foreground="#555555"/>
                     <Run Text="{Binding Character.GenderName, Mode=OneWay}" Foreground="#AAAAAA"/>
                 </TextBlock>
 
-                <!-- Bloque de Estadísticas -->
-                <Border Background="#1A1A1A" CornerRadius="8" Padding="24" Width="280">
+                <!-- Stats -->
+                <Border Background="#1A1A1A" CornerRadius="8" Padding="24" Width="300">
                     <StackPanel>
-                        <TextBlock Text="ESTADÍSTICAS" 
-                                   FontSize="11" 
-                                   FontWeight="Bold" 
-                                   Foreground="#666666" 
-                                   Margin="0,0,0,16"/>
-
-                        <!-- Movilidad -->
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                            </Grid.ColumnDefinitions>
+                        <TextBlock Text="ESTADÍSTICAS" FontSize="11" FontWeight="Bold" Foreground="#666666" Margin="0,0,0,16"/>
+                        <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Movilidad" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="65" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="65" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Mobility, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Mobility, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
-
-                        <!-- Resistencia -->
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Resistencia" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="80" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="80" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Resilience, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Resilience, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
-
-                        <!-- Recuperación -->
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Recuperación" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="55" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="55" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Recovery, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Recovery, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
-
-                        <!-- Disciplina -->
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Disciplina" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="70" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="70" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Discipline, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Discipline, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
-
-                        <!-- Intelecto -->
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Intelecto" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="45" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="45" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Intellect, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Intellect, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
-
-                        <!-- Fuerza -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Fuerza" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="60" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="60" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Strength, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Strength, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
                     </StackPanel>
                 </Border>
             </StackPanel>
 
-            <!-- ========== COLUMNA DERECHA: ARMADURA ========== -->
+            <!-- ARMADURA -->
             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="ARMADURA" 
-                           FontSize="12" 
-                           FontWeight="Bold" 
-                           Foreground="#888888" 
-                           Margin="0,0,0,16"
-                           HorizontalAlignment="Center"/>
+                <TextBlock Text="ARMADURA" FontSize="12" FontWeight="Bold" Foreground="#888888" 
+                           Margin="0,0,0,16" HorizontalAlignment="Center"/>
 
-                <!-- Slot: Casco -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Casco">
+                <!-- Casco -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding Helmet.Name, FallbackValue='Casco'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="HardHat" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="CASCO" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding Helmet.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding Helmet.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="HardHat" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding Helmet, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
 
-                <!-- Slot: Brazos -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Guanteletes">
+                <!-- Guanteletes -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding Gauntlets.Name, FallbackValue='Guanteletes'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="HandBackLeft" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="BRAZOS" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding Gauntlets.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding Gauntlets.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="HandBackLeft" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding Gauntlets, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
 
-                <!-- Slot: Pecho -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Peto">
+                <!-- Peto -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding ChestArmor.Name, FallbackValue='Peto'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="TshirtCrew" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="PECHO" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding ChestArmor.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding ChestArmor.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="TshirtCrew" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding ChestArmor, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
 
-                <!-- Slot: Piernas -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Grebas">
+                <!-- Grebas -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding LegArmor.Name, FallbackValue='Grebas'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="ShoePrint" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="PIERNAS" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding LegArmor.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding LegArmor.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="ShoePrint" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding LegArmor, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
 
-                <!-- Slot: Objeto de Clase -->
-                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="Objeto de Clase">
+                <!-- Objeto de Clase -->
+                <Border Style="{StaticResource EquipmentSlotStyle}" ToolTip="{Binding ClassItem.Name, FallbackValue='Objeto de Clase'}">
                     <Grid>
-                        <materialDesign:PackIcon Kind="BookmarkOutline" Style="{StaticResource SlotIconStyle}"/>
-                        <TextBlock Text="CLASE" FontSize="8" Foreground="#555555" 
-                                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <Image Source="{Binding ClassItem.IconUrl}" Stretch="Uniform" Margin="4"/>
+                        <Border Background="#CC000000" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                CornerRadius="2" Padding="4,2" Margin="2">
+                            <TextBlock Text="{Binding ClassItem.PrimaryStatValue}" FontSize="11" FontWeight="Bold" Foreground="#FFD700"/>
+                        </Border>
+                        <materialDesign:PackIcon Kind="BookmarkOutline" Width="40" Height="40" Foreground="#444444"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding ClassItem, Converter={StaticResource NullToVisibility}, FallbackValue=Visible}"/>
                     </Grid>
                 </Border>
+            </StackPanel>
+        </Grid>
+
+        <!-- Loading Overlay -->
+        <Grid Background="#CC000000" Visibility="{Binding IsLoadingEquipment, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <materialDesign:PackIcon Kind="Loading" Width="48" Height="48" Foreground="#F5DC56">
+                    <materialDesign:PackIcon.RenderTransform>
+                        <RotateTransform CenterX="24" CenterY="24"/>
+                    </materialDesign:PackIcon.RenderTransform>
+                    <materialDesign:PackIcon.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" 
+                                                     From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </materialDesign:PackIcon.Triggers>
+                </materialDesign:PackIcon>
+                <TextBlock Text="Cargando equipamiento..." Foreground="White" Margin="0,16,0,0" HorizontalAlignment="Center"/>
             </StackPanel>
         </Grid>
     </Grid>
