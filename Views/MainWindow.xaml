@@ -181,12 +181,18 @@
                             </StackPanel>
                         </Button>
 
+                        <!-- Separador visual entre secciones -->
+                        <Border Margin="16,20,16,8" 
+                                Height="1" 
+                                Background="#1A1A1A"
+                                CornerRadius="1"/>
+                        
                         <!-- Sección: Herramientas -->
                         <TextBlock Text="HERRAMIENTAS"
                                    FontSize="11"
                                    FontWeight="SemiBold"
                                    Foreground="#555555"
-                                   Margin="16,24,0,8"/>
+                                   Margin="16,8,0,8"/>
 
                         <!-- Constructor de Builds -->
                         <Button Style="{StaticResource NavButtonStyle}"
@@ -256,11 +262,16 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- Información del Usuario (parte inferior) -->
+                <!-- Información del Usuario - PREMIUM STYLE -->
                 <Border Grid.Row="3"
-                        Background="#0A0A0A"
                         Padding="16,12"
                         Visibility="{Binding IsUserAuthenticated, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#0A0A0A" Offset="0"/>
+                            <GradientStop Color="#0D0D0D" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -268,38 +279,54 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Avatar del Guardián -->
-                        <Ellipse Grid.Column="0"
-                                 Width="40" Height="40"
-                                 Fill="#2A2A2A">
-                            <Ellipse.OpacityMask>
-                                <VisualBrush>
-                                    <VisualBrush.Visual>
-                                        <materialDesign:PackIcon Kind="AccountCircle"
-                                                                 Width="40" Height="40"
-                                                                 Foreground="White"/>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Ellipse.OpacityMask>
-                        </Ellipse>
+                        <!-- Avatar del Guardián con borde brillante -->
+                        <Grid Grid.Column="0">
+                            <!-- Borde exterior brillante -->
+                            <Ellipse Width="48" Height="48">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FFD700" Offset="0"/>
+                                        <GradientStop Color="#B8860B" Offset="0.5"/>
+                                        <GradientStop Color="#FFD700" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <!-- Avatar interior -->
+                            <Ellipse Width="42" Height="42" Fill="#1A1A1A">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.5" Color="#FFD700"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <!-- Icono -->
+                            <materialDesign:PackIcon Kind="AccountCircle"
+                                                     Width="32" Height="32"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"
+                                                     Foreground="#888888"/>
+                        </Grid>
 
                         <!-- Nombre del Guardián -->
-                        <StackPanel Grid.Column="1" Margin="12,0">
+                        <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
                             <TextBlock Text="{Binding GuardianName, FallbackValue='Guardián'}"
-                                       FontWeight="Medium"
+                                       FontWeight="SemiBold"
+                                       FontSize="13"
                                        Foreground="#FFFFFF"/>
-                            <TextBlock Text="Conectado"
-                                       FontSize="11"
-                                       Foreground="#27AE60"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <Ellipse Width="6" Height="6" Fill="#27AE60" Margin="0,0,6,0"/>
+                                <TextBlock Text="Conectado"
+                                           FontSize="11"
+                                           Foreground="#27AE60"/>
+                            </StackPanel>
                         </StackPanel>
 
-                        <!-- Botón de Logout -->
+                        <!-- Botón de Logout con hover mejorado -->
                         <Button Grid.Column="2"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 Command="{Binding LogoutCommand}"
                                 ToolTip="Cerrar sesión"
-                                Foreground="#888888">
-                            <materialDesign:PackIcon Kind="Logout"/>
+                                Foreground="#666666"
+                                Width="36" Height="36">
+                            <materialDesign:PackIcon Kind="Logout" Width="20" Height="20"/>
                         </Button>
                     </Grid>
                 </Border>
@@ -307,7 +334,16 @@
         </Border>
 
         <!-- ========== ÁREA DE CONTENIDO PRINCIPAL ========== -->
-        <Grid Grid.Column="1" Background="#121212">
+        <Grid Grid.Column="1">
+            <!-- Fondo base oscuro -->
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0D0D0D" Offset="0"/>
+                    <GradientStop Color="#121216" Offset="0.5"/>
+                    <GradientStop Color="#0A0A0F" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            
             <Grid.RowDefinitions>
                 <!-- Header con título del módulo -->
                 <RowDefinition Height="Auto"/>
@@ -316,11 +352,43 @@
                 <!-- Barra de estado -->
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            
+            <!-- Patrón geométrico sutil (Destiny-style triangles) -->
+            <Canvas Grid.RowSpan="3" IsHitTestVisible="False" Opacity="0.03">
+                <!-- Triángulos decorativos -->
+                <Polygon Points="0,0 100,0 50,80" Fill="#FFD700" Canvas.Left="50" Canvas.Top="100"/>
+                <Polygon Points="0,0 120,0 60,100" Fill="#7D3FFF" Canvas.Left="200" Canvas.Top="50"/>
+                <Polygon Points="0,0 80,0 40,60" Fill="#337CFF" Canvas.Left="400" Canvas.Top="150"/>
+                <Polygon Points="0,0 150,0 75,120" Fill="#E55729" Canvas.Left="600" Canvas.Top="30"/>
+                <Polygon Points="0,0 90,0 45,70" Fill="#3FE069" Canvas.Left="100" Canvas.Top="300"/>
+                <Polygon Points="0,0 110,0 55,85" Fill="#4DDCFF" Canvas.Left="350" Canvas.Top="350"/>
+                <Polygon Points="0,0 70,0 35,55" Fill="#FF40EC" Canvas.Left="550" Canvas.Top="250"/>
+                <Polygon Points="0,0 130,0 65,105" Fill="#FFD700" Canvas.Left="700" Canvas.Top="180"/>
+                <!-- Más triángulos para cubrir -->
+                <Polygon Points="0,0 100,0 50,80" Fill="#7D3FFF" Canvas.Left="800" Canvas.Top="80"/>
+                <Polygon Points="0,0 85,0 42,65" Fill="#337CFF" Canvas.Left="150" Canvas.Top="450"/>
+                <Polygon Points="0,0 95,0 47,75" Fill="#E55729" Canvas.Left="450" Canvas.Top="500"/>
+                <Polygon Points="0,0 75,0 37,60" Fill="#3FE069" Canvas.Left="650" Canvas.Top="400"/>
+            </Canvas>
+            
+            <!-- Líneas diagonales sutiles (como la UI de Destiny) -->
+            <Canvas Grid.RowSpan="3" IsHitTestVisible="False" Opacity="0.015">
+                <Line X1="0" Y1="0" X2="900" Y2="600" Stroke="#FFD700" StrokeThickness="1"/>
+                <Line X1="100" Y1="0" X2="1000" Y2="600" Stroke="#FFD700" StrokeThickness="1"/>
+                <Line X1="200" Y1="0" X2="1100" Y2="600" Stroke="#FFD700" StrokeThickness="1"/>
+                <Line X1="0" Y1="100" X2="800" Y2="700" Stroke="#7D3FFF" StrokeThickness="1"/>
+                <Line X1="0" Y1="200" X2="700" Y2="800" Stroke="#337CFF" StrokeThickness="1"/>
+            </Canvas>
 
-            <!-- Header del Módulo Actual -->
+            <!-- Header del Módulo Actual - PREMIUM STYLE -->
             <Border Grid.Row="0"
-                    Background="#1A1A1A"
                     Padding="24,16">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#1A1A1A" Offset="0"/>
+                        <GradientStop Color="#151518" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -334,17 +402,53 @@
                                Foreground="#FFFFFF"
                                VerticalAlignment="Center"/>
 
-                    <!-- Indicador de estado de API -->
-                    <StackPanel Grid.Column="1" 
-                                Orientation="Horizontal"
-                                VerticalAlignment="Center">
-                        <Ellipse Width="8" Height="8"
-                                 Fill="{Binding IsApiAvailable, Converter={StaticResource BoolToColorConverter}, FallbackValue=#EF5350}"
-                                 Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding IsApiAvailable, Converter={StaticResource BoolToApiStatusConverter}, FallbackValue='API Desconectada'}"
-                                   FontSize="12"
-                                   Foreground="#888888"/>
-                    </StackPanel>
+                    <!-- Indicador de estado de API - ENHANCED ALERT STYLE -->
+                    <Border Grid.Column="1" 
+                            CornerRadius="4"
+                            Padding="12,6"
+                            BorderThickness="1">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="#1A2D1A"/>
+                                <Setter Property="BorderBrush" Value="#2D5A2D"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsApiAvailable}" Value="False">
+                                        <Setter Property="Background" Value="#2D1A1A"/>
+                                        <Setter Property="BorderBrush" Value="#5A2D2D"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="8" Height="8"
+                                     Margin="0,0,8,0">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="#4CAF50"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsApiAvailable}" Value="False">
+                                                <Setter Property="Fill" Value="#EF5350"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock FontSize="12" FontWeight="Medium">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="Sistemas Operativos"/>
+                                        <Setter Property="Foreground" Value="#4CAF50"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsApiAvailable}" Value="False">
+                                                <Setter Property="Text" Value="API Desconectada"/>
+                                                <Setter Property="Foreground" Value="#EF5350"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Border>
 
