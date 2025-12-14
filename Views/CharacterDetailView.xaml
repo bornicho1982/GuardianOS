@@ -135,33 +135,33 @@
                         <TextBlock Text="ESTADÍSTICAS" FontSize="11" FontWeight="Bold" Foreground="#666666" Margin="0,0,0,16"/>
                         <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Movilidad" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Mobility, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Mobility, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Mobility, Mode=OneWay, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Mobility, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
                         <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Resistencia" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Resilience, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Resilience, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Resilience, Mode=OneWay, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Resilience, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
                         <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Recuperación" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Recovery, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Recovery, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Recovery, Mode=OneWay, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Recovery, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
                         <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Disciplina" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Discipline, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Discipline, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Discipline, Mode=OneWay, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Discipline, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
                         <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Intelecto" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Intellect, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Intellect, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Intellect, Mode=OneWay, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Intellect, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
                         <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="100"/><ColumnDefinition Width="*"/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Fuerza" Foreground="#AAAAAA" FontSize="12"/>
-                            <ProgressBar Grid.Column="1" Value="{Binding Character.Stats.Strength, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
-                            <TextBlock Grid.Column="2" Text="{Binding Character.Stats.Strength, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
+                            <ProgressBar Grid.Column="1" Value="{Binding Character.Strength, Mode=OneWay, FallbackValue=0}" Style="{StaticResource StatBarStyle}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Character.Strength, FallbackValue=0}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
                         </Grid>
                     </StackPanel>
                 </Border>

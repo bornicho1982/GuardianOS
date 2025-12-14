@@ -91,6 +91,29 @@ public class DestinyCharacter
     [JsonProperty("baseCharacterLevel")]
     public int BaseCharacterLevel { get; set; }
     
+    /// <summary>
+    /// Estadísticas del personaje (Movilidad, Resistencia, Recuperación, etc.).
+    /// Las claves son los hashes de las stats.
+    /// </summary>
+    [JsonProperty("stats")]
+    public Dictionary<string, int> RawStats { get; set; } = new();
+    
+    // Hashes de estadísticas de Destiny 2
+    private const uint STAT_MOBILITY = 2996146975;
+    private const uint STAT_RESILIENCE = 392767087;
+    private const uint STAT_RECOVERY = 1943323491;
+    private const uint STAT_DISCIPLINE = 1735777505;
+    private const uint STAT_INTELLECT = 144602215;
+    private const uint STAT_STRENGTH = 4244567218;
+
+    // Propiedades de acceso directo a stats
+    public int Mobility => RawStats.TryGetValue(STAT_MOBILITY.ToString(), out var v) ? v : 0;
+    public int Resilience => RawStats.TryGetValue(STAT_RESILIENCE.ToString(), out var v) ? v : 0;
+    public int Recovery => RawStats.TryGetValue(STAT_RECOVERY.ToString(), out var v) ? v : 0;
+    public int Discipline => RawStats.TryGetValue(STAT_DISCIPLINE.ToString(), out var v) ? v : 0;
+    public int Intellect => RawStats.TryGetValue(STAT_INTELLECT.ToString(), out var v) ? v : 0;
+    public int Strength => RawStats.TryGetValue(STAT_STRENGTH.ToString(), out var v) ? v : 0;
+    
     // === Propiedades calculadas ===
     
     /// <summary>
