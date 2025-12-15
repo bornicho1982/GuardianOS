@@ -63,6 +63,22 @@ public partial class CharacterDetailViewModel : ViewModelBase
     [ObservableProperty]
     private InventoryItem? _classItem;
 
+    // WebView2 Properties
+    [ObservableProperty]
+    private bool _isWebViewLoading = true;
+
+    [ObservableProperty]
+    private bool _isWebViewReady = false;
+
+    [ObservableProperty]
+    private bool _useStaticImage = true; // Fallback si WebView falla
+
+    /// <summary>
+    /// URL para el visor 3D de Bungie.net
+    /// </summary>
+    public string CharacterViewerUrl => 
+        $"https://www.bungie.net/7/en/User/Profile/{_membershipType}/{_membershipId}?character={Character.CharacterId}";
+
     #endregion
 
     public CharacterDetailViewModel(
@@ -98,6 +114,24 @@ public partial class CharacterDetailViewModel : ViewModelBase
     private void GoBack()
     {
         WeakReferenceMessenger.Default.Send(new NavigateToDashboardMessage());
+    }
+
+    [RelayCommand]
+    private void OpenBungie3DViewer()
+    {
+        try
+        {
+            var url = $"https://www.bungie.net/7/en/User/Profile/{_membershipType}/{_membershipId}?character={Character.CharacterId}";
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error abriendo visor 3D: {ex.Message}");
+        }
     }
 
     public override async Task InitializeAsync()

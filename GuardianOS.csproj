@@ -24,6 +24,7 @@
     <!-- MVVM Toolkit - Proporciona ObservableObject, RelayCommand, etc. -->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3650.58" />
     
     <!-- JSON Serialization - Para parsear respuestas de la API de Bungie -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -48,7 +49,15 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Resource Include="Assets\**" />
+    <Resource Include="Assets\**" Exclude="Assets\3DViewer\**" />
+  </ItemGroup>
+
+  <!-- Copy 3DViewer files to output for WebView2 access -->
+  <ItemGroup>
+    <None Include="Assets\3DViewer\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assets\3DViewer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -23,6 +23,11 @@ public partial class App : Application
     private ServiceProvider? _serviceProvider;
     
     /// <summary>
+    /// Servidor proxy local para el visor 3D.
+    /// </summary>
+    private LocalProxyServer? _proxyServer;
+    
+    /// <summary>
     /// Expone el proveedor de servicios para acceso global (usar con precaución).
     /// </summary>
     public static ServiceProvider? Services { get; private set; }
@@ -88,6 +93,12 @@ public partial class App : Application
         services.AddSingleton<IManifestService, ManifestService>();
         services.AddSingleton<IManifestRepository, ManifestRepository>();
         
+        // Gear Asset Service for 3D model data
+        services.AddSingleton<GearAssetService>();
+        
+        // Local Proxy Server for 3D viewer
+        services.AddSingleton<LocalProxyServer>();
+        
         // AuthService - Singleton para mantener estado de autenticación
         services.AddSingleton<IAuthService>(sp =>
         {
@@ -112,7 +123,7 @@ public partial class App : Application
     /// Maneja el inicio de la aplicación.
     /// Resuelve y muestra la ventana principal.
     /// </summary>
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         try
         {
@@ -120,6 +131,15 @@ public partial class App : Application
             
             // Log simple para debug
             System.IO.File.WriteAllText("start.log", "Iniciando aplicación...\n");
+            
+            // Start local proxy server for 3D viewer
+            _proxyServer = _serviceProvider?.GetService<LocalProxyServer>();
+            if (_proxyServer != null)
+            {
+                System.IO.File.AppendAllText("start.log", "Iniciando servidor proxy local...\n");
+                await _proxyServer.StartAsync();
+                System.IO.File.AppendAllText("start.log", $"Proxy iniciado en {_proxyServer.BaseUrl}\n");
+            }
             
             // Resolver la ventana principal desde el contenedor
             var mainWindow = _serviceProvider?.GetRequiredService<MainWindow>();
@@ -149,8 +169,14 @@ public partial class App : Application
     /// <summary>
     /// Limpieza al cerrar la aplicación.
     /// </summary>
-    protected override void OnExit(ExitEventArgs e)
+    protected override async void OnExit(ExitEventArgs e)
     {
+        // Stop proxy server
+        if (_proxyServer != null)
+        {
+            await _proxyServer.StopAsync();
+        }
+        
         // Dispose del contenedor de DI
         _serviceProvider?.Dispose();
         
