@@ -35,26 +35,23 @@ public partial class CharacterDetailView : UserControl
             Viewer3D.CoreWebView2.Settings.IsZoomControlEnabled = false;
             
             // Get the path to the 3D viewer HTML
+            // POC: Load D2Foundry directly as requested
+            string d2FoundryUrl = Services.ThreeJsBridge.GetD2FoundryBaseUrl();
+            Debug.WriteLine($"[3DViewer] Loading D2Foundry POC: {d2FoundryUrl}");
+            
+            Viewer3D.CoreWebView2.Navigate(d2FoundryUrl);
+            
+            // Subscribe to navigation completed to handle loading state
+            Viewer3D.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+            
+            _webViewInitialized = true;
+            Debug.WriteLine("[3DViewer] WebView2 initialized successfully");
+
+            /* Local viewer code for future use
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string viewerPath = Path.Combine(basePath, "Assets", "3DViewer", "index.html");
-            
-            Debug.WriteLine($"[3DViewer] Loading from: {viewerPath}");
-            
-            if (File.Exists(viewerPath))
-            {
-                // Navigate to local HTML file
-                Viewer3D.CoreWebView2.Navigate(new Uri(viewerPath).AbsoluteUri);
-                
-                // Subscribe to navigation completed to send data
-                Viewer3D.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-                
-                _webViewInitialized = true;
-                Debug.WriteLine("[3DViewer] WebView2 initialized successfully");
-            }
-            else
-            {
-                Debug.WriteLine($"[3DViewer] ERROR: File not found: {viewerPath}");
-            }
+            if (File.Exists(viewerPath)) { ... }
+            */
         }
         catch (Exception ex)
         {
@@ -67,15 +64,53 @@ public partial class CharacterDetailView : UserControl
         if (!e.IsSuccess)
         {
             Debug.WriteLine($"[3DViewer] Navigation failed: {e.WebErrorStatus}");
+            
+            // Update loading state via ViewModel
+            if (DataContext is CharacterDetailViewModel viewModel)
+            {
+                viewModel.IsWebViewLoading = false;
+                viewModel.UseStaticImage = true;
+            }
             return;
         }
 
         Debug.WriteLine("[3DViewer] Navigation completed, sending guardian data...");
         
-        // Get ViewModel data and send to JavaScript
-        if (DataContext is CharacterDetailViewModel viewModel)
+        // Update loading state
+        if (DataContext is CharacterDetailViewModel vm)
         {
-            SendGuardianDataToViewer(viewModel);
+            vm.IsWebViewLoading = false;
+            vm.IsWebViewReady = true;
+        }
+        
+        // Get ViewModel data and send to JavaScript
+        if (DataContext is CharacterDetailViewModel viewModel2)
+        {
+            SendGuardianDataToViewer(viewModel2);
+        }
+    }
+
+    /// <summary>
+    /// Load D2Foundry.gg as proof of concept (external WebGL renderer)
+    /// </summary>
+    public async Task LoadD2FoundryPOC()
+    {
+        try
+        {
+            if (!_webViewInitialized)
+            {
+                await Viewer3D.EnsureCoreWebView2Async();
+                _webViewInitialized = true;
+            }
+            
+            // Navigate to D2Foundry as POC
+            var foundryUrl = Services.ThreeJsBridge.GetD2FoundryBaseUrl();
+            Debug.WriteLine($"[3DViewer] Loading D2Foundry POC: {foundryUrl}");
+            Viewer3D.CoreWebView2.Navigate(foundryUrl);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[3DViewer] Error loading D2Foundry: {ex.Message}");
         }
     }
 

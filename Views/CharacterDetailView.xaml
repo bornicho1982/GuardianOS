@@ -15,6 +15,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
+        <converters:InvertedBoolToVisibilityConverter x:Key="InverseBoolToVisibility"/>
 
         <!-- Equipment Slot Style -->
         <Style x:Key="EquipmentSlotStyle" TargetType="Border">
@@ -78,10 +79,18 @@
                     <TextBlock Text=" · " Foreground="#444" FontSize="22" VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding Character.RaceName, Mode=OneWay}" Foreground="#888" FontSize="16" VerticalAlignment="Center"/>
                 </StackPanel>
-                <Button Grid.Column="1" Command="{Binding GoBackCommand}" 
-                        Style="{StaticResource MaterialDesignIconButton}" Width="40" Height="40">
-                    <materialDesign:PackIcon Kind="Close" Width="28" Height="28" Foreground="White"/>
-                </Button>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <ToggleButton IsChecked="{Binding Is3DEnabled, Mode=TwoWay}"
+                              Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                              ToolTip="Activar/Desactivar visor 3D"
+                              Width="40" Height="40" Margin="8,0">
+                        <materialDesign:PackIcon Kind="Cube" Width="24" Height="24"/>
+                    </ToggleButton>
+                    <Button Command="{Binding GoBackCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}" Width="40" Height="40">
+                        <materialDesign:PackIcon Kind="Close" Width="28" Height="28" Foreground="White"/>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -98,9 +107,17 @@
                 <!-- Subclass -->
                 <Border Width="65" Height="65" CornerRadius="32" 
                         BorderBrush="#7B2CBF" BorderThickness="3" 
-                        Background="#22000000" Margin="0,0,0,20" HorizontalAlignment="Center">
-                    <materialDesign:PackIcon Kind="Brightness5" Width="32" Height="32" 
-                                             Foreground="#9D4EDD" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        Background="#22000000" Margin="0,0,0,20" HorizontalAlignment="Center"
+                        ToolTip="{Binding Subclass.Name}">
+                    <Grid>
+                        <!-- Show icon if subclass loaded -->
+                        <Image Source="{Binding Subclass.IconUrl}" Width="40" Height="40"
+                               Visibility="{Binding Subclass, Converter={StaticResource NullToVisibility}}"/>
+                        <!-- Fallback icon -->
+                        <materialDesign:PackIcon Kind="Brightness5" Width="32" Height="32" 
+                                                 Foreground="#9D4EDD" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Visibility="{Binding Subclass, Converter={StaticResource NullToVisibility}, ConverterParameter=Inverse}"/>
+                    </Grid>
                 </Border>
                 <Border Height="1" Background="#333" Margin="8,0,8,12"/>
                 
@@ -147,9 +164,36 @@
                 </Grid.RowDefinitions>
 
                 <!-- WebView2 3D Viewer -->
-                <Border CornerRadius="10" ClipToBounds="True" Background="#11FFFFFF">
-                    <wv2:WebView2 x:Name="Viewer3D"
-                                  DefaultBackgroundColor="Transparent"/>
+                <Border CornerRadius="10" ClipToBounds="True" Background="#11FFFFFF"
+                        Visibility="{Binding Is3DEnabled, Converter={StaticResource BoolToVisibility}}">
+                    <Grid>
+                        <wv2:WebView2 x:Name="Viewer3D"
+                                      DefaultBackgroundColor="Transparent"/>
+                        
+                        <!-- Loading Spinner Overlay -->
+                        <Border Background="#DD080810" 
+                                Visibility="{Binding IsWebViewLoading, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True" 
+                                             Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                             Width="48" Height="48" Foreground="#7B2CBF"/>
+                                <TextBlock Text="Cargando visor 3D..." Foreground="#888" 
+                                           Margin="0,12,0,0" HorizontalAlignment="Center" FontSize="12"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+                
+                <!-- Static Image Fallback (when 3D disabled) -->
+                <Border CornerRadius="10" ClipToBounds="True" Background="#22FFFFFF"
+                        Visibility="{Binding Is3DEnabled, Converter={StaticResource InverseBoolToVisibility}}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <materialDesign:PackIcon Kind="AccountBox" Width="120" Height="120" Foreground="#333"/>
+                        <TextBlock Text="Visor 3D Desactivado" Foreground="#666" 
+                                   Margin="0,12,0,0" HorizontalAlignment="Center" FontSize="14"/>
+                        <TextBlock Text="Activa el modo 3D en la cabecera" Foreground="#444" 
+                                   HorizontalAlignment="Center" FontSize="11"/>
+                    </StackPanel>
                 </Border>
 
                 <!-- Guardian Title -->

@@ -29,6 +29,7 @@ public partial class CharacterDetailViewModel : ViewModelBase
     private const long BUCKET_CHEST = 14239492;
     private const long BUCKET_LEGS = 20886954;
     private const long BUCKET_CLASS_ITEM = 1585787867;
+    private const long BUCKET_SUBCLASS = 3284755031;
 
     #region Observable Properties
 
@@ -64,6 +65,9 @@ public partial class CharacterDetailViewModel : ViewModelBase
     [ObservableProperty]
     private InventoryItem? _classItem;
 
+    [ObservableProperty]
+    private InventoryItem? _subclass;
+
     // WebView2 Properties
     [ObservableProperty]
     private bool _isWebViewLoading = true;
@@ -73,6 +77,12 @@ public partial class CharacterDetailViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _useStaticImage = true; // Fallback si WebView falla
+
+    /// <summary>
+    /// Toggle to enable/disable 3D viewer (for slower PCs)
+    /// </summary>
+    [ObservableProperty]
+    private bool _is3DEnabled = true;
 
     /// <summary>
     /// URL para el visor 3D de Bungie.net
@@ -258,6 +268,10 @@ public partial class CharacterDetailViewModel : ViewModelBase
                         break;
                     case BUCKET_CLASS_ITEM:
                         ClassItem = invItem;
+                        break;
+                    case BUCKET_SUBCLASS:
+                        Subclass = invItem;
+                        Debug.WriteLine($"[CharacterDetail] Loaded Subclass: {invItem.Name}");
                         break;
                 }
             }
