@@ -61,7 +61,7 @@
                Stretch="UniformToFill" Opacity="0.05"/>
 
         <!-- Header -->
-        <Border Height="55" VerticalAlignment="Top" Panel.ZIndex="10" Background="Transparent">
+        <Border Height="55" VerticalAlignment="Top" Panel.ZIndex="10">
             <!-- Gradient Background for readability -->
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -198,32 +198,32 @@
                         <UniformGrid Rows="2" Columns="3">
                             <StackPanel Margin="3" ToolTip="Movilidad">
                                 <TextBlock Text="{Binding Character.Mobility}" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                <ProgressBar Value="{Binding Character.Mobility}" Height="3" Background="#333" Foreground="#3498DB" BorderThickness="0" Margin="0,2"/>
+                                <ProgressBar Value="{Binding Character.Mobility, Mode=OneWay}" Height="3" Background="#333" Foreground="#3498DB" BorderThickness="0" Margin="0,2"/>
                                 <TextBlock Text="MOB" FontSize="7" Foreground="#777" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Margin="3" ToolTip="Resiliencia">
                                 <TextBlock Text="{Binding Character.Resilience}" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                <ProgressBar Value="{Binding Character.Resilience}" Height="3" Background="#333" Foreground="#E74C3C" BorderThickness="0" Margin="0,2"/>
+                                <ProgressBar Value="{Binding Character.Resilience, Mode=OneWay}" Height="3" Background="#333" Foreground="#E74C3C" BorderThickness="0" Margin="0,2"/>
                                 <TextBlock Text="RES" FontSize="7" Foreground="#777" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Margin="3" ToolTip="Recuperación">
                                 <TextBlock Text="{Binding Character.Recovery}" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                <ProgressBar Value="{Binding Character.Recovery}" Height="3" Background="#333" Foreground="#2ECC71" BorderThickness="0" Margin="0,2"/>
+                                <ProgressBar Value="{Binding Character.Recovery, Mode=OneWay}" Height="3" Background="#333" Foreground="#2ECC71" BorderThickness="0" Margin="0,2"/>
                                 <TextBlock Text="REC" FontSize="7" Foreground="#777" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Margin="3" ToolTip="Disciplina">
                                 <TextBlock Text="{Binding Character.Discipline}" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                <ProgressBar Value="{Binding Character.Discipline}" Height="3" Background="#333" Foreground="#9B59B6" BorderThickness="0" Margin="0,2"/>
+                                <ProgressBar Value="{Binding Character.Discipline, Mode=OneWay}" Height="3" Background="#333" Foreground="#9B59B6" BorderThickness="0" Margin="0,2"/>
                                 <TextBlock Text="DIS" FontSize="7" Foreground="#777" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Margin="3" ToolTip="Intelecto">
                                 <TextBlock Text="{Binding Character.Intellect}" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                <ProgressBar Value="{Binding Character.Intellect}" Height="3" Background="#333" Foreground="#F1C40F" BorderThickness="0" Margin="0,2"/>
+                                <ProgressBar Value="{Binding Character.Intellect, Mode=OneWay}" Height="3" Background="#333" Foreground="#F1C40F" BorderThickness="0" Margin="0,2"/>
                                 <TextBlock Text="INT" FontSize="7" Foreground="#777" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Margin="3" ToolTip="Fuerza">
                                 <TextBlock Text="{Binding Character.Strength}" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                <ProgressBar Value="{Binding Character.Strength}" Height="3" Background="#333" Foreground="#E67E22" BorderThickness="0" Margin="0,2"/>
+                                <ProgressBar Value="{Binding Character.Strength, Mode=OneWay}" Height="3" Background="#333" Foreground="#E67E22" BorderThickness="0" Margin="0,2"/>
                                 <TextBlock Text="STR" FontSize="7" Foreground="#777" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </UniformGrid>
