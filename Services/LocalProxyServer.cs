@@ -25,6 +25,7 @@ public class LocalProxyServer : IDisposable
     private readonly string _apiKey;
     private static HttpClient? _httpClient;
     private static GearAssetService? _gearAssetService;
+    private static ColladaGeneratorService? _colladaService;
     
     public bool IsRunning { get; private set; }
     public string BaseUrl => $"http://localhost:{_port}";
@@ -34,6 +35,7 @@ public class LocalProxyServer : IDisposable
         _port = port;
         _apiKey = Constants.BUNGIE_API_KEY;
         _gearAssetService = gearAssetService;
+        _colladaService = new ColladaGeneratorService();
     }
 
     /// <summary>
@@ -119,6 +121,17 @@ public class LocalProxyServer : IDisposable
                                 await ProxyRequest(context, url);
                             });
 
+                            // Shader gear asset - query Bungie's manifest directly since shaders aren't in local mobile manifest
+                            endpoints.MapGet("/api/shader/{hash}", async context =>
+                            {
+                                var hashStr = context.Request.RouteValues["hash"]?.ToString();
+                                Debug.WriteLine($"[LocalProxy] Shader request for hash: {hashStr}");
+                                
+                                // Try to get shader gear asset from Bungie's API
+                                var url = $"https://www.bungie.net/Platform/Destiny2/Manifest/DestinyGearAssetsDefinition/{hashStr}/";
+                                await ProxyRequest(context, url);
+                            });
+
                             // Proxy: Geometry files
                             endpoints.MapGet("/api/geometry/{**path}", async context =>
                             {
@@ -165,6 +178,180 @@ public class LocalProxyServer : IDisposable
                                 var path = context.Request.RouteValues["path"]?.ToString();
                                 var url = $"https://www.bungie.net/{path}";
                                 await ProxyBinaryRequest(context, url);
+                            });
+
+                            // Collada model generation
+                            endpoints.MapGet("/api/collada/{hash}", async context =>
+                            {
+                                var hashStr = context.Request.RouteValues["hash"]?.ToString();
+                                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                                
+                                if (uint.TryParse(hashStr, out var hash) && _colladaService != null)
+                                {
+                                    try
+                                    {
+                                        var daePath = await _colladaService.GenerateModel(hash);
+                                        if (daePath != null && File.Exists(daePath))
+                                        {
+                                            context.Response.ContentType = "model/vnd.collada+xml";
+                                            await context.Response.SendFileAsync(daePath);
+                                            return;
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine($"[LocalProxy] Collada error: {ex.Message}");
+                                    }
+                                }
+                                
+                                context.Response.StatusCode = 404;
+                                await context.Response.WriteAsync("Model not found");
+                            });
+
+                            // Serve local FBX files from Charm exports
+                            endpoints.MapGet("/api/fbx/{**path}", async context =>
+                            {
+                                var path = context.Request.RouteValues["path"]?.ToString();
+                                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                                
+                                var basePath = AppDomain.CurrentDomain.BaseDirectory;
+                                var fbxPath = Path.Combine(basePath, "Assets", "3DViewer", "models", "fbx", path ?? "");
+                                
+                                if (File.Exists(fbxPath))
+                                {
+                                    var ext = Path.GetExtension(fbxPath).ToLower();
+                                    context.Response.ContentType = ext switch
+                                    {
+                                        ".fbx" => "application/octet-stream",
+                                        ".png" => "image/png",
+                                        ".jpg" or ".jpeg" => "image/jpeg",
+                                        ".tga" => "image/x-tga",
+                                        _ => "application/octet-stream"
+                                    };
+                                    await context.Response.SendFileAsync(fbxPath);
+                                    return;
+                                }
+                                
+                                context.Response.StatusCode = 404;
+                                await context.Response.WriteAsync("File not found");
+                            });
+
+                            // Texture proxy - serve textures from bungie.net with local cache
+                            endpoints.MapGet("/api/texture/{**path}", async context =>
+                            {
+                                var path = context.Request.RouteValues["path"]?.ToString();
+                                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                                
+                                if (string.IsNullOrEmpty(path))
+                                {
+                                    context.Response.StatusCode = 400;
+                                    return;
+                                }
+
+                                // Cache directory for textures
+                                var cacheDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache", "textures");
+                                Directory.CreateDirectory(cacheDir);
+                                
+                                var cachedFile = Path.Combine(cacheDir, path.Replace("/", "_"));
+                                
+                                // Check cache first
+                                if (File.Exists(cachedFile))
+                                {
+                                    var ext = Path.GetExtension(path).ToLower();
+                                    context.Response.ContentType = ext switch
+                                    {
+                                        ".png" => "image/png",
+                                        ".jpg" or ".jpeg" => "image/jpeg",
+                                        _ => "application/octet-stream"
+                                    };
+                                    await context.Response.SendFileAsync(cachedFile);
+                                    return;
+                                }
+
+                                // Fetch from Bungie
+                                try
+                                {
+                                    var textureUrl = $"https://www.bungie.net/{path}";
+                                    Debug.WriteLine($"[LocalProxy] Fetching texture: {textureUrl}");
+                                    
+                                    using var response = await _httpClient.GetAsync(textureUrl);
+                                    if (response.IsSuccessStatusCode)
+                                    {
+                                        var data = await response.Content.ReadAsByteArrayAsync();
+                                        
+                                        // Cache it
+                                        await File.WriteAllBytesAsync(cachedFile, data);
+                                        
+                                        var ext = Path.GetExtension(path).ToLower();
+                                        context.Response.ContentType = ext switch
+                                        {
+                                            ".png" => "image/png",
+                                            ".jpg" or ".jpeg" => "image/jpeg",
+                                            _ => "application/octet-stream"
+                                        };
+                                        await context.Response.Body.WriteAsync(data);
+                                        return;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine($"[LocalProxy] Texture fetch error: {ex.Message}");
+                                }
+                                
+                                context.Response.StatusCode = 404;
+                            });
+
+                            // Gear JSON proxy - load gear data with dye colors
+                            endpoints.MapGet("/api/gear/{hash}", async context =>
+                            {
+                                var hash = context.Request.RouteValues["hash"]?.ToString();
+                                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                                context.Response.ContentType = "application/json";
+                                
+                                if (string.IsNullOrEmpty(hash))
+                                {
+                                    context.Response.StatusCode = 400;
+                                    return;
+                                }
+
+                                // Cache directory for gear JSON
+                                var cacheDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache", "gear");
+                                Directory.CreateDirectory(cacheDir);
+                                
+                                var cachedFile = Path.Combine(cacheDir, $"{hash}.json");
+                                
+                                // Check cache first
+                                if (File.Exists(cachedFile))
+                                {
+                                    await context.Response.SendFileAsync(cachedFile);
+                                    return;
+                                }
+
+                                // Fetch from Bungie - gear JSON with dye data (files have .js extension)
+                                try
+                                {
+                                    var gearUrl = $"https://www.bungie.net/common/destiny2_content/geometry/gear/{hash}.js";
+                                    Debug.WriteLine($"[LocalProxy] Fetching gear JSON: {gearUrl}");
+                                    
+                                    using var response = await _httpClient.GetAsync(gearUrl);
+                                    if (response.IsSuccessStatusCode)
+                                    {
+                                        var data = await response.Content.ReadAsStringAsync();
+                                        
+                                        // Cache it
+                                        await File.WriteAllTextAsync(cachedFile, data);
+                                        
+                                        await context.Response.WriteAsync(data);
+                                        return;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine($"[LocalProxy] Gear fetch error: {ex.Message}");
+                                }
+                                
+                                context.Response.StatusCode = 404;
+                                await context.Response.WriteAsync("{}");
                             });
                         });
                     });

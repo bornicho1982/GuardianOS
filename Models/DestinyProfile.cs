@@ -141,6 +141,33 @@ public class ItemComponentsComponent
 {
     [JsonProperty("instances")]
     public ItemInstancesComponent? Instances { get; set; }
+
+    [JsonProperty("sockets")]
+    public ItemSocketsComponent? Sockets { get; set; }
+}
+
+public class ItemSocketsComponent
+{
+    [JsonProperty("data")]
+    public Dictionary<string, ItemSocketData>? Data { get; set; }
+}
+
+public class ItemSocketData
+{
+    [JsonProperty("sockets")]
+    public List<SocketEntry>? Sockets { get; set; }
+}
+
+public class SocketEntry
+{
+    [JsonProperty("plugHash")]
+    public uint? PlugHash { get; set; }
+
+    [JsonProperty("isEnabled")]
+    public bool IsEnabled { get; set; }
+
+    [JsonProperty("isVisible")]
+    public bool IsVisible { get; set; }
 }
 
 public class ItemInstancesComponent

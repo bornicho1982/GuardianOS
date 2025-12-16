@@ -1,0 +1,5817 @@
+{
+  "EntityNames": {
+    "DESTINY2_LATEST": {
+      "84C9E280": [
+        "Light-Eater Ogre"
+      ],
+      "13A4E180": [
+        "Minotaur",
+        "Nexus Minotaur",
+        "Apaktos, Oxidizing Mind",
+        "Synchronal Mind",
+        "Abstract Gate Lord"
+      ],
+      "88EFE280": [
+        "Resilient Shank"
+      ],
+      "9B03CB80": [
+        "Hector-6"
+      ],
+      "496EC080": [
+        "Aunor"
+      ],
+      "BC03C080": [
+        "Eris Morn"
+      ],
+      "0FCFCC80": [
+        "Sedia, the Corrupted"
+      ],
+      "7298E280": [
+        "C21C83E7"
+      ],
+      "9823E380": [
+        "Bound Pyro"
+      ],
+      "5485E280": [
+        "The Corrupted Puppeteer"
+      ],
+      "70D4E280": [
+        "High Celebrant of Xivu Arath"
+      ],
+      "596BE180": [
+        "Nightmare Knight",
+        "BD7D830F",
+        "Knight"
+      ],
+      "EDE5C480": [
+        "player"
+      ],
+      "D2B5E180": [
+        "Supplicant",
+        "Elite Supplicant"
+      ],
+      "E90EB880": [
+        "player"
+      ],
+      "B517A880": [
+        "Koregos, the Worldline"
+      ],
+      "3409BD80": [
+        "player"
+      ],
+      "1434E280": [
+        "Trusted Vandal",
+        "Engineer Vandal",
+        "Piker Vandal",
+        "Favored Vandal",
+        "Resilient Vandal"
+      ],
+      "48E74281": [
+        "96E5DE99",
+        "Behemoth Nihil"
+      ],
+      "25813E81": [
+        "Kruutiks, Reefbane"
+      ],
+      "962EC080": [
+        "Zavala"
+      ],
+      "FB9EE280": [
+        "Paraversal Challenger"
+      ],
+      "4764E380": [
+        "Blue Jeans, Tharsis Reformation Overseer"
+      ],
+      "37D2E280": [
+        "Honored Centurion",
+        "Esteemed Centurion",
+        "5C7F2093",
+        "Dragin Gempo'rum"
+      ],
+      "879DE280": [
+        "Plentiful Centurion",
+        "Blood Guard Centurion",
+        "C7F8D1B1",
+        "Nightmare of Uroa, Sworn of Shayotet",
+        "Val Veorthus",
+        "Val Trekitus"
+      ],
+      "C06BE180": [
+        "Nightmare Thrall",
+        "Revenant Thrall",
+        "Blistered Thrall",
+        "Urug'Eth",
+        "Lunar Scavenger",
+        "Shun'Gath, the Excised"
+      ],
+      "156AE380": [
+        "Psion Commander",
+        "Nuajes, Hacking Psion"
+      ],
+      "C536E280": [
+        "Tharsis Reformation Cyclops",
+        "Gambler Cyclops",
+        "Singular Cyclops"
+      ],
+      "7653E280": [
+        "Barrier Hobgoblin"
+      ],
+      "13C0B780": [
+        "eris_morn"
+      ],
+      "7225E380": [
+        "Nightmare Shank"
+      ],
+      "5419E380": [
+        "BE8A4CE9",
+        "Felciks, Fiendling of the Archon Prime"
+      ],
+      "E5DEBF80": [
+        "fallen_vandal"
+      ],
+      "B01AE380": [
+        "Target Frame"
+      ],
+      "93B3B780": [
+        "Lodi"
+      ],
+      "8212C080": [
+        "fallen_vandal"
+      ],
+      "C4FDE280": [
+        "Dolgith, Blade of Reasoning",
+        "Catalyst of Imbalance"
+      ],
+      "99C7E280": [
+        "An Ragaar, Son of Xivu Arath",
+        "Tir Balok, Daughter of Xivu Arath",
+        "Xavan, Daughter of Xivu Arath"
+      ],
+      "E9A6E280": [
+        "Zulmak, Instrument of Torment"
+      ],
+      "79D4E280": [
+        "Phry'zhia the Insatiable",
+        "Paraversal Challenger"
+      ],
+      "32B2E280": [
+        "Pillar of Devotion"
+      ],
+      "D317C080": [
+        "Vanguard Frontline"
+      ],
+      "252CC080": [
+        "Caiatl"
+      ],
+      "CBB9CB80": [
+        "Primeval Minotaur"
+      ],
+      "FD2BC080": [
+        "Rohan"
+      ],
+      "E438C080": [
+        "Slain Phantom"
+      ],
+      "D6FFE280": [
+        "Ozletc, the Sky Piercer"
+      ],
+      "96FCE280": [
+        "Makis, Piker Crime Boss",
+        "Distinguished Mechanism Servitor"
+      ],
+      "1043E180": [
+        "Lightbearer Wizard",
+        "Dûl Alai, Warden of the Spire",
+        "Ir Haza",
+        "Ir Abruum, Mothlit",
+        "Lucent Warlock",
+        "Kerr-Ath, Expedition Commander",
+        "Luzaku",
+        "Secret-Keeper of the Witch Queen",
+        "Ei Räkosh, Banisher of Memory",
+        "Lucent Ritualist",
+        "Hathrek, the Glasweard",
+        "Secret of Severed Flesh"
+      ],
+      "EF1DE380": [
+        "Lii'liks, Harvester of the Witness"
+      ],
+      "DB83E280": [
+        "Broken Puppet, Mind's Safeguard"
+      ],
+      "E96DA880": [
+        "Devrim"
+      ],
+      "1990A780": [
+        "Unstoppable Ogre"
+      ],
+      "997AE380": [
+        "Skiffblade",
+        "Ransiks, Skiffblade"
+      ],
+      "4239C080": [
+        "Ikora"
+      ],
+      "EF54B880": [
+        "mara_sov"
+      ],
+      "BDAEE180": [
+        "Prime Compelled Goblin",
+        "Compelled Goblin",
+        "Elite Compelled Goblin",
+        "Architector Goblin",
+        "Integrator Goblin"
+      ],
+      "352CC080": [
+        "Osiris"
+      ],
+      "97D2E280": [
+        "Adherent of Šimmumah"
+      ],
+      "07FBE180": [
+        "Ogre Ascendant",
+        "Tulgorh, Aspect of Agony",
+        "Raging Ogre",
+        "Guul'moh, Taken of the Witness",
+        "Paraversal Contestant",
+        "Ugroth, Soulkeeper",
+        "Mukor, Soulkeeper",
+        "Taken Heat-Drinker"
+      ],
+      "3304C080": [
+        "Awoken Corsair"
+      ],
+      "7B3FE180": [
+        "The Witness"
+      ],
+      "21DAA680": [
+        "Heavy Shank"
+      ],
+      "81B4E180": [
+        "Quantum Harpy"
+      ],
+      "628FE180": [
+        "Consecrated Mind, Sol Inherent"
+      ],
+      "7535C080": [
+        "Saint-14"
+      ],
+      "8DF1CF80": [
+        "Ghost"
+      ],
+      "BF6DC080": [
+        "Lodi"
+      ],
+      "6E25E380": [
+        "Nightmare Shank"
+      ],
+      "B90BB980": [
+        "cayde_6"
+      ],
+      "0225E380": [
+        "Darkblade Kelgorath, Risen from Bones"
+      ],
+      "D0833E81": [
+        "Sinister Harpy"
+      ],
+      "DDC4CC80": [
+        "Pyramid Goliath"
+      ],
+      "D42EC080": [
+        "The Emissary"
+      ],
+      "674EE280": [
+        "Uplifted Choral Hydra",
+        "Coryphaeus Hydra",
+        "Choral Hydra",
+        "Barricade Mind",
+        "Data Encryptor",
+        "Root Module Restriction"
+      ],
+      "5230C080": [
+        "The Witness"
+      ],
+      "08E3B780": [
+        "Ikora"
+      ],
+      "7EC8B880": [
+        "Holliday"
+      ],
+      "5E25E380": [
+        "Nightmare Wretch"
+      ],
+      "50B4C380": [
+        "Goliath Tank "
+      ],
+      "7D15E380": [
+        "Precursor Hobgoblin",
+        "Descendant Hobgoblin"
+      ],
+      "8684B880": [
+        "gambit"
+      ],
+      "C8AEE180": [
+        "Compelled Minotaur",
+        "Elite Compelled Minotaur",
+        "Prime Compelled Minotaur",
+        "Compelled Koresian, Harrowed Frame",
+        "Compelled Hypoxeus, Dexterous Frame",
+        "Integrator Minotaur",
+        "Thyrdron"
+      ],
+      "6DFCE280": [
+        "Nightmare of Crota, Son of Oryx"
+      ],
+      "E649B880": [
+        "cayde_6"
+      ],
+      "FEDAE180": [
+        "hive_knight_ultra"
+      ],
+      "33CAE280": [
+        "Shade of Oryx"
+      ],
+      "7E25E380": [
+        "Nightmare Warbeast"
+      ],
+      "92D6E280": [
+        "Morgeth, the Spirekeeper"
+      ],
+      "DBE3BF80": [
+        "Petra Venj"
+      ],
+      "2230C080": [
+        "The Witness"
+      ],
+      "5190A780": [
+        "Barrier Knight"
+      ],
+      "8434E280": [
+        "Piker Corsair",
+        "Engineer Corsair",
+        "Trusted Corsair",
+        "Favored Corsair",
+        "Piker Raider",
+        "Piker Gang Stash Lookout"
+      ],
+      "6D21C080": [
+        "xur"
+      ],
+      "9134C080": [
+        "fallen_vandal"
+      ],
+      "28B7E180": [
+        "Quantum Hydra",
+        "WANTED: Episkeptis, the Uninvited",
+        "Malignant Hydra",
+        "Storm Hydra",
+        "Pakrion",
+        "Integrator Hydra",
+        "WANTED: Arcane Mind",
+        "Abstract Hydra",
+        "Paraversal Contender",
+        "Sentinel",
+        "Encryption Daemon",
+        "Shieldbearer Hydra"
+      ],
+      "52DEBF80": [
+        "fallen_vandal"
+      ],
+      "8C1EE380": [
+        "Heimiks, Warden of the Harvest"
+      ],
+      "7946E180": [
+        "Revenant Acolyte",
+        "Blistered Acolyte",
+        "Deathtongue Chorister",
+        "D-Block Cult Acolyte"
+      ],
+      "1FB1E180": [
+        "Honored Legionary",
+        "Esteemed Legionary",
+        "Nightmare Legionary",
+        "WANTED: Bracus Ghir",
+        "C-Block Blood Legionary",
+        "Gloryseeking Legionary"
+      ],
+      "05D63D81": [
+        "Scorpius"
+      ],
+      "41C4BF80": [
+        "Ikora"
+      ],
+      "18B7E180": [
+        "Quantum Cyclops",
+        "Malignant Cyclops",
+        "Sentinel"
+      ],
+      "4CBAE180": [
+        "Zatocc, Devoted to the Witness",
+        "EC93F6CE",
+        "Etherbound Familiar",
+        "Psion Commander",
+        "Sizmic, the Net-Desecrator"
+      ],
+      "6004E380": [
+        "Baurg, Blood Infernal"
+      ],
+      "66FDE280": [
+        "Nightmare of the Fanatic"
+      ],
+      "8659E180": [
+        "Warbringer Brig",
+        "Enforcer Brig",
+        "Brig, House Salvation"
+      ],
+      "1CF1E180": [
+        "Taken Vandal",
+        "Ravenous Taken Vandal",
+        "Servile Vandal"
+      ],
+      "3A83E180": [
+        "Resilient Shank",
+        "Resolute Shank",
+        "Word-Bearer Shank",
+        "Dark Matter Gatherer",
+        "Arc-Laden Exile"
+      ],
+      "2E74C080": [
+        "fallen_vandal"
+      ],
+      "24A5E280": [
+        "Pillar of Denial"
+      ],
+      "B8AEE180": [
+        "Elite Compelled Hydra",
+        "Compelled Hydra",
+        "Precursor Nexus Hydra",
+        "Prime Compelled Hydra",
+        "Kitharodes, Choral Minds",
+        "Pakrion",
+        "Integrator Hydra",
+        "Aulete, Choral Mind"
+      ],
+      "4EC53D81": [
+        "Scorpius"
+      ],
+      "E5D0BF80": [
+        "Lord Saladin"
+      ],
+      "BC6BE180": [
+        "Blistered Cursed Thrall",
+        "Lunar Scavenger"
+      ],
+      "9982CC80": [
+        "Shuro Chi, the Corrupted"
+      ],
+      "1C32C080": [
+        "Ikora"
+      ],
+      "E7864081": [
+        "fallen_vandal"
+      ],
+      "82E8E280": [
+        "Oxiith, Abandoned Spawn"
+      ],
+      "8225E380": [
+        "Excavator Valus"
+      ],
+      "028FE180": [
+        "vex_hydra"
+      ],
+      "29413C81": [
+        "eris_morn"
+      ],
+      "D824E380": [
+        "Giver's Bounty, Exile Prime Servitor"
+      ],
+      "3342E180": [
+        "Thul-Ar, Acolyte of Nokris",
+        "Lightbearer Acolyte",
+        "Zhirah, Warden of the Spire",
+        "Nargul",
+        "Lucent Hunter",
+        "Exhumed Prisoner",
+        "Secret of Severed Flesh"
+      ],
+      "4D04C080": [
+        "Awoken Corsair"
+      ],
+      "62FAE180": [
+        "ultra_taken_captain_display_name",
+        "Teksis, Ascendant Sentinel",
+        "Drevis, Aspect of Darkness",
+        "Cornerstone of the Witness",
+        "Vakarsik, Grasp of Quria",
+        "Crorok, Will of Xivu Arath",
+        "Taken Heat-Drinker"
+      ],
+      "66CFE280": [
+        "hive_ogre"
+      ],
+      "1CB3E280": [
+        "Praksis, the Technocrat"
+      ],
+      "9C23E380": [
+        "Revenant Knight"
+      ],
+      "70E2A580": [
+        "player"
+      ],
+      "BA24E380": [
+        "60FABA29",
+        "Devastator Mind"
+      ],
+      "C02AE180": [
+        "Corrupted Raider",
+        "Tarnished Raider",
+        "Nightmare Raider",
+        "Ravenous Raider",
+        "Dread Bearer",
+        "Nightmare of Ha'lok, the Shield"
+      ],
+      "6EBBE180": [
+        "Centurion",
+        "Cornerstone of the Witness",
+        "Valus Dravusk, Shadow Legion"
+      ],
+      "E80EB880": [
+        "player"
+      ],
+      "AA4DE180": [
+        "Ravenous Dire Vandal",
+        "Dire Vandal"
+      ],
+      "FA81E280": [
+        "Ogre Ascendant",
+        "Servant of Blades",
+        "Icon of Solipsism",
+        "Blightguard",
+        "Icon of Fury"
+      ],
+      "DC43E380": [
+        "Aye-I, Privateer"
+      ],
+      "5925E380": [
+        "Orm Duluz, Bound to Sedia",
+        "0354C918"
+      ],
+      "9A1CE280": [
+        "Carnage Husk",
+        "Husk",
+        "Tormented Husk",
+        "Vanguard's Most Wanted",
+        "Soul of Suffering",
+        "Soul of Malice",
+        "Tempest's Beloved"
+      ],
+      "AB27C080": [
+        "Holliday"
+      ],
+      "63DBCB80": [
+        "Shank"
+      ],
+      "3DDFBF80": [
+        "fallen_vandal"
+      ],
+      "02EAA580": [
+        "player"
+      ],
+      "E671E280": [
+        "Ir Yun, Cult of Megor",
+        "Subversive Wizard"
+      ],
+      "9FD9BF80": [
+        "Lord Saladin"
+      ],
+      "D5F2BF80": [
+        "Navôta, Eir Spawn"
+      ],
+      "CB34C080": [
+        "fallen_vandal"
+      ],
+      "4D55E180": [
+        "Barrier Servitor"
+      ],
+      "4A2DC080": [
+        "Osiris"
+      ],
+      "7E0AC080": [
+        "Mithrax"
+      ],
+      "0388E180": [
+        "Sylok, the Defiled"
+      ],
+      "2BDFBF80": [
+        "fallen_vandal"
+      ],
+      "B1E5E180": [
+        "Resilient Heavy Shank",
+        "Heavy Shank",
+        "Resolute Heavy Shank",
+        "Fang of the Witness",
+        "Resonant Warder",
+        "Heavy Shank, House Salvation",
+        "Ransack Shank",
+        "S.A.B.E.R.-X, House Salvation",
+        "S.A.B.E.R.-0.1, House Salvation",
+        "Enhanced Shank, House Salvation"
+      ],
+      "B5A7E280": [
+        "E53FE7F5",
+        "Oracle of the Broken Blade"
+      ],
+      "22E8A580": [
+        "player"
+      ],
+      "7B01C080": [
+        "Shaw Han"
+      ],
+      "7506CB80": [
+        "Anjoli-7"
+      ],
+      "1A12C080": [
+        "The Emissary"
+      ],
+      "671FE380": [
+        "FAE4D125",
+        "Nightmare of Caiatl, Princess-Imperial"
+      ],
+      "4925E380": [
+        "Mholoch, Herald of the Plague",
+        "Cragur, Plague of the Well"
+      ],
+      "CBCBE280": [
+        "7A4F8584",
+        "Dûl Incaru, the Eternal Return"
+      ],
+      "959FCC80": [
+        "Spider's Walker"
+      ],
+      "AD90A780": [
+        "Blistered Ogre",
+        "Revenant Ogre",
+        "Wrathbringer Ogre",
+        "Urgoth, the Blistering Glare",
+        "Tribute Bearer",
+        "Brilliant Sentry",
+        "Ishaya, High Slayer"
+      ],
+      "3237E280": [
+        "Engineer Brig",
+        "Piker Brig"
+      ],
+      "E6E8BF80": [
+        "Ghost"
+      ],
+      "9723E380": [
+        "Bound Colossus"
+      ],
+      "179BE180": [
+        "Elikaa, The Pale Rot"
+      ],
+      "4204C080": [
+        "Shuro Chi"
+      ],
+      "66EFBF80": [
+        "Nimbus"
+      ],
+      "612AE180": [
+        "forsaken_wretch"
+      ],
+      "AF09E180": [
+        "Unyielding Servitor",
+        "Unrelenting Servitor",
+        "Ransack Servitor",
+        "Sentinel Servitor",
+        "5CAABF1A",
+        "C5931925",
+        "Nariks Reborn",
+        "B-Block Rat Servitor",
+        "Barricade Servitor",
+        "Reclaimer Servitor",
+        "Lunar Scavenger",
+        "Fang Servitor",
+        "Taken Decayer",
+        "WANTED: Queenbreaker",
+        "Data Safeguard",
+        "Paraversal Contestant"
+      ],
+      "B0AEE180": [
+        "Elite Compelled Hobgoblin",
+        "Compelled Hobgoblin",
+        "Prime Compelled Hobgoblin",
+        "Integrator Hobgoblin"
+      ],
+      "9CBBE280": [
+        "Vessel of the Archon"
+      ],
+      "A8BBE180": [
+        "Honored War Beast",
+        "Esteemed War Beast"
+      ],
+      "1A36C080": [
+        "eva"
+      ],
+      "2FDCBF80": [
+        "Mara Sov"
+      ],
+      "E1F9E180": [
+        "Deranged Abomination",
+        "Ether Abomination",
+        "Lacerated Abomination",
+        "Well Protector",
+        "Darkmind Abomination",
+        "Knowledge Bearer",
+        "Lost Abomination"
+      ],
+      "B5F2BF80": [
+        "fallen_vandal"
+      ],
+      "71E5E280": [
+        "The Caretaker"
+      ],
+      "406EC080": [
+        "fallen_vandal"
+      ],
+      "7425E380": [
+        "Nightmare Legionary"
+      ],
+      "6E37C080": [
+        "Devrim"
+      ],
+      "AB34C080": [
+        "fallen_vandal"
+      ],
+      "55FBE280": [
+        "Atraks-1, Fallen Exo"
+      ],
+      "306EC080": [
+        "Zavala"
+      ],
+      "FCC6E180": [
+        "FC6CB869",
+        "Esteemed Colossus",
+        "Honored Colossus",
+        "Aspirant of Nezarec",
+        "Terrestrial Lieutenant",
+        "Devotee of the Witness",
+        "Excavation Valus",
+        "Rampaging Patron",
+        "Infiltrator Valus"
+      ],
+      "1322C080": [
+        "Ghost"
+      ],
+      "CAB9CC80": [
+        "Locus of Communion"
+      ],
+      "B363C080": [
+        "fallen_vandal"
+      ],
+      "042CC080": [
+        "Rohan"
+      ],
+      "6125E380": [
+        "Nightmare Wretch"
+      ],
+      "D746E180": [
+        "BD7D830F",
+        "Xûr's Wellkeeper"
+      ],
+      "EF35C080": [
+        "Devrim"
+      ],
+      "9BB5B880": [
+        "Blue"
+      ],
+      "7101E380": [
+        "Trammel of Conflict"
+      ],
+      "9D36E280": [
+        "Trusted Duskfield Shank"
+      ],
+      "82DEBF80": [
+        "fallen_vandal"
+      ],
+      "2C4FE280": [
+        "Hypolydron, Captive Mind",
+        "Compelled Iridicus, Viral Protocol",
+        "Kitharodes, Choral Minds",
+        "Rhapsoidos, Choral Mind",
+        "Plague Sentinel"
+      ],
+      "A56AE280": [
+        "Wyvern",
+        "Malignant Wyvern",
+        "Quantum Wyvern",
+        "Gatekeeper Wyvern"
+      ],
+      "73CBE280": [
+        "d17_launch_comet02_underworld_hive_knight_cleaver_ultra",
+        "Ba-Kuur, Fatesmith of Incaru"
+      ],
+      "5C9CB880": [
+        "Lodi"
+      ],
+      "1512C080": [
+        "Ikora"
+      ],
+      "6AB2E280": [
+        "Once-Ezriks, Retainer to Xivu Arath"
+      ],
+      "0786B880": [
+        "Zavala"
+      ],
+      "D200C080": [
+        "xur"
+      ],
+      "59F0E280": [
+        "0A2A571D",
+        "Kataxiia, Tormentor of the Ahamkara",
+        "Cornerstone of the Witness",
+        "Dread Assassin"
+      ],
+      "CBDDB880": [
+        "player"
+      ],
+      "BBD9E280": [
+        "Kakos, Herald of the Plague",
+        "Inomina, Plague of the Well"
+      ],
+      "6EAFE180": [
+        "Resilient Vandal",
+        "Reaver Vandal",
+        "Ransack Vandal",
+        "A-Block Scar Vandal",
+        "B-Block Rat Vandal",
+        "Dusk Walker Mechanic",
+        "Lunar Scavenger"
+      ],
+      "A81FC080": [
+        "Revenant Knight"
+      ],
+      "A1853E81": [
+        "964C8894"
+      ],
+      "821FC080": [
+        "Aunor"
+      ],
+      "5AB2E280": [
+        "Wrathborn Vandal",
+        "Coerced Salvation Technician"
+      ],
+      "BA76E280": [
+        "Unstoppable Taken Phalanx",
+        "Resonant Glyphkeeper",
+        "Glyphkeeper"
+      ],
+      "7125E380": [
+        "Nightmare Shank"
+      ],
+      "FD83E280": [
+        "Broken Puppet, Mind's Bulwark"
+      ],
+      "BFD0BF80": [
+        "Drifter"
+      ],
+      "0A22E380": [
+        "Praksis the Defiled"
+      ],
+      "BCCDBF80": [
+        "Zavala"
+      ],
+      "CE94A780": [
+        "cabal_bruiser"
+      ],
+      "70D0BF80": [
+        "xur"
+      ],
+      "97BBE280": [
+        "Vessel of the Archon"
+      ],
+      "96F6E180": [
+        "Ravenous Taken Goblin",
+        "Taken Goblin",
+        " Goblin",
+        "Xûr's Blightmonger"
+      ],
+      "ADF7B880": [
+        "eris_morn"
+      ],
+      "6AE8E280": [
+        "Bor'gong, Warden of the Spring"
+      ],
+      "9F70C080": [
+        "fallen_vandal"
+      ],
+      "F5E8E180": [
+        "Araskes, the Trickster"
+      ],
+      "9A59E180": [
+        "Fang of the Witness",
+        "House Light Brig",
+        "Fallen Commodore",
+        "Factory Brig",
+        "Siriks, of House Salvation"
+      ],
+      "7470B880": [
+        "Saint-14"
+      ],
+      "864ACA80": [
+        "Mia-9"
+      ],
+      "FB23E380": [
+        "Omen of the Witness"
+      ],
+      "74843E81": [
+        "Imperium Scorpius"
+      ],
+      "4536C080": [
+        "Ikora"
+      ],
+      "B61EE380": [
+        "Loyalist Centurion",
+        "Nightmare Centurion"
+      ],
+      "5CF2E180": [
+        "Imperium Electi Legionary",
+        "Imperium Tesserarius Legionary",
+        "Imperium Legionary",
+        "Totality Agent",
+        "Imperium Headhunter",
+        "Operations Specialist"
+      ],
+      "7B9DE280": [
+        "BrayTech Security Frame"
+      ],
+      "2B32C080": [
+        "Lodi"
+      ],
+      "D953E180": [
+        "Phalanx Echo"
+      ],
+      "6734E280": [
+        "Singular Fanatic",
+        "Gambler Fanatic",
+        "Tharsis Reformation Fanatic"
+      ],
+      "9C18C080": [
+        "Drifter"
+      ],
+      "C5F9C380": [
+        "civilian_display_name"
+      ],
+      "297FE280": [
+        "Thieving Wretch"
+      ],
+      "F717E380": [
+        "Atheon, Time's Conflux"
+      ],
+      "391AC380": [
+        "Behemoth Rex",
+        "96E5DE99",
+        "Behemoth Gloriosus",
+        "Strand-Hardened Behemoth"
+      ],
+      "03C7E280": [
+        "Mat Azar, Riven's Welcome",
+        "Urlos, Greeting of Riven"
+      ],
+      "8C1FE380": [
+        "Corrupted Chieftain",
+        "Tarnished Chieftain"
+      ],
+      "1217E380": [
+        "Supplicant"
+      ],
+      "7A39C080": [
+        "fallen_vandal"
+      ],
+      "54F0D080": [
+        "r1_s4_strike_cosmo_reliquary_ultra0_display_name"
+      ],
+      "CCFDE280": [
+        "Bound Taken Phalanx"
+      ],
+      "A4813E81": [
+        "Vire, Shard of Contempt"
+      ],
+      "69DDBF80": [
+        "fallen_slag"
+      ],
+      "E61BE280": [
+        "Resonating Grim",
+        "Grim",
+        "Panoptic Grim",
+        "Truthspeaker",
+        "Summoned Gargoyle"
+      ],
+      "E397E280": [
+        "Nightmare of Phogoth, the Untamed"
+      ],
+      "5575C080": [
+        "fallen_vandal"
+      ],
+      "C63FE280": [
+        "Tirksnii, Corsairsbane"
+      ],
+      "D532C080": [
+        "The Archon"
+      ],
+      "2E0EE380": [
+        "Shrieker"
+      ],
+      "2CDBB780": [
+        "player"
+      ],
+      "3610E380": [
+        "Zoetic Lockset"
+      ],
+      "84B2E280": [
+        "Light-Burned Ogre"
+      ],
+      "5839E280": [
+        "Colossus",
+        "Warden Vincu'us, Shadow Legion",
+        "Etherbound Familiar",
+        "Valus Tharum, Gladiatorial Overseer"
+      ],
+      "DEADE280": [
+        "Dark Council Guard",
+        "Beliks, Salvation Elite"
+      ],
+      "1AF5BF80": [
+        "Zavala"
+      ],
+      "2632C080": [
+        "Lodi"
+      ],
+      "7FADE280": [
+        "Technician Shank"
+      ],
+      "17B7E180": [
+        "Quantum Minotaur",
+        "Prosperous Minotaur",
+        "Malignant Minotaur",
+        "Storm Minotaur",
+        "Spaelosus, Buried Mind",
+        "Accumulative Mind",
+        "Igneous Mind",
+        "Liquid Mind",
+        "Nucleative Mind",
+        "Integrator Minotaur",
+        "WANTED: Splendid Mind",
+        "Iso Minotaur",
+        "Fulcrum Minotaur",
+        "Paraversal Contender",
+        "Arc Cranium Bearer",
+        "Sentinel",
+        "Thyrdron",
+        "Scandal Seeker"
+      ],
+      "C9D5E280": [
+        "Xaras, Greed of Xivu Arath"
+      ],
+      "F8B1E180": [
+        "forsaken_wretch"
+      ],
+      "99BBE180": [
+        "Unstoppable Husk"
+      ],
+      "21BDE280": [
+        "Archon Levazsk, Prophet of the Giver"
+      ],
+      "746BE180": [
+        "Nightmare Knight",
+        "Revenant Knight",
+        "Blistered Knight",
+        "Fissure Knight",
+        "Wealthkeeper",
+        "Pit Keeper",
+        "Lunar Scavenger"
+      ],
+      "89FEBF80": [
+        "Failsafe"
+      ],
+      "6822B880": [
+        "Shaw Han"
+      ],
+      "AA03CB80": [
+        "Wen-1"
+      ],
+      "617FE280": [
+        "B655CC64",
+        "Sirloks, Fifth Broken Knight",
+        "Nymeks, Fourth Broken Knight",
+        "Malaris, Second Broken Knight",
+        "Vrysiks, Third Broken Knight",
+        "Rathil, First Broken Knight of Fikrul"
+      ],
+      "D738C080": [
+        "Slain Phantom"
+      ],
+      "2EB1E180": [
+        "Honored Phalanx",
+        "Esteemed Phalanx",
+        "Thunder Phalanx",
+        "C-Block Blood Phalanx",
+        "Outlaw Phalanx",
+        "Subterranean Hydration Officer",
+        "Paraversal Contender",
+        "Val Cempas"
+      ],
+      "04843E81": [
+        "Elevated Imperium Colossus"
+      ],
+      "8251E180": [
+        "Hallowed Ogre",
+        "Taken Ogre",
+        "Consumed Ogre",
+        "Devoured Ogre",
+        "Ferocious Ogre",
+        "Ogre Ascendant",
+        "Portal Keeper",
+        "Imbalanced Warden",
+        "Vashok, Riven's Smile",
+        "Lost Ogre",
+        "Kashh'n Pryzus, Starhorse's Treasurer"
+      ],
+      "5DFFBF80": [
+        "Toland"
+      ],
+      "DCDEBF80": [
+        "fallen_vandal"
+      ],
+      "9F63E380": [
+        "Physis, Piker Captain"
+      ],
+      "A9E14281": [
+        "Imperium Thresher"
+      ],
+      "992EC080": [
+        "Ikora"
+      ],
+      "9A75C080": [
+        "Lodi"
+      ],
+      "E5F2CC80": [
+        "Ascendant Guard"
+      ],
+      "4EB1E180": [
+        "Infiltrator Valus",
+        "Centurion",
+        "Maya's Retribution",
+        "Primus Or'sek, Vessel of Nightmares",
+        "Commander of Eternity"
+      ],
+      "4D0AC080": [
+        "Eramis"
+      ],
+      "376EE280": [
+        "Iziira, Pledged to Yirix"
+      ],
+      "7DC8E180": [
+        "Esteemed Incendior",
+        "Honored Incendior",
+        "4F982399",
+        "Gladiator Marug, Younger Brother",
+        "Exhumed Prisoner",
+        "Redolence of Decay",
+        "Redolence of Splendor",
+        "Aspirant of Nezarec",
+        "Patron"
+      ],
+      "E7A7E280": [
+        "Heretical Knight",
+        "Accursed Swordbearer"
+      ],
+      "6113C080": [
+        "Asher"
+      ],
+      "A9853E81": [
+        "Ransaaks, Privateer"
+      ],
+      "987ACC80": [
+        "Pauurc, the Farseer's Heir"
+      ],
+      "410AC080": [
+        "Mithrax"
+      ],
+      "0CDBB780": [
+        "player"
+      ],
+      "A623E380": [
+        "Balhoth, Keeper of Memory",
+        "Rancorous Ogre",
+        "Pillar of Silence"
+      ],
+      "1539C080": [
+        "Eris Morn"
+      ],
+      "48E2E180": [
+        "Independent Minotaur",
+        "Tharsis Reformation Minotaur",
+        "Wanted Reformation Minotaur",
+        "Gambler Minotaur",
+        "Singular Minotaur",
+        "Operations Specialist"
+      ],
+      "3EE9E280": [
+        "Bracus Gu'ulan, Shamed Legionary"
+      ],
+      "814EE180": [
+        "Ravenous Dire Phalanx",
+        "Dire Phalanx",
+        "Truum, the Waking"
+      ],
+      "86D2B780": [
+        "cayde_6"
+      ],
+      "FB6CA880": [
+        "Lord Saladin"
+      ],
+      "D6F6E280": [
+        "Ascendant Guard",
+        "Imperium Captive"
+      ],
+      "D4D0BF80": [
+        "Hawthorne"
+      ],
+      "FE83E280": [
+        "fallen_vandal"
+      ],
+      "4BD2E280": [
+        "Minotaur",
+        "Xûr's Chosen, Special Guest Star",
+        "Paraversal Contestant"
+      ],
+      "4A97E280": [
+        "Ir Airâm, Deathsinger"
+      ],
+      "60BACB80": [
+        "Primeval Envoy"
+      ],
+      "290EE380": [
+        "hive_wizard"
+      ],
+      "0F28C080": [
+        "Drifter"
+      ],
+      "51AAE280": [
+        "Transcendent Hydra"
+      ],
+      "80C0B780": [
+        "eris_morn"
+      ],
+      "18ABE280": [
+        "Loyalist Incendior",
+        "Nightmare Incendior",
+        "Dread Bearer",
+        "Nightmare of Carun, Beastmaster",
+        "Honored Bellkeeper"
+      ],
+      "71FCE280": [
+        "Nightmare of the Fanatic"
+      ],
+      "6919C080": [
+        "Blue"
+      ],
+      "E7ECE280": [
+        "11CD9AAA",
+        "Imperial Deserter"
+      ],
+      "966EE380": [
+        "Imperium Captive"
+      ],
+      "00A8E280": [
+        "Transport Servitor"
+      ],
+      "6639B880": [
+        "Nimbus"
+      ],
+      "9F9EE280": [
+        "Acolyte",
+        "Unhallowed Acolyte",
+        "D-Block Cult Acolyte",
+        "Xûr's Edgekeeper"
+      ],
+      "0642E180": [
+        "Blistered Knight",
+        "Revenant Knight",
+        "Lucent Reliquist",
+        "Seal-Keeper",
+        "Rune Keeper",
+        "Lightblade's Disciple",
+        "Lucent Swordbearer",
+        "Resonant Thief",
+        "Vorlog, Risen in Heresy"
+      ],
+      "94E7E280": [
+        "Taniks, Reborn"
+      ],
+      "99FAE180": [
+        "The Odynom",
+        "Ravenous Taken Captain",
+        "Servile Captain",
+        "Taken Captain",
+        "Teksis, Ascendant Sentinel",
+        "D22E4F68",
+        "ADFF6EAC",
+        "Eye of Xivu Arath",
+        "Vanguard's Most Wanted",
+        "Vendraxis, Shadow of Oryx",
+        "Scavenging Crew Leader",
+        "Failed Apprentice",
+        "Savriks, Riven's Patience",
+        "Labyrinth Architect",
+        "Eriviks, the Waking",
+        "Asterion, Set Apart",
+        "Xûr's Blightmonger"
+      ],
+      "F2CCE280": [
+        "Interference Mind",
+        "Pagida Divided, the Choral Cage",
+        "Pagida Divided, the Unknown Cipher"
+      ],
+      "C928C080": [
+        "The Crow"
+      ],
+      "DE03C080": [
+        "fallen_vandal"
+      ],
+      "9CD9BF80": [
+        "rahool"
+      ],
+      "9200E380": [
+        "Ixel, the Far-Reaching"
+      ],
+      "9E863E81": [
+        "Shade of Keit'Ehr"
+      ],
+      "E99EE280": [
+        "Unyielding Servitor"
+      ],
+      "5BEEBF80": [
+        "Eris Morn"
+      ],
+      "97B1E280": [
+        "Scorch Vandal, Gunner of Avarokk"
+      ],
+      "0B64E180": [
+        "Disciple of Kridis",
+        "Archon Aspirant, House Salvation",
+        "Elenaks, Salvation Elite"
+      ],
+      "5446E180": [
+        "Revenant Knight",
+        "Blistered Knight",
+        "Swordbearer Nightmare",
+        "Merok, Spurned by Eir",
+        "Dakoor, Spurned by Yul",
+        "Garok, Spurned by Xol",
+        "Paraversal Contestant",
+        "Crota's Swordbearer"
+      ],
+      "EB803E81": [
+        "Pirrha, the RIfleman"
+      ],
+      "3246C080": [
+        "The Spider"
+      ],
+      "FD50E280": [
+        "Uplifted Choral Minotaur",
+        "Coryphaeus Minotaur",
+        "Precursor Axis Minotaur",
+        "Choral Minotaur",
+        "Radiolaria Nexus",
+        "Independent Subroutine",
+        "Minotaur Saboteur",
+        "Optical Minotaur",
+        "Coolant Scrounger",
+        "Rosetta Sentry",
+        "PARTITION Module Bearer",
+        "ACCESS Module Bearer",
+        "DELETION Module Bearer"
+      ],
+      "08ABE280": [
+        "Loyalist War Beast",
+        "Nightmare War Beast"
+      ],
+      "7E24E380": [
+        "Hexahedric Mind"
+      ],
+      "72B2E180": [
+        "Tarnished Chieftain",
+        "Corrupted Chieftain"
+      ],
+      "C3C7E180": [
+        "Honored Centurion",
+        "Esteemed Centurion",
+        "Bracus Viguln, Shadow Legion",
+        "5C7F2093",
+        "Broken Legion Remnant",
+        "Gladiator Bra'urn, Elder Brother",
+        "Vanguard's Most Wanted",
+        "Aspirant of Nezarec",
+        "Fortress Ship Gatekeeper",
+        "Belligerent Patron"
+      ],
+      "A1CDBF80": [
+        "Ghost"
+      ],
+      "0E2FC080": [
+        "Glint"
+      ],
+      "E6F2BF80": [
+        "fallen_vandal"
+      ],
+      "2DD4B880": [
+        "Uldren Sov"
+      ],
+      "7BA2E280": [
+        "FE350B72",
+        "Ignovun, Chosen of Caiatl"
+      ],
+      "8036E280": [
+        "Servitor",
+        "Superior Overseer Servitor"
+      ],
+      "9BD2E280": [
+        "Adherent of Ecthar"
+      ],
+      "50FDE280": [
+        "Optus Namic",
+        "Mirix, Imperium Legate"
+      ],
+      "C4F9E180": [
+        "Corrupted Chieftain",
+        "Opulent Chieftain",
+        "Tarnished Chieftain",
+        "Dredge Chieftain"
+      ],
+      "03CEBF80": [
+        "The Witness"
+      ],
+      "DB38C080": [
+        "Slain Phantom"
+      ],
+      "9AD9BF80": [
+        "eva"
+      ],
+      "C06BC080": [
+        "Banshee-44"
+      ],
+      "D37AE280": [
+        "Blood Guard Incendior",
+        "740DEE9F",
+        "Nightmare of Emonut, Sworn of Moli Imoli",
+        "Val Vinca'ar",
+        "Val Cunqu'us"
+      ],
+      "45E9BF80": [
+        "fallen_vandal"
+      ],
+      "4016E380": [
+        "Descendant Axis Goblin",
+        "Precursor Axis Goblin",
+        "Precursor Goblin",
+        "Descendant Goblin"
+      ],
+      "BE65E380": [
+        "Engineer Brig",
+        "Piker Brig"
+      ],
+      "5CB2E280": [
+        "Wrathborn Captain"
+      ],
+      "5C3AE280": [
+        "Once-Phyris, the Exhumed Tether"
+      ],
+      "456AC080": [
+        "Eris Morn"
+      ],
+      "2CEBA580": [
+        "player"
+      ],
+      "542AE180": [
+        "Dread Bearer",
+        "Vanguard's Most Wanted",
+        "F07A9C59",
+        "Jai'ek, Supplicant of Calus",
+        "Nightmare of Evoks, the Burned",
+        "The Sunken"
+      ],
+      "156EA880": [
+        "Ana Bray"
+      ],
+      "C428E280": [
+        "Trusted Servitor, Drenskis's Flock",
+        "Engineer Servitor, Drenskis's Flock"
+      ],
+      "4446E180": [
+        "Revenant Cursed Thrall",
+        "Blistered Cursed Thrall",
+        "D-Block Cursed Thrall"
+      ],
+      "B943E380": [
+        "Skiffiks, Privateer"
+      ],
+      "32DBB780": [
+        "player"
+      ],
+      "BA1EE380": [
+        "Imperial Legionary",
+        "Core Bearer",
+        "Nightmare of Hou'dal, Failed Assassin"
+      ],
+      "C113B880": [
+        "Bael"
+      ],
+      "2026C080": [
+        "Slain Phantom"
+      ],
+      "BF46E180": [
+        "BD7D830F",
+        "Ak-Baral, Rival Of Navôta"
+      ],
+      "05DCE180": [
+        "hive_wizard"
+      ],
+      "F106E180": [
+        "Barrier Servitor"
+      ],
+      "A89AE180": [
+        "Locus of Subjugation",
+        "Ether-Gorged Scorn",
+        "Scorned Organist",
+        "Ksimikaa the Painsmith"
+      ],
+      "210EE380": [
+        "Overload Taken Hobgoblin"
+      ],
+      "5537E280": [
+        "Fang of the Witness",
+        "Machine Priest's Assistant"
+      ],
+      "9E66C080": [
+        "Shank"
+      ],
+      "7D9DE280": [
+        "Revenant Wizard",
+        "Osheen, Cryptolith Keeper",
+        "Hyun't, Cryptolith Keeper",
+        "Oltiir, Cryptolith Keeper",
+        "F'shor, Cryptolith Keeper"
+      ],
+      "7475C080": [
+        "fallen_vandal"
+      ],
+      "D903C080": [
+        "fallen_vandal"
+      ],
+      "E9833E81": [
+        "Trusted Tracer Shank",
+        "Favored Tracer Shank, Vixis-Built",
+        "Piker Tracer Shank",
+        "Engineer Tracer Shank"
+      ],
+      "D3B0E180": [
+        "Esteemed Incendior",
+        "Thox, the Smoldering Wasp",
+        "Honored Incendior",
+        "Star Incendior",
+        "C-Block Blood Incendior",
+        "Dishonored Incendior",
+        "Zerz, the Unstoppable Weight",
+        "Fortification Substrate Enforcer",
+        "Nightmare Bellkeeper",
+        "Xûr's Bombtender"
+      ],
+      "EE59E280": [
+        "Chief Inspector",
+        "Wanted Piker Captain",
+        "Distinguished Captain"
+      ],
+      "8AEFBF80": [
+        "Nimbus"
+      ],
+      "3B6DC080": [
+        "Blue"
+      ],
+      "B81EE380": [
+        "Nightmare Gladiator",
+        "Loyalist Gladiator",
+        "Loyalist Bruiser"
+      ],
+      "5A0CC080": [
+        "Lodi"
+      ],
+      "DF23C080": [
+        "Drifter"
+      ],
+      "42FFE280": [
+        "A591E62E",
+        "Savathûn's Right Hand"
+      ],
+      "1083E180": [
+        "Resilient Dreg"
+      ],
+      "11B1E180": [
+        "Ta'aul, Disgraced Colossus",
+        "C.A.R.L., Dummy of Practice",
+        "Colossus",
+        "Maya's Retribution",
+        "Valus Thu'ur, Vessel of Nightmares"
+      ],
+      "FF06C080": [
+        "Petra Venj"
+      ],
+      "8A2EE280": [
+        "Gambler Hobgoblin",
+        "Singular Hobgoblin",
+        "Tharsis Reformation Hobgoblin",
+        "Independent Hobgoblin",
+        "Tharsis Reformation Cache Keeper"
+      ],
+      "AA2AE280": [
+        "Singular Hydra",
+        "Independent Hydra",
+        "Gambler Hydra"
+      ],
+      "F339C080": [
+        "fallen_vandal"
+      ],
+      "FA23E380": [
+        "Unstoppable Taken Phalanx"
+      ],
+      "9E24E380": [
+        "Kaniks, the Mad Bomber"
+      ],
+      "7423C080": [
+        "Sloane"
+      ],
+      "43874081": [
+        "fallen_vandal"
+      ],
+      "172CC080": [
+        "Caiatl"
+      ],
+      "3AC3CC80": [
+        "Psion Commander",
+        "Egregore Atavist"
+      ],
+      "4FB7E180": [
+        "Barrier Colossus",
+        "Terrestrial Lieutenant"
+      ],
+      "ED6DCC80": [
+        "Asher"
+      ],
+      "B5C8BF80": [
+        "Mara Sov"
+      ],
+      "9F64E380": [
+        "Compelled Hadrian, Oppressive Mind"
+      ],
+      "3EB4E280": [
+        "Projection of Savathûn",
+        "77DD8966",
+        "Savathûn, the Witch Queen"
+      ],
+      "531AE380": [
+        "Red Legion Goliath",
+        "Paraversal Challenger"
+      ],
+      "81FAE180": [
+        "Ravenous Taken Minotaur",
+        "Taken Minotaur",
+        "Servile Minotaur",
+        "D92F2C5C",
+        "Honed Minotaur",
+        "Labyrinth Architect",
+        "Fleeting Shade",
+        "Xûr's Blightmonger"
+      ],
+      "1423C080": [
+        "Eris Morn"
+      ],
+      "B939B880": [
+        "Osiris"
+      ],
+      "BFE8E280": [
+        "Headless One"
+      ],
+      "71EBA580": [
+        "player"
+      ],
+      "CED9E280": [
+        "Might of Riven",
+        "Githo'ok, Blade of Xivu Arath"
+      ],
+      "A8EFE280": [
+        "The Witness"
+      ],
+      "AEF3E180": [
+        "Servile Wizard",
+        "Ravenous Taken Wizard",
+        "Taken Wizard",
+        "Priest of Incaru",
+        "WANTED: The Navigator's Claw",
+        "Dul'na, the Dissector",
+        "BAF48FDC",
+        "Wardweaver",
+        "Xeno'doti, the Scavenger",
+        "Mar'y'n, the Devourer",
+        "Taken Shield Weaver",
+        "Wish-Lured Blightweaver",
+        "Paraversal Contender",
+        "An Salaak, the Weft",
+        "An Hamaat, the Warp",
+        "Inkasi, Disciple of Quria"
+      ],
+      "38F5E180": [
+        "Ravenous Taken Knight",
+        "Taken Knight",
+        "Yateth, Taken Stain",
+        "Servile Knight",
+        "Yamaat, Ascendant Sentinel",
+        "D92418E6",
+        " Knight",
+        "Blighted Knight",
+        "WANTED: Dolos, the Datamine",
+        "Glass Collector",
+        "Disciple's Compass",
+        "Blightguard",
+        "Varghul, Fragment of Oryx",
+        "Vengeful Blade",
+        "Imbalanced Warden",
+        "WANTED: Saturn Survivor",
+        "Labyrinth Architect"
+      ],
+      "1F44E180": [
+        "Revenant Acolyte",
+        "Blistered Acolyte",
+        "Rune Keeper",
+        "Runebound Visage"
+      ],
+      "8CEAE280": [
+        "9AE4C5C4",
+        "Valus Dralgur, the Exiled"
+      ],
+      "6C83E180": [
+        "Resilient Captain",
+        "Resolute Captain",
+        "56EAB6C7",
+        "Crystalline Captain",
+        "Vanguard's Most Wanted",
+        "Votary Nimis, House Exile Telemechanist",
+        "Stasis Conspirator",
+        "Strand Conspirator",
+        "Devout Rezilisk, Ramshackle Arcmaster"
+      ],
+      "527FE380": [
+        "Distinguished Brig"
+      ],
+      "F823E380": [
+        "Overload Taken Hobgoblin"
+      ],
+      "550CC080": [
+        "Ikora"
+      ],
+      "789DE280": [
+        "BrayTech Security Frame",
+        "FOTC Frame"
+      ],
+      "A884E280": [
+        "Resilient Vandal"
+      ],
+      "09ABE280": [
+        "Loyalist Colossus"
+      ],
+      "DF97E280": [
+        "Nightmare of Taniks, the Scarred"
+      ],
+      "99C8BF80": [
+        "civilian_display_name"
+      ],
+      "B56DC080": [
+        "Ikora"
+      ],
+      "EE50E280": [
+        "Minotaur"
+      ],
+      "9310C080": [
+        "Drifter"
+      ],
+      "6726E280": [
+        "Tharsis Reformation Harpy",
+        "Singular Harpy",
+        "Operations Specialist"
+      ],
+      "F29AE280": [
+        "Kargen the Technocrat"
+      ],
+      "F523E380": [
+        "Bound Taken Hobgoblin"
+      ],
+      "C7EDE280": [
+        "vex_harpy_ultra"
+      ],
+      "4CF1E280": [
+        "Bound Attendant"
+      ],
+      "F341E180": [
+        "BD7D830F",
+        "Atan Maht, Margrave of Erasure",
+        "Bar-Zel, Tutelary of Savathûn"
+      ],
+      "E814C580": [
+        "player"
+      ],
+      "C88EA780": [
+        "Molok, Edge of Xivu Arath"
+      ],
+      "736BE180": [
+        "BD7D830F",
+        "Nightmare Servant of Ir Yût"
+      ],
+      "7382E180": [
+        "5CAABF1A",
+        "Unyielding Servitor",
+        "Exile Servitor",
+        "Unrelenting Servitor",
+        "Well of the Archon",
+        "Arc Keeper",
+        "Extraction Servitor",
+        "Distribution Servitor, Holy Vessel"
+      ],
+      "8565D280": [
+        "Exomida, Taken of the Witness",
+        "Voice of Riven"
+      ],
+      "BC06C680": [
+        "civilian_display_name"
+      ],
+      "4166C080": [
+        "The Spider"
+      ],
+      "3D66C080": [
+        "Eido"
+      ],
+      "8C63C080": [
+        "fallen_vandal"
+      ],
+      "15DAE180": [
+        "hive_wizard"
+      ],
+      "3D04E380": [
+        "D-Block Cursed Thrall"
+      ],
+      "AD6AE380": [
+        "Psion Commander",
+        "Decima, Shielding Psion"
+      ],
+      "83DBBF80": [
+        "fallen_vandal"
+      ],
+      "37C1BF80": [
+        "Sloane"
+      ],
+      "FB59E180": [
+        "Captain",
+        "Teraks, Salvation Elite",
+        "Teliks, House Salvation",
+        "Ferkis, Salvation's Squall",
+        "Meliks, Salvation Elite",
+        "Weniks, Salvation Elite",
+        "Feltraks, Salvation Elite"
+      ],
+      "32EEBF80": [
+        "fallen_vandal"
+      ],
+      "FDF1BF80": [
+        "Nimbus"
+      ],
+      "E500C080": [
+        "Devrim"
+      ],
+      "37FFE180": [
+        "cabal_gladiator"
+      ],
+      "11ABE280": [
+        "Loyalist Psion",
+        "Nightmare Psion",
+        "Atavist Illusion",
+        "Nightmare of Qalec, the Sniper",
+        "Nightmare of Tlazat, Fed to Beasts",
+        "Standard Bearer"
+      ],
+      "FA09E380": [
+        "Unstoppable Abomination"
+      ],
+      "1EF1E180": [
+        "Ravenous Taken Psion",
+        "Taken Psion",
+        "7B84C494",
+        "Servile Psion",
+        "Insight Psion",
+        "Rot-minder",
+        "Lyrix, Sacrificed of Otzot"
+      ],
+      "A523E380": [
+        "Hadragal, Keeper of Memory"
+      ],
+      "8900E380": [
+        "5F4B53E4",
+        "Qabix, Insurgent"
+      ],
+      "2124E380": [
+        "Compelled Aggressor"
+      ],
+      "1542E180": [
+        "Phry'zhia the Insatiable",
+        "Aksul, Light's Rebuke",
+        "Lucent Gatekeeper"
+      ],
+      "E889E180": [
+        "Kalliks, Baron of House Dusk",
+        "Fang of the Witness",
+        "Siriks, of House Salvation",
+        "Jaxxiks, Shadow Legion Pawn"
+      ],
+      "2F04C080": [
+        "Awoken Corsair"
+      ],
+      "220BB880": [
+        "player"
+      ],
+      "EDDEBF80": [
+        "fallen_vandal"
+      ],
+      "35F2E280": [
+        "Berserker, Indoctrinated by the Witness"
+      ],
+      "B88EA780": [
+        "13797E86",
+        "Golakh, Befouler"
+      ],
+      "E66DA880": [
+        "eva"
+      ],
+      "B7833E81": [
+        "Malefic Colossus",
+        "Colossus",
+        "Data Warden"
+      ],
+      "2B2CC080": [
+        "Osiris"
+      ],
+      "120BB880": [
+        "player"
+      ],
+      "CD35E280": [
+        "Trusted Shank",
+        "Piker Shank"
+      ],
+      "CEF9E180": [
+        "Imperium Tesserarius Praetorian",
+        "Chief Inspector",
+        "Imperium Electi Praetorian",
+        "Dra'aug, Imperium Legate",
+        "Imperium Decurion Praetorian",
+        "Valus Prusik",
+        "Bracus Amal",
+        "Barracks Commander Tha'arak"
+      ],
+      "A88EA780": [
+        "Unyielding Servitor"
+      ],
+      "847DA880": [
+        "fallen_vandal"
+      ],
+      "DBDEBF80": [
+        "fallen_vandal"
+      ],
+      "760AE380": [
+        "hive_knight_ultra"
+      ],
+      "235AE180": [
+        "Resilient Dreg",
+        "Resolute Dreg",
+        "Drake, Charge Courier"
+      ],
+      "47F1E280": [
+        "Bound Weaver"
+      ],
+      "4F04C080": [
+        "Awoken Corsair"
+      ],
+      "D22AE180": [
+        "Corrupted Chieftain",
+        "Tarnished Chieftain",
+        "Nightmare Chieftain",
+        "Dredge Chieftain"
+      ],
+      "FE8EE180": [
+        "Sanctified Mind, Sol Inherent"
+      ],
+      "986EE380": [
+        "Imperium Captive"
+      ],
+      "64FAE180": [
+        "Taken Centurion",
+        "Servile Centurion",
+        "Ravenous Taken Centurion",
+        "1361BBD5",
+        "Ashorc, Temple Claimant",
+        "4860DA82",
+        "Flamequeller Centurion",
+        "Disciple's Centurion",
+        "Cleaved Taken Centurion",
+        "Val Grask, Warmth of Riven",
+        "Labyrinth Architect",
+        "Val Bho'kaurl",
+        "Assault Leader"
+      ],
+      "EEF9E180": [
+        "Tarnished Chieftain",
+        "Corrupted Chieftain",
+        "Dredge Chieftain",
+        "Drekaa, Warmonger Chieftain"
+      ],
+      "8E01C080": [
+        "Shaw Han"
+      ],
+      "06A7E180": [
+        "Haliekron, Nexus Overlord",
+        "Minotaur",
+        "Phydron, Gate Lord",
+        "0483FC68",
+        "B09921BB",
+        "Kamarian, Radial Overseer",
+        "Polyis, Nessian Gatelord",
+        "Inquisitor Mind",
+        "Cornerstone of the Witness",
+        "Protometon, Nexial Hijacker",
+        "Minotaur Harpax",
+        "Minotaur Accompli",
+        "Ioneion, System Control Flow",
+        "Minotaur Supernumeros"
+      ],
+      "7210C080": [
+        "Lodi"
+      ],
+      "3B2CC080": [
+        "Osiris"
+      ],
+      "8A44E280": [
+        "Ir Anûk, Deathsinger"
+      ],
+      "09B2E180": [
+        "Corrupted Stalker",
+        "Tarnished Stalker"
+      ],
+      "811BE380": [
+        "Gatekeeper of Eternity"
+      ],
+      "0FD4E280": [
+        "d17_launch_comet02_underworld_taken_wizard_cursed_witch",
+        "Keeper of Petitions"
+      ],
+      "562CC080": [
+        "Awoken Corsair"
+      ],
+      "0D24E180": [
+        "E6695B44",
+        "Termiiks, Invasive Warrant"
+      ],
+      "B6843E81": [
+        "964C8894"
+      ],
+      "F3B5CB80": [
+        "Ascendant Primeval Servitor",
+        "Baimogg, Unchained Wrath"
+      ],
+      "9C6CE180": [
+        "Nightmare Acolyte",
+        "Revenant Acolyte",
+        "Blistered Acolyte",
+        "Lunar Scavenger",
+        "Bone Collector"
+      ],
+      "9BBBE280": [
+        "Vessel of the Archon"
+      ],
+      "9BB3E280": [
+        "Mor'ak, Lightstealer"
+      ],
+      "D08EA780": [
+        "Wrathborn Captain"
+      ],
+      "201CE380": [
+        "385CBC93",
+        "Calus, the Disciple"
+      ],
+      "18D2E280": [
+        "Esteemed Phalanx",
+        "Honored Phalanx",
+        "Deathwatch"
+      ],
+      "3783E180": [
+        "Tracer Shank",
+        "Resilient Tracer Shank"
+      ],
+      "1E7FE380": [
+        "Minotaur Isolate"
+      ],
+      "454CE280": [
+        "F676A9B6",
+        "Prime Compelled Wyvern",
+        "Plague Sentinel",
+        "Aphomosis, Assimilation Mind",
+        "Adytum, Inviolable Mind"
+      ],
+      "20D9E180": [
+        "hive_ogre"
+      ],
+      "FA35C080": [
+        "Zavala"
+      ],
+      "F225E380": [
+        "Nightmare of Reyiks, Actuator"
+      ],
+      "D979CC80": [
+        "Scorn Walker"
+      ],
+      "6615B880": [
+        "gambit"
+      ],
+      "A5D9BF80": [
+        "Holliday"
+      ],
+      "E2AEE180": [
+        "Elite Compelled Wyvern",
+        "Prime Compelled Wyvern",
+        "Compelled Wyvern",
+        "040CC533",
+        "Warden",
+        "B74378B0",
+        "Reaktos, Possessive Wyvern"
+      ],
+      "E92FE380": [
+        "Aye-I, Privateer"
+      ],
+      "B22AE180": [
+        "Tarnished Chieftain",
+        "Corrupted Chieftain",
+        "Nightmare Chieftain",
+        "Dredge Chieftain",
+        "Glyphkeeper",
+        "Muloksii, Twilight Captain",
+        "Night Terror",
+        "Arc-Charged Scorn"
+      ],
+      "706DE180": [
+        "Blistered Wizard",
+        "Nightmare Wizard",
+        "Revenant Wizard",
+        "Sulmâkta, High Conductor",
+        "Ugul Gar Wizard",
+        "Malevolent Ritualist",
+        "Besurith, Daughter of Crota",
+        "Scholar of the Cryptoglyph",
+        "Apprentice of the Cryptoglyph",
+        "Lunar Scavenger",
+        "Malura, the Fated"
+      ],
+      "E4B1E280": [
+        "FDCAFE50",
+        "Val Bho'kaurl"
+      ],
+      "B8E7E180": [
+        "Imperium Incendior",
+        "Imperium Tesserarius Incendior",
+        "Imperium Decurion Incendior",
+        "Imperium Electi Incendior",
+        "Incendior Lackey"
+      ],
+      "7069C580": [
+        "Starhorse"
+      ],
+      "A8F4CB80": [
+        "Walker "
+      ],
+      "4218CF80": [
+        "Heavy Shank"
+      ],
+      "CFAFE180": [
+        "Resilient Dreg",
+        "Nightmare Dreg",
+        "B-Block Rat Dreg",
+        "A-Block Scar Dreg",
+        "Dusk Walker Tech",
+        "Lunar Scavenger"
+      ],
+      "5F6CA880": [
+        "Shaxx"
+      ],
+      "799DE280": [
+        "BrayTech Security Frame"
+      ],
+      "A023E380": [
+        "Revenant Shrieker"
+      ],
+      "1E06C680": [
+        "Red Legion Goliath"
+      ],
+      "C3F9E180": [
+        "Corrupted Wraith",
+        "Tarnished Wraith"
+      ],
+      "C7F4E280": [
+        "The Templar"
+      ],
+      "BFFAE180": [
+        "Ravenous Taken Thrall",
+        "Taken Thrall"
+      ],
+      "6066C080": [
+        "Blue"
+      ],
+      "9264E380": [
+        "Tarnus, Shadow Legion Taskmaster"
+      ],
+      "37EBE280": [
+        "Parthenios, Drifting Mind"
+      ],
+      "A636E280": [
+        "Kylazk, Exile Machinist",
+        "Brig of Exile",
+        "The Interred"
+      ],
+      "22DAA680": [
+        "Heavy Shank"
+      ],
+      "84BBE180": [
+        "Honored Scorpius",
+        "Scorpius"
+      ],
+      "B08EA780": [
+        "Resilient Heavy Shank",
+        "Befouler Heavy Shank"
+      ],
+      "290AE180": [
+        "Nightmare of Kelnix Reborn"
+      ],
+      "96B3E280": [
+        "Imperial Optus",
+        "Optus Haseth, Coalition Ally"
+      ],
+      "72EFE280": [
+        "Corrupted Chieftain",
+        "Glyphkeeper"
+      ],
+      "A3D9BF80": [
+        "xur"
+      ],
+      "F5FAE280": [
+        "Atraks-1, Fallen Exo"
+      ],
+      "FB3FE180": [
+        "Gee'yom, Resonant Saboteur"
+      ],
+      "2125C080": [
+        "Immaru"
+      ],
+      "88EDE280": [
+        "Overcharge Shank"
+      ],
+      "9D58E280": [
+        "The Witness"
+      ],
+      "31B2E180": [
+        "Corrupted Raider",
+        "Tarnished Raider"
+      ],
+      "2B51E280": [
+        "Uplifted Choral Harpy",
+        "Choral Harpy",
+        "Coryphaeus Harpy",
+        "Khoros, Harmony Monitor"
+      ],
+      "96833E81": [
+        "Uplifted Choral Minotaur"
+      ],
+      "B71EE380": [
+        "Imperial Incendior",
+        "Shield Warden",
+        "Nightmare Incendior",
+        "Nightmare of Ka'nok, Failed Assassin"
+      ],
+      "77A9E280": [
+        "Phylaks, the Warrior"
+      ],
+      "1E06A880": [
+        "Hydra"
+      ],
+      "2DF4CC80": [
+        "Empress Caiatl"
+      ],
+      "9831C080": [
+        "Lodi"
+      ],
+      "53F20981": [
+        "Clovis Bray AI"
+      ],
+      "D9F6E280": [
+        "Savathûn, the Witch Queen"
+      ],
+      "D003C080": [
+        "fallen_vandal"
+      ],
+      "2014C080": [
+        "Asher"
+      ],
+      "DB70CA80": [
+        "Reba-5"
+      ],
+      "CEAEE180": [
+        "Compelled Fanatic",
+        "Elite Compelled Fanatic",
+        "Prime Compelled Fanatic",
+        "Disintegrator"
+      ],
+      "AABBCC80": [
+        "Osiris"
+      ],
+      "B6F2D080": [
+        "Red Legion Goliath"
+      ],
+      "B09BE180": [
+        "Minotaur",
+        "Ixion, Covetous Mind",
+        "Deceptor Mind",
+        "Zeteon, Redemptive Mind"
+      ],
+      "FEAEE180": [
+        "Ransack Captain",
+        "Captain",
+        "Nightmare of Rizaahn, the Lost",
+        "Haviks, Dusk Baron",
+        "Ralniks, Blood of Kells",
+        "Wretch Captain"
+      ],
+      "E8833E81": [
+        "Sacrificial Exploder Shank",
+        "Mourned Exploder Shank"
+      ],
+      "3AE6BF80": [
+        "Failsafe"
+      ],
+      "0AD5E280": [
+        "Warmonger Knight"
+      ],
+      "E297E280": [
+        "Nightmare of Zydron, Gate Lord"
+      ],
+      "37F0BF80": [
+        "Nimbus"
+      ],
+      "25D5E280": [
+        "Locus of Wailing Grief"
+      ],
+      "72D4E280": [
+        "Phry'zhia the Insatiable",
+        "Hive Wrathborn"
+      ],
+      "2EB7E180": [
+        "Watchful Harpy",
+        "Quantum Harpy",
+        "Malignant Harpy",
+        "Attenuation Mind",
+        "Kitharodes, Choral Minds",
+        "Cation Harpy",
+        "Anion Harpy",
+        "Interlocutor Harpy"
+      ],
+      "4736C080": [
+        "fallen_vandal"
+      ],
+      "7AFFE280": [
+        "Korosek, Thronebringer"
+      ],
+      "AC23E380": [
+        "Bound Harpy"
+      ],
+      "88D2E280": [
+        "Ashorc, Temple Claimant",
+        "Azshrŭnah ur-Nokru, the Sacrificed",
+        "Paraversal Challenger"
+      ],
+      "6C06C080": [
+        "Saint-14"
+      ],
+      "4F25E180": [
+        "7F9A2F15",
+        "Ahamkara Illusion"
+      ],
+      "809DE280": [
+        "Val Ma'rag",
+        "Bracus Du'urund, Coalition Ally"
+      ],
+      "1EB7E180": [
+        "Finalizer",
+        "Disintegrator",
+        "Rusted Fanatic",
+        "Mischievous Miscreant"
+      ],
+      "AC33E280": [
+        "Vanguard's Most Wanted"
+      ],
+      "2132C080": [
+        "Ikora"
+      ],
+      "124CE180": [
+        "Ravenous Dire Knight"
+      ],
+      "9F1FE380": [
+        "Elder Revenant",
+        "Screeb Matriarch"
+      ],
+      "09E7E180": [
+        "Kridis, Dark Priestess"
+      ],
+      "F7B8CB80": [
+        "Primeval Knight"
+      ],
+      "771CE380": [
+        "385CBC93",
+        "Calus, the Disciple"
+      ],
+      "812CE380": [
+        "Taken Wizard"
+      ],
+      "6D3EC080": [
+        "Zavala"
+      ],
+      "4B67E180": [
+        "Warrior's Enforcer",
+        "Korha the Hollow",
+        "Archon Aspirant, House Salvation",
+        "Machine Priest's Assistant",
+        "Machine Priest"
+      ],
+      "AFD9BF80": [
+        "Saint-14"
+      ],
+      "E4B9E180": [
+        "Valus Cal'dhur"
+      ],
+      "6784E180": [
+        "Uplifted Choral Wyvern",
+        "Coryphaeus Wyvern",
+        "040CC533",
+        "Choral Wyvern",
+        "Precursor Malignant Wyvern",
+        "Data Warden"
+      ],
+      "3577E280": [
+        "Overload Taken Hobgoblin"
+      ],
+      "92EFE280": [
+        "Taken Psion",
+        "The Witness"
+      ],
+      "F1BACB80": [
+        "Primeval Captain"
+      ],
+      "31F1E180": [
+        "Imperium Colossus",
+        "Imperium Warden",
+        "Legatus Colossus",
+        "Imperator Colossus",
+        "Imperium Electi Colossus",
+        "Administrator Brask",
+        "Retaliator",
+        "Operations Specialist",
+        "Val Cal'ric, Door Technician",
+        "Imbalanced Warden"
+      ],
+      "466EE280": [
+        "Ba'alar, Compelled Centurion"
+      ],
+      "9969E380": [
+        "Psion Commander",
+        "Thysaeuc, Quicksilver Psion"
+      ],
+      "513EC080": [
+        "fallen_vandal"
+      ],
+      "C78EA780": [
+        "Enduring Executioner"
+      ],
+      "5105E380": [
+        "Zhagal, Disgraced Colossus"
+      ],
+      "FB81E280": [
+        "ultra_taken_captain_display_name",
+        "Keksis, Twice-Betrayed",
+        "Icon of Ruin"
+      ],
+      "CC88A780": [
+        "Viscera of Nezarec",
+        "Blightmaker",
+        "Cornerstone of the Witness",
+        "Toniq, Imprint of Nezarec"
+      ],
+      "DBF2BF80": [
+        "fallen_vandal"
+      ],
+      "D9AEE180": [
+        "Compelled Harpy",
+        "Elite Compelled Harpy",
+        "Prime Compelled Harpy"
+      ],
+      "F371E280": [
+        "Ascendant Guard",
+        "Imperium Captive"
+      ],
+      "5A1AE280": [
+        "Icon of Division",
+        "Devoted Commander",
+        "Kavauust, Reverent of the Witness",
+        "Threshold Sentinel"
+      ],
+      "B2E7E280": [
+        "Nightmare of Jaxx, Claw of Xivu Arath",
+        "Nightmare of Arguth, the Tormented"
+      ],
+      "D925E380": [
+        "Nightmare of Loronvis, Council Hand"
+      ],
+      "80B0E180": [
+        "Honored War Beast",
+        "Nightmare Warbeast",
+        "Esteemed War Beast",
+        "Outlaw War Beast"
+      ],
+      "0F02C080": [
+        "Exo Stranger"
+      ],
+      "C925E380": [
+        "Nightmare of Seresis, Council Hand"
+      ],
+      "CDFEBF80": [
+        "Fynch"
+      ],
+      "B004C380": [
+        "player"
+      ],
+      "9B07E380": [
+        "Demented Abomination"
+      ],
+      "DD46E380": [
+        "Headless One"
+      ],
+      "68B3E280": [
+        "2F620ECE"
+      ],
+      "33F1D080": [
+        "Goliath Tank "
+      ],
+      "E452E280": [
+        "Overload Minotaur",
+        "Conduit Minotaur",
+        "Devotee of the Witness",
+        "Xûr's Keybearer"
+      ],
+      "DBC4BF80": [
+        "The Crow"
+      ],
+      "C79BE180": [
+        "Hydra",
+        "Withdrawn Mind",
+        "Conceptual Mind",
+        "Malignant Hydra"
+      ],
+      "9E1EE380": [
+        "Nightmare of the Fanatic"
+      ],
+      "2528C080": [
+        "The Emissary"
+      ],
+      "8EF4BF80": [
+        "83B406BC"
+      ],
+      "79F9BF80": [
+        "Mithrax, the Forsaken"
+      ],
+      "B809C680": [
+        "Walker "
+      ],
+      "4AE9BF80": [
+        "Ikora"
+      ],
+      "24BEE280": [
+        "Duskfield Shank"
+      ],
+      "F146E180": [
+        "Revenant Shrieker",
+        "Luminous Eye",
+        "Wardens of the Spire"
+      ],
+      "99D2E280": [
+        "Adherent of Mor'ak"
+      ],
+      "76B2CC80": [
+        "Security Turret"
+      ],
+      "CA43E180": [
+        "Revenant Knight",
+        "Blistered Knight",
+        "95448111",
+        "Wrathbringer Knight",
+        "High Supplicant",
+        "Model Prisoner",
+        "Tribute Bearer",
+        "Lighthoarder",
+        "Wellkeeper Knight",
+        "Runebound Visage"
+      ],
+      "B873C080": [
+        "fallen_vandal"
+      ],
+      "9B6BE180": [
+        "Luminous Eye",
+        "Shrieker",
+        "Unhallowed Shrieker",
+        "Lunar Scavenger"
+      ],
+      "D938C080": [
+        "Slain Phantom"
+      ],
+      "641EE380": [
+        "Exiled Hermit",
+        "Riksis, Exile Marauder"
+      ],
+      "3BF7E280": [
+        "Crypt Security"
+      ],
+      "6FFCE280": [
+        "Nightmare of Dominus Ghaul"
+      ],
+      "EF24E380": [
+        "Exile Captain"
+      ],
+      "9DB3E280": [
+        "Aspect of Savathûn"
+      ],
+      "391EE380": [
+        "Wrathborn Brig"
+      ],
+      "5840E280": [
+        "Reanimated Machinist"
+      ],
+      "6FAAE280": [
+        "Belmon, Transcendent Mind"
+      ],
+      "265AE180": [
+        "Resilient Captain",
+        "Resolute Captain",
+        "56EAB6C7",
+        "Fallen High Security Officer",
+        "Technician Captain",
+        "Piksis, House Salvation",
+        "Sniksis, House Salvation",
+        "Arc-Charged Wrathborn",
+        "Brig Factory Guard",
+        "Technorunner",
+        "Highguard, Salvation Elite",
+        "Arc Courier, House Salvation",
+        "Retiks, House Salvation",
+        "Extractor Captain"
+      ],
+      "B0B7E180": [
+        "Unstoppable Incendior"
+      ],
+      "6337C080": [
+        "Petra Venj"
+      ],
+      "059EE280": [
+        "Shadow Guard Centurion"
+      ],
+      "F425E380": [
+        "Nightmare Harpy"
+      ],
+      "45F4BF80": [
+        "Taniks, the Abomination"
+      ],
+      "3B36C080": [
+        "eva"
+      ],
+      "D111E280": [
+        "Imperium Decurion Psion",
+        "Imperium Electi Psion",
+        "Imperium Psion",
+        "Imperium Tesserarius Psion",
+        "Operations Specialist",
+        "Disoriented Imperium",
+        "Panoply Mechanic",
+        "Interrogator Orm",
+        "Battery Thief",
+        "Psion Lackey"
+      ],
+      "24D1BF80": [
+        "The Crow"
+      ],
+      "BDE7A580": [
+        "player"
+      ],
+      "76FBE280": [
+        "4-Miami-22, Tharsis Reformation Overseer"
+      ],
+      "EC3FB980": [
+        "Eido"
+      ],
+      "F12AE180": [
+        "Corrupted Wraith",
+        "Nightmare Wraith",
+        "Tarnished Wraith",
+        "Glass Collector",
+        "Mephitic Host"
+      ],
+      "6B2AE180": [
+        "Corrupted Chieftain",
+        "Tarnished Chieftain",
+        "Dredge Chieftain",
+        "Captain Taksisaa",
+        "Nightmare Chieftain",
+        "Arc-Charged Scorn"
+      ],
+      "F54DE280": [
+        "Coryphaeus Hobgoblin",
+        "Uplifted Choral Hobgoblin",
+        "Choral Hobgoblin",
+        "Polus, the Singular Volley",
+        "Aegis Hobgoblin",
+        "Quantum Aegis Hobgoblin",
+        "Coolant Scrounger"
+      ],
+      "D9BBE180": [
+        "Esteemed Psion",
+        "Honored Psion",
+        "Redolence of Decay",
+        "Redolence of Splendor",
+        "Orbital Security",
+        "Munitions Psion",
+        "Psion Spotter"
+      ],
+      "6BB2E280": [
+        "Wrathborn Servitor"
+      ],
+      "5730C080": [
+        "Zavala"
+      ],
+      "C0803E81": [
+        "Pirrha, the RIfleman"
+      ],
+      "5907CC80": [
+        "Salvation Walker",
+        "Factory Walker"
+      ],
+      "6DE40981": [
+        " "
+      ],
+      "E12AE180": [
+        "Corrupted Lurker",
+        "Nightmare Lurker",
+        "Abated Adherent",
+        "Resonant Keeper"
+      ],
+      "E3C7E280": [
+        "Omen, Blade of the Black Terrace"
+      ],
+      "93D2BF80": [
+        "Holliday"
+      ],
+      "2915A780": [
+        "Camp Radio"
+      ],
+      "1A0BB880": [
+        "player"
+      ],
+      "64B2E180": [
+        "Corrupted Chieftain",
+        "Tarnished Chieftain"
+      ],
+      "7057E280": [
+        "Cipher Imp"
+      ],
+      "F9B3E180": [
+        "Quantum Minotaur",
+        "Malignant Minotaur",
+        "Arc-Charged Minotaur",
+        "Glass Collector",
+        "Conduit Minotaur",
+        "Gatekeeper Minotaur"
+      ],
+      "676DA880": [
+        "Shaw Han"
+      ],
+      "74EFE280": [
+        "Ravenous Taken Knight",
+        "Disciple's Hourglass"
+      ],
+      "C4EFBF80": [
+        "Saint-14"
+      ],
+      "D92EC080": [
+        "The Emissary"
+      ],
+      "6B25E380": [
+        "Nightmare Shank"
+      ],
+      "21B7E180": [
+        "Quantum Goblin",
+        "Nightmare Goblin",
+        "Malignant Goblin",
+        "Architector Goblin",
+        "Integrator Goblin",
+        "Dataholder (Corrupt)",
+        "Dataholder (Forbidden)",
+        "Specimen Gamma",
+        "Specimen Iota",
+        "Xûr's Headbearer",
+        "Consumed Goblin",
+        "Circumstantial Controller",
+        "Troublemaking Thief"
+      ],
+      "5B25E380": [
+        "Val Talacanth, Bound to Sedia",
+        "8C1BCF89"
+      ],
+      "DE43E380": [
+        "Aye-I, Privateer"
+      ],
+      "E8DEBF80": [
+        "fallen_vandal"
+      ],
+      "6FA8E280": [
+        "Prime Ether Servitor"
+      ],
+      "7D44E380": [
+        "Dredgen Sere"
+      ],
+      "4F12E280": [
+        "271A17F8",
+        "Imperium Centurion",
+        "Imperium Generalis",
+        "Elite Imperium Centurion",
+        "Imperium Dux",
+        "Inspector",
+        "Imperium Hangar Security",
+        "Hunter Mob",
+        "Operations Specialist",
+        "Totality Division Vault Protector",
+        "Premier's Appointee",
+        "Cleaved Imperium Centurion"
+      ],
+      "04C7E280": [
+        "Irûn, Bound to Sedia"
+      ],
+      "6777E280": [
+        "Shadow Guard Incendior",
+        "Shadow Legion Code Bearer",
+        "Val Bho'kaurl"
+      ],
+      "DD38C080": [
+        "Slain Phantom"
+      ],
+      "7B25E380": [
+        "Nightmare Legionary"
+      ],
+      "CCB1E280": [
+        "Bifrons Everted",
+        "Bifrons Inverted"
+      ],
+      "7A34C080": [
+        "fallen_vandal"
+      ],
+      "D138C080": [
+        "Slain Phantom"
+      ],
+      "4158E280": [
+        "SCUR-V"
+      ],
+      "FFD6E180": [
+        "Lightslayer",
+        "Claw of the Witness",
+        "Ravenous Ogre"
+      ],
+      "3BB2E280": [
+        "Bound Omen",
+        "Subjugator of the Devoted"
+      ],
+      "2E2CC080": [
+        "Osiris"
+      ],
+      "A718C080": [
+        "Exo Stranger"
+      ],
+      "0636C080": [
+        "eva"
+      ],
+      "A4D9BF80": [
+        "Ikora"
+      ],
+      "2226C080": [
+        "Slain Phantom"
+      ],
+      "FBF0E180": [
+        "Ashorc, Temple Claimant",
+        "Blighted Emissary"
+      ],
+      "F5E5C480": [
+        "player"
+      ],
+      "8470C080": [
+        "Aunor"
+      ],
+      "0ABEE280": [
+        "Duskfield Shank",
+        "Pit Shank"
+      ],
+      "1E7DE280": [
+        "Shield Singer of Ir Yût"
+      ],
+      "702DCC80": [
+        "Ghost"
+      ],
+      "2B23C080": [
+        "Drifter"
+      ],
+      "90F9E180": [
+        "Corrupted Lurker",
+        "Nightmare Lurker",
+        "Tarnished Lurker"
+      ],
+      "76B2E280": [
+        "Phry'zhia the Insatiable"
+      ],
+      "3E2CC080": [
+        "Osiris"
+      ],
+      "739DE280": [
+        "Ir Halak, Deathsinger"
+      ],
+      "0ABCE180": [
+        "57CB0C6B",
+        "Honored Gladiator",
+        "Esteemed Bruiser",
+        "Redolence of Decay",
+        "Redolence of Splendor",
+        "Excavation Valus",
+        "Valus Pra'um",
+        "Sous Chef",
+        "Head Chef"
+      ],
+      "4CD1BF80": [
+        "Shaxx"
+      ],
+      "9A68E180": [
+        "taken_hive_knight"
+      ],
+      "81D2E280": [
+        "Evaluator of Savathûn",
+        "Minotaur",
+        "Querim, the Waking",
+        "Theratos, Archersbane",
+        "Kydoimos, Herald of the Plague",
+        "Oxus, Herald of the Plague",
+        "Kakos, Herald of the Plague",
+        "Paraversal Contestant",
+        "Assault Leader"
+      ],
+      "6123E380": [
+        "Primeval Thressia, Font of Blight"
+      ],
+      "A6F9E180": [
+        "Corrupted Stalker",
+        "Nightmare Stalker"
+      ],
+      "D6DCBF80": [
+        "Mara Sov"
+      ],
+      "8DBBCC80": [
+        "Osiris"
+      ],
+      "7AEFE280": [
+        "Resilient Shank"
+      ],
+      "4BE6BF80": [
+        "Failsafe"
+      ],
+      "88F0E180": [
+        "Ravenous Taken Minotaur",
+        "Taken Minotaur",
+        "D92F2C5C",
+        "Servile Minotaur",
+        "Keraidos, Grasp of the Witness",
+        "Thalask, Keeper of Keys"
+      ],
+      "A497E280": [
+        "Devoted of Ir Yût",
+        "Ir Sûfra, Third Aria",
+        "Ir Nagash, Second Aria",
+        "Ir Absuul, First Aria"
+      ],
+      "00DAE180": [
+        "Ether-Gorged Scorn",
+        "Reksis Vahn, the Hangman"
+      ],
+      "DD81E280": [
+        "Minotaur",
+        "Corrupted Terpsikhore"
+      ],
+      "7625E380": [
+        "Nightmare Legionary"
+      ],
+      "5CEEE280": [
+        "Bracus Zahn"
+      ],
+      "2851E280": [
+        "Coryphaeus Cyclops",
+        "Uplifted Choral Cyclops",
+        "Choral Cyclops",
+        "Cyclops Rampant, Conductor's Chosen",
+        "Root Module Restriction",
+        "Nursery Cyclops"
+      ],
+      "D07CE380": [
+        "Koregos, Fractured in Time"
+      ],
+      "1FD9E180": [
+        "Lucent Archivist"
+      ],
+      "ED0AC080": [
+        "Eramis"
+      ],
+      "04F3BF80": [
+        "Lodi"
+      ],
+      "823AC080": [
+        "Ikora"
+      ],
+      "7F0BCC80": [
+        "Security Turret"
+      ],
+      "1428C080": [
+        "The Emissary"
+      ],
+      "7721C080": [
+        "Eris Morn"
+      ],
+      "649BE180": [
+        "Roln'Gur, Blade-Bound to the Terrace",
+        "Obak-Hul, Transformed",
+        "Xir-Kuur, Taken",
+        "Eshkin'tuk, Witness's Blessed"
+      ],
+      "94B2E180": [
+        "Deranged Abomination",
+        "Lacerated Abomination",
+        "Ether-Gorged Scorn",
+        "Pit Enforcer",
+        "Weksis, the Mighty",
+        "Exhumed Prisoner"
+      ],
+      "F1C7B880": [
+        "The Crow"
+      ],
+      "F6C6B780": [
+        "player"
+      ],
+      "5C83E280": [
+        "Raneiks Unified"
+      ],
+      "4AD1BF80": [
+        "Ikora"
+      ],
+      "CBD2E280": [
+        "Honored Legionary"
+      ],
+      "D89CE280": [
+        "Protheon, Modular Mind"
+      ],
+      "2623C080": [
+        "Eris Morn"
+      ],
+      "14F1E180": [
+        "Ravenous Taken Thrall",
+        "Taken Thrall",
+        "Servile Thrall",
+        "Undying Thrall",
+        "Abjurant Thrall",
+        "Infected Thrall"
+      ],
+      "7BB3E180": [
+        "Quantum Goblin"
+      ],
+      "AA813E81": [
+        "Psion Commander",
+        "Sister of the Eclipse"
+      ],
+      "7C0AE380": [
+        "hive_knight_ultra"
+      ],
+      "83FAE180": [
+        "Ravenous Taken Psion",
+        "Taken Psion",
+        "Val Bho'kaurl"
+      ],
+      "90BBE280": [
+        "Savathûn, the Witch Queen"
+      ],
+      "43E3A580": [
+        "player"
+      ],
+      "82E5BF80": [
+        "Petra Venj"
+      ],
+      "1A82E180": [
+        "Resilient Marauder",
+        "Resolute Marauder",
+        "Marauder",
+        "Drone Mechanic"
+      ],
+      "AAC7BF80": [
+        "The Spider"
+      ],
+      "8A874081": [
+        "fallen_vandal"
+      ],
+      "1382E280": [
+        "Pillar of Stillness"
+      ],
+      "EA95E180": [
+        "Hydra"
+      ],
+      "54D2BF80": [
+        "eva"
+      ],
+      "962AE180": [
+        "Corrupted Ravager",
+        "Nightmare Ravager",
+        "Invasive Warrant Ravager"
+      ],
+      "9423E380": [
+        "Corrupted Hex-Drinker"
+      ],
+      "A642E180": [
+        "Lightbearer Knight",
+        "Naadin, the Searing",
+        "Akgon, Light-Cleaver",
+        "Lightblade's Warrior",
+        "Kish-Agesor, the Bright Burn"
+      ],
+      "0D06E180": [
+        "Revenant Wizard",
+        "Blistered Wizard",
+        "Vanguard's Most Wanted",
+        "Preceptor",
+        "Ugul Gar Wizard",
+        "Hasaak, Venom of Xivu Arath",
+        "Paraversal Contender"
+      ],
+      "A270C080": [
+        "fallen_vandal"
+      ],
+      "5E6CE180": [
+        "Revenant Knight",
+        "E63FE7F5",
+        "Might of the Broken Blade",
+        "Lunar Scavenger"
+      ],
+      "3A6BE180": [
+        "Swordbearer Nightmare",
+        "Revenant Knight",
+        "Blistered Knight",
+        "Fissure Knight",
+        "Lunar Scavenger",
+        "Ehrath'Ur, Eternal Blade",
+        "Trove Guardian"
+      ],
+      "46D2BF80": [
+        "Banshee-44"
+      ],
+      "0534C080": [
+        "Drifter"
+      ],
+      "7440C080": [
+        "Variks"
+      ],
+      "DA3CC080": [
+        "Ada-1"
+      ],
+      "9BFAB880": [
+        "player"
+      ],
+      "8F22E380": [
+        "Harpy",
+        "9FD21CAE",
+        "Cation Harpy",
+        "Anion Harpy"
+      ],
+      "0A67E180": [
+        "Technocrat's Assistant",
+        "Archon Aspirant, House Salvation",
+        "Bakris, the Adamantine",
+        "Keviks, Vex Researcher",
+        "Drake, Stasis Sniper",
+        "Machine Priest"
+      ],
+      "0EAFE280": [
+        "Taniks, the Abomination"
+      ],
+      "A7D5E280": [
+        "Bound Tormentor",
+        "Heart of Malice"
+      ],
+      "634DE180": [
+        "Ravenous Dire Minotaur",
+        "Dire Minotaur",
+        "Servile Minotaur"
+      ],
+      "DF03C080": [
+        "fallen_vandal"
+      ],
+      "8B843E81": [
+        "F6427A76",
+        "Failed Apprentice"
+      ],
+      "7EB1E280": [
+        "Grisprax, Bosun of Avarokk"
+      ],
+      "51CDCE80": [
+        "Ghost"
+      ],
+      "C1FAE180": [
+        "Ravenous Taken Acolyte",
+        "Taken Acolyte",
+        "Servile Acolyte"
+      ],
+      "766CE380": [
+        "1AA5DF80",
+        "95AA8691"
+      ],
+      "71B3E280": [
+        "Wanted Totality Incendior"
+      ],
+      "ED37C080": [
+        "Sedia"
+      ],
+      "7A9FCC80": [
+        "Vision of Light"
+      ],
+      "AFBBCC80": [
+        "Osiris"
+      ],
+      "0BDCB780": [
+        "Eramis"
+      ],
+      "8AC7E280": [
+        "forsaken_vandal"
+      ],
+      "E8ECE280": [
+        "Gor'ath Gath"
+      ],
+      "770AE380": [
+        "hive_wizard"
+      ],
+      "EC22E380": [
+        "Aspirational Construct"
+      ],
+      "4CC5BF80": [
+        "Eido"
+      ],
+      "3E6EE280": [
+        "Gretaal, Compelled Colossus",
+        "Iziira and Eexonios, Pyramid Remnants"
+      ],
+      "5D0FC080": [
+        "B4C51035"
+      ],
+      "0C0AE380": [
+        "Corrupted Ravager",
+        "Tarnished Ravager"
+      ],
+      "5640E180": [
+        "Rynax, Resonant Bulwark"
+      ],
+      "5109E380": [
+        "Lacerated Abomination"
+      ],
+      "0382E280": [
+        "Obak-Hul, Imprisoned",
+        "Resonant Warder"
+      ],
+      "AC4DE280": [
+        "Uplifted Choral Harpy",
+        "Choral Harpy",
+        "Coryphaeus Harpy",
+        "Choral Trafficker",
+        "Coolant Scrounger"
+      ],
+      "5934E280": [
+        "Piker Dreg",
+        "Engineer Dreg",
+        "Trusted Dreg",
+        "Operations Specialist"
+      ],
+      "1312E380": [
+        "Antioptes, Hypogean Sentinel"
+      ],
+      "8A44E380": [
+        "Dredgen Sere"
+      ],
+      "0DDBBF80": [
+        "Zavala"
+      ],
+      "ECEAE280": [
+        "2D493463"
+      ],
+      "0643E280": [
+        "Warpriest"
+      ],
+      "6D01E380": [
+        "Trammel of Time"
+      ],
+      "8834E280": [
+        "Tharsis Reformation Goblin",
+        "Singular Goblin",
+        "Gambler Goblin",
+        "Independent Goblin",
+        "Operations Specialist"
+      ],
+      "D0FDE280": [
+        "Nightmare of Taniks, the Scarred"
+      ],
+      "E446E180": [
+        "Phry'zhia the Insatiable",
+        "Monstrosity Ogre",
+        "Tulkor, Ferocity of Xivu Arath"
+      ],
+      "600BE380": [
+        "Kerrev, the Erased"
+      ],
+      "7DB4E180": [
+        "Malignant Hydra",
+        "Quantum Hydra",
+        "Black Heart",
+        "Incarcerator Hydra",
+        "Angelic",
+        "Keeper of the Monolith"
+      ],
+      "64F4BF80": [
+        "fallen_vandal"
+      ],
+      "0CC8E280": [
+        "Nightmare of Xortal, Sworn of Crota"
+      ],
+      "BD8EA780": [
+        "Once-Iriis, Failed Variable",
+        "Experimental Failure"
+      ],
+      "D53CC080": [
+        "fallen_vandal"
+      ],
+      "3051E280": [
+        "Uplifted Choral Goblin",
+        "Choral Goblin",
+        "Precursor Goblin",
+        "System Reintegrator"
+      ],
+      "0440C080": [
+        "The Spider"
+      ],
+      "813CB880": [
+        "cayde_6"
+      ],
+      "AEA7E280": [
+        "E43FE7F5",
+        "Omen of the Broken Blade"
+      ],
+      "FDE5CB80": [
+        "Asher"
+      ],
+      "CB17C080": [
+        "BrayTech Heavy Frame",
+        "BrayTech Security Frame"
+      ],
+      "0DECE180": [
+        "Imperium Electi War Beast",
+        "Imperium Decurion War Beast",
+        "Imperium War Beast",
+        "Imperium Tesserarius War Beast",
+        "Operations Specialist"
+      ],
+      "6560A880": [
+        "kadi"
+      ],
+      "F325E380": [
+        "Nightmare Harpy"
+      ],
+      "A7D9BF80": [
+        "Drifter"
+      ],
+      "6D25E380": [
+        "Nightmare Shank"
+      ],
+      "CBC8BF80": [
+        "Saint-14"
+      ],
+      "082BE180": [
+        "Ether Abomination",
+        "Lurking Abomination",
+        "Knowledge Bearer",
+        "Dread Bearer",
+        "Nightmare of Ky'leks, the Docked",
+        "Nightmare of Sy'ad, the Unending"
+      ],
+      "A606CB80": [
+        "Una-8"
+      ],
+      "A1AFE180": [
+        "Marauder",
+        "Resilient Marauder",
+        "Kamak, A-Block Scar",
+        "Dusk Walker Guard",
+        "Lunar Scavenger"
+      ],
+      "DED6CE80": [
+        "Ghost"
+      ],
+      "8215E380": [
+        "Praetorian",
+        "Precursor Praetorian"
+      ],
+      "9968E380": [
+        "Headless One",
+        "Sir Skullduggery"
+      ],
+      "355AE180": [
+        "Resilient Shank",
+        "Sentinel"
+      ],
+      "312CC080": [
+        "Osiris"
+      ],
+      "7D25E380": [
+        "Nightmare Warbeast"
+      ],
+      "5C46C080": [
+        "Shank"
+      ],
+      "9FFDE280": [
+        "Bound Taken Wizard"
+      ],
+      "C1B1E180": [
+        "Corrupted Screeb",
+        "Tarnished Screeb"
+      ],
+      "8C100B81": [
+        "Failsafe"
+      ],
+      "0BFAE180": [
+        "Corrupted Ravager",
+        "Tarnished Ravager"
+      ],
+      "7E12C080": [
+        "fallen_vandal"
+      ],
+      "6E43E180": [
+        "Blistered Wizard",
+        "Revenant Wizard",
+        "36DEBF08",
+        "Naaruz, Third Seeker of Silence",
+        "Wrathbringer Wizard",
+        "Rune Keeper",
+        "Crystalbound Wizard",
+        "Portal Lord",
+        "Portal Keeper",
+        "Tribute Bearer",
+        "Threadweaver",
+        "Ir Akraht, Light Harvester",
+        "Butcher of the Spring",
+        "Patron of the Spring",
+        "Resonant Keeper",
+        "Resonant Thief",
+        "Ubartu-ana",
+        "Ir Olena, Moth Keeper",
+        "Lighthoarder",
+        "Runebound Visage",
+        "Veilweaver Wizard",
+        "Soulfire Binder"
+      ],
+      "7434C080": [
+        "Lodi"
+      ],
+      "1D15B880": [
+        "Bael"
+      ],
+      "6BB1E180": [
+        "Optus Siluu, Coalition Ally",
+        "Ascendant Guard"
+      ],
+      "306DC080": [
+        "Drifter"
+      ],
+      "BC1DE280": [
+        "Gordian Weaver",
+        "Tangling Weaver",
+        "Weaver",
+        "Preceptor's Novice",
+        "Revenant Essentia"
+      ],
+      "FC35C080": [
+        "Shaxx"
+      ],
+      "BC63C080": [
+        "fallen_vandal"
+      ],
+      "BB6DC080": [
+        "Lodi"
+      ],
+      "6B991F81": [
+        "fallen_vandal"
+      ],
+      "ADC7E180": [
+        "Esteemed Phalanx",
+        "Honored Phalanx",
+        "Net-Desecrator's Exploited"
+      ],
+      "9480E180": [
+        "Nightmare of Kethiks, Grief Unforgiven"
+      ],
+      "C61DE380": [
+        "Corrupted Chieftain"
+      ],
+      "4637E280": [
+        "Imperium Scorpius"
+      ],
+      "FD79E280": [
+        "Assimilated Demolisher Hydra",
+        "Dendrite, Studious Mind"
+      ],
+      "11843E81": [
+        "Distinguished Servitor"
+      ],
+      "9236E280": [
+        "Captain",
+        "Vessel of the Archon"
+      ],
+      "9BFAE180": [
+        "822DC7EE",
+        "Yatiks, Bound to Sedia",
+        "Ravenous Taken Vandal",
+        "Taken Vandal",
+        "Labyrinth Architect"
+      ],
+      "B29EE280": [
+        "Nightmare of Crota, Son of Oryx",
+        "Crota, Son of Oryx, Dares Champion",
+        "Aspect of Crota"
+      ],
+      "5325C080": [
+        "Fynch"
+      ],
+      "9044E380": [
+        "Dredgen Sere"
+      ],
+      "102BE180": [
+        "Lacerated Abomination",
+        "Deranged Abomination",
+        "Nightmare Abomination",
+        "Well Protector",
+        "Discarded Failure",
+        "Emissary of Elykris",
+        "Nightmare of Sek're, Echo of the Voice"
+      ],
+      "B1D9BF80": [
+        "Hawthorne"
+      ],
+      "5C6DE280": [
+        "The Unwaking Mind"
+      ],
+      "7CEFE280": [
+        "Resilient Shank"
+      ],
+      "B334C080": [
+        "fallen_vandal"
+      ],
+      "A4AEE180": [
+        "Compelled Cyclops",
+        "Elite Compelled Cyclops",
+        "Prime Compelled Cyclops"
+      ],
+      "07E6E180": [
+        "Claw of the Witness",
+        "Warwatcher, Eye of Xivu Arath"
+      ],
+      "03A2E280": [
+        "Akelous, the Siren's Current"
+      ],
+      "0560A880": [
+        "fallen_vandal"
+      ],
+      "A1E9E280": [
+        "Centurion",
+        "Valus Ta'aurc, Dares Champion"
+      ],
+      "FAF0E180": [
+        "Taken Knight",
+        "D92418E6",
+        "Servile Knight",
+        "Yateth, Taken Stain",
+        "Ravenous Taken Knight",
+        "Gate Warden Retainer",
+        "Kelgorath, Vestige of Failure",
+        "Corrupted Navigator",
+        "Putrid Knight",
+        "Blightguard",
+        "Erkult, the Sequestered"
+      ],
+      "D424E380": [
+        "Giver's Sentry, Exile Servitor"
+      ],
+      "92CEBF80": [
+        "Variks"
+      ],
+      "0CF9BF80": [
+        "Savathûn"
+      ],
+      "8770CA80": [
+        "Knox-4"
+      ],
+      "AF1EE380": [
+        "Nightmare of Dominus Ghaul"
+      ],
+      "382CC080": [
+        "Osiris"
+      ],
+      "A61DE380": [
+        "D09FFD8E",
+        "Brutiks, Lightbane"
+      ],
+      "260EE380": [
+        "cabal_legionary"
+      ],
+      "E070CA80": [
+        "Wesley-3"
+      ],
+      "AE01C080": [
+        "Drifter"
+      ],
+      "C774E280": [
+        "Shadow Thrall"
+      ],
+      "7825E380": [
+        "Nightmare Legionary"
+      ],
+      "5C3FE280": [
+        "Eye of Riven"
+      ],
+      "D203C080": [
+        "fallen_vandal"
+      ],
+      "BFD9E280": [
+        "Sedia, the Corrupted"
+      ],
+      "8AF6E280": [
+        "Basilius the Golem"
+      ],
+      "8468E380": [
+        "Kholks, Taken of Xivu Arath"
+      ],
+      "1B96A780": [
+        "Standard Bearer",
+        "Au'gor, Devoted of Calus",
+        "Nightmare of Uaoc, Spine Breaker"
+      ],
+      "8C03CB80": [
+        "Noe-2"
+      ],
+      "C1BACC80": [
+        "Volmâr, the Tempted"
+      ],
+      "B4BBCC80": [
+        "Osiris"
+      ],
+      "0E44CB80": [
+        "Security Turret"
+      ],
+      "BEBEB780": [
+        "Ikora"
+      ],
+      "F1A7E280": [
+        "Heretical Knight",
+        "Accursed Swordbearer"
+      ],
+      "DE32C080": [
+        "Ikora"
+      ],
+      "CF4CE180": [
+        "Ravenous Dire Acolyte",
+        "Dire Acolyte"
+      ],
+      "EC83E180": [
+        "Warden Servitor"
+      ],
+      "DB0FC080": [
+        "Ikora"
+      ],
+      "8358E280": [
+        "Halsiks"
+      ],
+      "74FCE280": [
+        "Nightmare of Crota, Son of Oryx"
+      ],
+      "D04BE180": [
+        "Dire Thrall"
+      ],
+      "6F42E180": [
+        "Reclaimant of Savathûn",
+        "Revenant Shrieker",
+        "Luminous Eye"
+      ],
+      "BBC9E280": [
+        "Light-Eater Knight"
+      ],
+      "A29FCC80": [
+        "Walker "
+      ],
+      "F5C6B780": [
+        "player"
+      ],
+      "060EE380": [
+        "taken_fallen_captain"
+      ],
+      "1C2BE180": [
+        "Corrupted Stalker",
+        "Nightmare Stalker",
+        "Tarnished Stalker",
+        "Glass Collector"
+      ],
+      "5F42E180": [
+        "Lightbearer Acolyte",
+        "Rune-Cursed Lightbearer",
+        "Arak-Thul, the Arisen",
+        "Harrak, the Rejoined"
+      ],
+      "3183E180": [
+        "Wretch",
+        "Resolute Wretch"
+      ],
+      "07C7E280": [
+        "hive_ogre"
+      ],
+      "5FF0E180": [
+        "Taken Centurion",
+        "Ravenous Taken Centurion",
+        "Servile Centurion"
+      ],
+      "5FA8B880": [
+        "Lodi"
+      ],
+      "9D38E280": [
+        "Kelkris, the All-Seeing",
+        "Xir-Kuur, Taken",
+        "Will-Crushed Knight"
+      ],
+      "AD31C080": [
+        "Devrim"
+      ],
+      "8673B880": [
+        "Ana Bray"
+      ],
+      "202CC080": [
+        "Caiatl"
+      ],
+      "C7DDB880": [
+        "player"
+      ],
+      "A382E180": [
+        "Resolute Heavy Shank",
+        "Resilient Heavy Shank",
+        "Obstructionist Heavy Shank",
+        "Fury of the Archon",
+        "Heavy Shank",
+        "Overburdened Arc Keeper"
+      ],
+      "98B2E280": [
+        "Rampaging Captain",
+        "Kithiks, Captain of Exile",
+        "Mithiks, Captain of Exile"
+      ],
+      "3EB2E280": [
+        "Bound Harbinger",
+        "Subjugator of the Devoted"
+      ],
+      "46DFBF80": [
+        "fallen_vandal"
+      ],
+      "6025E380": [
+        "Nightmare Wretch"
+      ],
+      "533EC080": [
+        "fallen_vandal"
+      ],
+      "DE05E380": [
+        "The Mad Warden"
+      ],
+      "09D1BF80": [
+        "Zavala"
+      ],
+      "A542E180": [
+        "Revenant Cursed Thrall"
+      ],
+      "AF23E380": [
+        "Bound Minotaur"
+      ],
+      "36DFBF80": [
+        "fallen_vandal"
+      ],
+      "04F7CB80": [
+        "gluttony_emperor_visage"
+      ],
+      "93B8CB80": [
+        "Primeval Centurion"
+      ],
+      "0CD4E280": [
+        "21B874C8",
+        "Vorgeth, the Boundless Hunger"
+      ],
+      "EBC0E280": [
+        "Ascendant Primeval Servitor",
+        "Hefnd's Vengeance, Blighted Chimaera"
+      ],
+      "0C78E380": [
+        "Premier Lume"
+      ],
+      "BBEFBF80": [
+        "Lord Saladin"
+      ],
+      "33B3E280": [
+        "Cavum of Nezarec",
+        "Threshold Sentinel"
+      ],
+      "7025E380": [
+        "Nightmare Shank"
+      ],
+      "ABD9BF80": [
+        "Ada-1"
+      ],
+      "96C9BF80": [
+        "The Crow"
+      ],
+      "A3AAE280": [
+        "S.A.B.E.R.-2"
+      ],
+      "A9D9BF80": [
+        "Shaxx"
+      ],
+      "8CEFE280": [
+        "Spider's Servitor",
+        "SCUR-V"
+      ],
+      "C0EFE180": [
+        "Harbinger of the Witness",
+        "Lens Bearer",
+        "Mhakt, Subjugator of the Forgotten",
+        "Subjugator of the Devoted",
+        "Tenet of Stillness",
+        "Qeilumn, Subjugator of Wilderness",
+        "Vrhiija, Subjugator of Paradise",
+        "Rhoj, Subjugator of Greed",
+        "Vrhalja, Subjugator of Ruin"
+      ],
+      "A4D5E280": [
+        "Blighted Eye",
+        "Eye of Suffering"
+      ],
+      "0AB3E180": [
+        "Quantum Cyclops",
+        "Malignant Cyclops"
+      ],
+      "98FCBF80": [
+        "Saint-14"
+      ],
+      "9535E280": [
+        "Piker Marauder",
+        "Trusted Marauder",
+        "Engineer Marauder",
+        "Eliksni Enforcer"
+      ],
+      "002CC080": [
+        "Rohan"
+      ],
+      "FDC6E280": [
+        "hive_knight_ultra"
+      ],
+      "CC59E180": [
+        "Resilient Vandal",
+        "Resolute Vandal",
+        "Operator Vandal",
+        "Hacker Vandal",
+        "Suppressor Vandal",
+        "Operator Splicer",
+        "Scanner Splicer",
+        "Suppressor Splicer",
+        "Deniks, House Salvation",
+        "Highguard, Salvation Elite"
+      ],
+      "852AE180": [
+        "Dread Bearer",
+        "F07A9C59",
+        "Lillix, Lightscourge",
+        "The Forgotten"
+      ],
+      "BE79E280": [
+        "Vul'ourn, Shadow Legion Supply Master",
+        "Bracus Kravaum, Shadow Legion",
+        "Etherbound Familiar",
+        "5FADA0CD",
+        "Vraxus, Shadow Legion Saboteur"
+      ],
+      "9922E380": [
+        "Honored Centurion",
+        "5C7F2093",
+        "Redolence of Decay",
+        "Redolence of Splendor"
+      ],
+      "1A6DA880": [
+        "fallen_vandal"
+      ],
+      "E163E380": [
+        "Tamiks, Piker Crime Boss"
+      ],
+      "79E8E280": [
+        "Golmag, Warden of the Spring"
+      ],
+      "7122E380": [
+        "Persys, Primordial Ruin"
+      ],
+      "916BE380": [
+        "Valus Thuun",
+        "Valus Thunn"
+      ],
+      "3E38E280": [
+        "Ungoloth, Wayward Beast",
+        "Icon of Finality"
+      ],
+      "DA1DE380": [
+        "1372AA10",
+        "Skirvaa, Abhorred Chieftain"
+      ],
+      "BC8EA780": [
+        "Wrathborn Incursionist"
+      ],
+      "7906C080": [
+        "Osiris"
+      ],
+      "7916E380": [
+        "Gatekeeper",
+        "Precursor Gatekeeper",
+        "Descendant Gatekeeper"
+      ],
+      "4A37C080": [
+        "Petra Venj"
+      ],
+      "37843E81": [
+        "Piker Walker"
+      ],
+      "4136C080": [
+        "Drifter"
+      ],
+      "6C25E380": [
+        "Nightmare Shank"
+      ],
+      "2D0EE380": [
+        "hive_ogre"
+      ],
+      "1CB4E180": [
+        "Quantum Hobgoblin",
+        "Malignant Hobgoblin"
+      ],
+      "64BACB80": [
+        "Primeval Envoy"
+      ],
+      "EA0DC080": [
+        "Hidden Agent"
+      ],
+      "2923C080": [
+        "Eris Morn"
+      ],
+      "C32AE180": [
+        "Corrupted Screeb"
+      ],
+      "1C1ACD80": [
+        "Drifter"
+      ],
+      "5537C080": [
+        "Petra Venj"
+      ],
+      "5C25E380": [
+        "AE335E30",
+        "Ransacker Phalanx"
+      ],
+      "CB1CE280": [
+        "Enlightened Harbinger",
+        "The Erebus",
+        "Elder Revenant",
+        "Expector Yemiq",
+        "Subjugator of the Weave",
+        "Rhalis, Subjugator of the Light",
+        "Vrihn, Subjugator of Gardens",
+        "Exhumed Prisoner",
+        "Cornerstone of the Witness"
+      ],
+      "4871E380": [
+        "Nightmare of Anaphex, Sworn to Otzot"
+      ],
+      "27A4E280": [
+        "Friendly Harpy"
+      ],
+      "EF01BD80": [
+        "player"
+      ],
+      "05F0E280": [
+        "Enlightened Omen",
+        "Cornerstone of the Witness"
+      ],
+      "256DA880": [
+        "fallen_vandal"
+      ],
+      "7C25E380": [
+        "Nightmare Warbeast"
+      ],
+      "5DE34281": [
+        "Behemoth Fortis",
+        "Behemoth Gloriosus",
+        "Behemoth Mortis"
+      ],
+      "4AAFE180": [
+        "Wretch",
+        "Resolute Wretch",
+        "Nightmare Wretch",
+        "Resilient Wretch",
+        "B-Block Rat Wretch",
+        "A-Block Scar Wretch"
+      ],
+      "53B7E180": [
+        "Malignant Wyvern",
+        "Wyvern",
+        "Quantum Wyvern",
+        "Sacrificial Wyvern",
+        "Architector Goblin",
+        "Principle Wyvern",
+        "Harbinger Wyvern",
+        "Wyvern Exemplar",
+        "Wyvern Venator",
+        "Gatekeeper Wyvern",
+        "Digital Variant Neutralizer",
+        "Digital Variant Tracker",
+        "Obstructive Mind",
+        "Sentinel"
+      ],
+      "15E30981": [
+        "Sjur Eido"
+      ],
+      "1C27C080": [
+        "Mara Sov"
+      ],
+      "75FAE180": [
+        "Truum, the Waking",
+        "Ravenous Taken Phalanx",
+        "Servile Phalanx",
+        "Taken Phalanx",
+        "Obdurate Phalanx",
+        " Phalanx",
+        "Resonant Glyphkeeper",
+        "Labyrinth Architect",
+        "Paraversal Contender",
+        "Val Pros, Tower Sentry"
+      ],
+      "AE64E380": [
+        "E1DAB01C"
+      ],
+      "E5EDBF80": [
+        "fallen_vandal"
+      ],
+      "51B2E280": [
+        "Bound Captain"
+      ],
+      "5B9EE280": [
+        "Ravenous Dire Knight",
+        "Dire Knight"
+      ],
+      "8526C080": [
+        "Savathûn's Worm"
+      ],
+      "21D9E180": [
+        "tormentor"
+      ],
+      "92D1E280": [
+        "Ecthar, the Shield of Savathûn"
+      ],
+      "46F8BF80": [
+        "fallen_servitor"
+      ],
+      "ECE5C480": [
+        "player"
+      ],
+      "385AE180": [
+        "Tracer Shank",
+        "Resilient Tracer Shank",
+        "Resolute Tracer Shank",
+        "Viral Suppressor Client",
+        "Viral Operator Client",
+        "Viral Scanner Client"
+      ],
+      "7D1BE380": [
+        "Scorn Walker",
+        "Scorn Scrap-Walker"
+      ],
+      "736EE280": [
+        "Exodos, Choral Mind"
+      ],
+      "F223E380": [
+        "Minotaur"
+      ],
+      "2836C080": [
+        "eva"
+      ],
+      "969AE180": [
+        "Tarnished Chieftain",
+        "Plaguewielder"
+      ],
+      "4E3CC080": [
+        "fallen_vandal"
+      ],
+      "E23FE280": [
+        "Elikaa, Sworn to Vengeance",
+        "Yirksii, Subversive Chieftain"
+      ],
+      "0AAFE180": [
+        "Exploder Shank",
+        "Resilient Homing Shank"
+      ],
+      "1F46E280": [
+        "Oryx, the Taken King"
+      ],
+      "0321E380": [
+        "Adept"
+      ],
+      "7536E280": [
+        "Engineer Heavy Shank",
+        "Trusted Heavy Shank"
+      ],
+      "DF38C080": [
+        "Slain Phantom"
+      ],
+      "29D2BF80": [
+        "rahool"
+      ],
+      "4FA8E180": [
+        "Hydra",
+        "Monitor Hydra",
+        "Inquisitor Hydra",
+        "Data Nullifier"
+      ],
+      "9122E380": [
+        "Kavauust, Reverent of the Witness"
+      ],
+      "D338C080": [
+        "Slain Phantom"
+      ],
+      "EA9EE280": [
+        "Brig, House Salvation"
+      ],
+      "4836C080": [
+        "Holliday"
+      ],
+      "BCA0E280": [
+        "3674EC6C",
+        "Sepiks Prime"
+      ],
+      "C67AE380": [
+        "Skiffblade",
+        "Flotsiks, Skiffblade",
+        "Jetsiks, Skiffblade",
+        "Ransiks, Skiffblade"
+      ],
+      "7700B980": [
+        "fikrul"
+      ],
+      "85B3E180": [
+        "Finalizer"
+      ],
+      "4B9EE280": [
+        "Blood Guard Legionary",
+        "8AF99A87",
+        "Nightmare of Ka'hok, Sworn of Umun'arath"
+      ],
+      "D107CC80": [
+        "Walker "
+      ],
+      "F6CFBF80": [
+        "kadi"
+      ],
+      "1B28C080": [
+        "Lodi"
+      ],
+      "A2D9BF80": [
+        "Banshee-44"
+      ],
+      "C874E380": [
+        "Imperium Patrol Thresher"
+      ],
+      "06D3B780": [
+        "Mithrax"
+      ],
+      "367BE280": [
+        "Gatekeeper"
+      ],
+      "FEC6E280": [
+        "Shuro Chi, the Corrupted"
+      ],
+      "2242E180": [
+        "Phry'zhia the Insatiable",
+        "Blistered Ogre",
+        "Balakh, the Unseeing",
+        "Cloistered Ogre",
+        "Conjured Abomination",
+        "Blighted Gravekeeper",
+        "Keeper of the Deep"
+      ],
+      "569EE280": [
+        "Unstoppable Taken Phalanx"
+      ],
+      "5CBACB80": [
+        "Primeval Envoy"
+      ],
+      "9AC9BF80": [
+        "Ikora"
+      ],
+      "2071E380": [
+        "Dread Bearer"
+      ],
+      "943AC080": [
+        "fallen_vandal"
+      ],
+      "8F4AE180": [
+        "Centurion"
+      ],
+      "5A2FC080": [
+        "Zavala"
+      ],
+      "7CDAE280": [
+        "Quria, Blade Transform"
+      ],
+      "8FD2E280": [
+        "57CB0C6B",
+        "Esteemed Bruiser",
+        "Honored Gladiator",
+        "Data Warden"
+      ],
+      "D3CFE280": [
+        "Alak-Hul, the Lightblade"
+      ],
+      "6D24E380": [
+        "Independent Variable"
+      ],
+      "A918C080": [
+        "Eris Morn"
+      ],
+      "9A72A880": [
+        "Riven"
+      ],
+      "0BFFE280": [
+        "Nightmare of Crota, Son of Oryx"
+      ],
+      "D682E180": [
+        "Resilient Homing Shank",
+        "Exploder Shank",
+        "Resolute Homing Shank",
+        "Volatile Gatherer"
+      ],
+      "B0D9BF80": [
+        "igr_vendor"
+      ],
+      "27DFBF80": [
+        "The Crow"
+      ],
+      "14B8CB80": [
+        "Primeval Ogre"
+      ],
+      "782AE180": [
+        "Dread Bearer",
+        "Dread Tatsrekaa",
+        "Resonant Shepherd",
+        "Nightmare of Kra'lok, the Sword",
+        "Nightmare of Cek'ik, Seeker of the Deep",
+        "The Drowned",
+        "Devotee of the Witness"
+      ],
+      "350EE380": [
+        "hive_knight_ultra"
+      ],
+      "87F6E280": [
+        "Secluded Mind"
+      ],
+      "47DFBF80": [
+        "fallen_vandal"
+      ],
+      "EA77CC80": [
+        "Kalli, the Corrupted"
+      ],
+      "7271C080": [
+        "Shank"
+      ],
+      "9F58E280": [
+        "Lightbearer Knight"
+      ],
+      "E7B0E180": [
+        "Esteemed Psion",
+        "Honored Psion",
+        "EC93F6CE",
+        "C-Block Blood Psion",
+        "Psion Codewarden",
+        "Psion Spotter",
+        "Standard Bearer",
+        "Xûr's Siegebringer",
+        "Optus Vocca",
+        "Disruptor Psion",
+        "Keymaster Psion",
+        "Optus Taxaat"
+      ],
+      "CF2EC080": [
+        "The Emissary"
+      ],
+      "AE6DC080": [
+        "Orin"
+      ],
+      "C7D4E180": [
+        "Warmonger Knight",
+        "Haroktha, Scourge of the Helium Drinkers",
+        "Thalrog, Beacon-Keeper",
+        "Xir-Kuur, Not-Taken",
+        "Ritual Overseer",
+        "Barrier Guard"
+      ],
+      "0599E280": [
+        "Navôta, Eir Spawn"
+      ],
+      "96DFCA80": [
+        "Acolyte's Eye"
+      ],
+      "5921C080": [
+        "xur"
+      ],
+      "EE23E380": [
+        "Bound Taken Acolyte"
+      ],
+      "16F1E180": [
+        "Servile Wizard",
+        "Taken Wizard",
+        "4F56A357",
+        "Ravenous Taken Wizard",
+        "Ilkâba, the Blighted",
+        "Gizar ur-Nokru, The Sacrificed",
+        "Blightguard",
+        "Icon of Solipsism",
+        "Plague Keepers",
+        "Ir Anak, Lightdrinker"
+      ],
+      "91B0E180": [
+        "Honored Gladiator",
+        "Esteemed Bruiser",
+        "57CB0C6B",
+        "C-Block Blood Gladiator",
+        "Cargo Security Chief",
+        "Outlaw Gladiator",
+        "Paraversal Contestant"
+      ],
+      "FF15E380": [
+        "Praetorian",
+        "Precursor Praetorian",
+        "Descendant Praetorian"
+      ],
+      "6355E180": [
+        "Dreaded Tyrannizer"
+      ],
+      "93B1E280": [
+        "R-M80, Loyal to Avarokk"
+      ],
+      "2C82E180": [
+        "Resilient Vandal",
+        "9EDD74F3",
+        "Resolute Vandal",
+        "Charge Pylon Vandal",
+        "Exile Azikk, Dark Matter Foreman"
+      ],
+      "9846E180": [
+        "Blistered Ogre",
+        "Revenant Ogre",
+        "Warden of Xivu Arath"
+      ],
+      "B91EE380": [
+        "Nightmare of Val Dumoar",
+        "Imperial Centurion",
+        "Loyalist Sentinel Commander",
+        "Nightmare of Regor, Failed Assassin"
+      ],
+      "1D30C080": [
+        "Glint"
+      ],
+      "F8F0E180": [
+        "Devoured Ogre",
+        "Hallowed Ogre",
+        "Consumed Ogre",
+        "Taken Ogre",
+        "Rot-minder",
+        "Vestige of Fury"
+      ],
+      "2CE14281": [
+        "Goliath Tank "
+      ],
+      "D6FBE280": [
+        "Variant Stalker Brakion, Repurposed Mind"
+      ],
+      "30C5BF80": [
+        "Osiris"
+      ],
+      "5857E180": [
+        "Heavy Shank",
+        "Resilient Heavy Shank",
+        "Resolute Heavy Shank",
+        "Ransack Shank",
+        "EM-0, Spiritless Machine",
+        "Hoarder of Tainted Light",
+        "Resonant Warder",
+        "Data Safeguard"
+      ],
+      "29E3BF80": [
+        "Awoken Corsair"
+      ],
+      "4904C080": [
+        "Awoken Corsair"
+      ],
+      "56D3E280": [
+        "Šimmumah ur-Nokru"
+      ],
+      "829DE280": [
+        "Esteemed Colossus",
+        "Honored Colossus"
+      ],
+      "C308C080": [
+        "Phry'zhia the Insatiable"
+      ],
+      "216EA880": [
+        "Banshee-44"
+      ],
+      "E4C7E280": [
+        "Ashorc, Temple Claimant",
+        "Yamaat, Ascendant Sentinel",
+        "Blighted Knight",
+        "Sulk'oth, Taken of Xivu Arath",
+        "Khull, Executioner Knight",
+        "Ur Haraak, Disciple of Quria",
+        "Bakken, the Relentless"
+      ],
+      "E70EB880": [
+        "player"
+      ],
+      "4A4DE180": [
+        "Ravenous Dire Ogre",
+        "Devoured Ogre",
+        "Consumed Ogre"
+      ],
+      "0BE7E180": [
+        "Lightslayer"
+      ],
+      "0BC8E280": [
+        "Esteemed Colossus",
+        "FC6CB869",
+        "Honored Colossus",
+        "Esteemed Bulwark",
+        "Deathwatch Commander"
+      ],
+      "7CF9E180": [
+        "Corrupted Screeb"
+      ],
+      "6C36E280": [
+        "Thearchus, Gatekeeper Mind",
+        "Precursor Factotum",
+        "Kleftis, Archeodaemon"
+      ],
+      "81E8E280": [
+        "Captain",
+        "WANTED: Silent Fang"
+      ],
+      "C3FAE180": [
+        "Ravenous Taken Hobgoblin",
+        "Servile Hobgoblin",
+        "Taken Hobgoblin",
+        "44854743",
+        "Labyrinth Architect"
+      ],
+      "0036C080": [
+        "Banshee-44"
+      ],
+      "C4D9E280": [
+        "Kalli, the Corrupted"
+      ],
+      "1B64E380": [
+        "Lyra, Tharsis Reformation Overseer"
+      ],
+      "DCB2C380": [
+        "Testu'udo, Array Bulwark"
+      ],
+      "D61EC080": [
+        "Cayde-6"
+      ],
+      "243BC080": [
+        "Cayde-6"
+      ],
+      "4FC9E280": [
+        "Frontline Optus",
+        "Conductor's Psion Commander"
+      ],
+      "6B34C080": [
+        "Ikora"
+      ],
+      "A438B880": [
+        "Caiatl"
+      ],
+      "2103E380": [
+        "Herald of Finality"
+      ],
+      "1322E380": [
+        "Assimilated Demolisher Wyvern",
+        "Compelled Akarus, Wrathful Mind",
+        "Fragment of the Swarm",
+        "Melissos, Swarm Mind"
+      ],
+      "F450E280": [
+        "Uplifted Choral Fanatic",
+        "Choral Fanatic",
+        "Coryphaeus Fanatic"
+      ],
+      "0AABE280": [
+        "Loyalist Legionary",
+        "Nightmare Legionary"
+      ],
+      "CAFFB780": [
+        "Zavala"
+      ],
+      "F362E180": [
+        "Marauder",
+        "Resilient Marauder",
+        "Resolute Marauder",
+        "46183A87",
+        "Techno Squad Leader",
+        "Highguard, Salvation Elite"
+      ],
+      "2D7BE280": [
+        "Swordbearer"
+      ],
+      "0C71E380": [
+        "Egregore Atavist"
+      ],
+      "A64DE280": [
+        "Precursor Nexus Minotaur",
+        "Inevitable Mind",
+        "Established Mind",
+        "Minotaur",
+        "Compelled Antigen Minotaur",
+        "Crazed Mind, Touched by the Singularity",
+        "Maya's Retribution",
+        "Corrupt Minotaur",
+        "Choros, The Dampening Mind",
+        "Stichos, The Dampening Mind",
+        "Coda, The Dampening Mind",
+        "Meridi and Didyo, the Assimilating Minds"
+      ],
+      "13D0BF80": [
+        "artie"
+      ],
+      "F571E280": [
+        "Ascendant Guard",
+        "Imperium Captive"
+      ],
+      "5FB4E180": [
+        "Quantum Harpy"
+      ],
+      "04D1E280": [
+        "Honored Incendior",
+        "Esteemed Incendior",
+        "4F982399"
+      ],
+      "7096A780": [
+        "Standard Bearer"
+      ],
+      "5104C080": [
+        "Awoken Corsair"
+      ],
+      "D4F3BF80": [
+        "Atraks-1, Fallen Exo"
+      ],
+      "9AFDE280": [
+        "Nightmare of Omnigul, Will of Crota"
+      ],
+      "C6C5BF80": [
+        "The Spider"
+      ],
+      "1944E280": [
+        "Golgoroth"
+      ],
+      "6379A880": [
+        "Redjack Frame",
+        "Imperium Captive"
+      ],
+      "160BB880": [
+        "player"
+      ],
+      "10D2BF80": [
+        "Ada-1"
+      ],
+      "53B2E280": [
+        "Wrathborn Heavy Shank"
+      ],
+      "9EF0E180": [
+        "Taken Goblin",
+        "Ravenous Taken Goblin"
+      ],
+      "2BB7E180": [
+        "Quantum Harpy",
+        "Nightmare Harpy",
+        "Malignant Harpy",
+        "Photometric Mind",
+        "Transcendent Harpy"
+      ],
+      "A94CE180": [
+        "Ravenous Dire Wizard",
+        "Dire Wizard",
+        "Servile Wizard",
+        "Channeler of Terror"
+      ],
+      "A923E380": [
+        "Bound Goblin"
+      ],
+      "01E9A580": [
+        "player"
+      ],
+      "2E58CD80": [
+        "Shank"
+      ],
+      "AA59E280": [
+        "The Witness"
+      ],
+      "6E07CC80": [
+        "Salvation Walker",
+        "Factory Walker"
+      ],
+      "C9C9E280": [
+        "Vessel of Oryx"
+      ],
+      "A158E280": [
+        "Lightbearer Acolyte"
+      ],
+      "1398E280": [
+        "Heretical Knight"
+      ],
+      "486AC080": [
+        "Blue"
+      ],
+      "EBFCBF80": [
+        "Osiris"
+      ],
+      "B5E6A580": [
+        "player"
+      ],
+      "375AE180": [
+        "Resilient Homing Shank",
+        "Exploder Shank",
+        "Resolute Homing Shank"
+      ],
+      "2532B980": [
+        "Aunor"
+      ],
+      "7736E280": [
+        "Exile Overseer",
+        "Warden Servitor"
+      ],
+      "D6AEE180": [
+        "Compelled Harpy",
+        "Precursor Axis Harpy"
+      ],
+      "7A25C080": [
+        "Fynch"
+      ],
+      "4C46E180": [
+        "Revenant Thrall",
+        "Blistered Thrall",
+        "D-Block Cult Thrall"
+      ],
+      "3104C080": [
+        "Awoken Corsair"
+      ],
+      "24A2B780": [
+        "player"
+      ],
+      "640BC080": [
+        "Eido"
+      ],
+      "A0BBE280": [
+        "Unrelenting Servitor",
+        "Prophet's Servitor"
+      ],
+      "3969E180": [
+        "BrayTech Security Frame"
+      ],
+      "6DB1E180": [
+        "Bracus Gaa'ron, Coalition Ally",
+        "Ascendant Guard"
+      ],
+      "4915C080": [
+        "Spider's Associate",
+        "Halsiks",
+        "Excavator"
+      ],
+      "FE35C080": [
+        "rahool"
+      ],
+      "F625E380": [
+        "Nightmare Harpy"
+      ],
+      "56DEBF80": [
+        "fallen_vandal"
+      ],
+      "DCE04281": [
+        "Walker "
+      ],
+      "A0F0E180": [
+        "Taken Hobgoblin",
+        "Ravenous Taken Hobgoblin"
+      ],
+      "F4F1E180": [
+        "Urzok, Aspect of Hate"
+      ],
+      "2C3AC080": [
+        "847420B0"
+      ],
+      "F123E380": [
+        "Bound Taken Captain"
+      ],
+      "6142E180": [
+        "Lightbearer Knight",
+        "ur-Hiruk, Warden of the Spire",
+        "Urtokk",
+        "Urrox, the Risen Ember",
+        "Lucent Titan",
+        "Seal-Engraver",
+        "Abjurant Knight",
+        "Secret of Severed Flesh"
+      ],
+      "A62AE180": [
+        "Corrupted Ravager"
+      ],
+      "B59ACB80": [
+        "Holliday"
+      ],
+      "F623C080": [
+        "Ikora"
+      ],
+      "61F0E180": [
+        "Ravenous Taken Phalanx",
+        "Taken Phalanx"
+      ],
+      "0DAFE180": [
+        "Tracer Shank",
+        "Resilient Tracer Shank",
+        "Lunar Scavenger",
+        "Data Safeguard"
+      ],
+      "A853E180": [
+        "Kell Echo"
+      ],
+      "4BEDCB80": [
+        "61798F4F",
+        "Rift Generator"
+      ],
+      "23FFE180": [
+        "Nezarec, Final God of Pain"
+      ],
+      "E133E280": [
+        "Independent Wyvern",
+        "Chief Inspector",
+        "Inspector",
+        "Gambler Wyvern",
+        "Singular Wyvern",
+        "Retaliator"
+      ],
+      "D4F6E280": [
+        "Valus Ozysas"
+      ],
+      "08D5E280": [
+        "Revenant Ogre"
+      ],
+      "39DFBF80": [
+        "fallen_vandal"
+      ],
+      "4746E180": [
+        "Yächaar, Bound to Sedia",
+        "Blistered Ogre",
+        "Phry'zhia the Insatiable",
+        "Megor, Spawn of Xivu",
+        "Infernal Ogre",
+        "Teraph, Herald of the Plague",
+        "Belhor, Herald of the Plague",
+        "Mholoch, Herald of the Plague"
+      ],
+      "76EFE280": [
+        "97EBD02D",
+        "Resonant Glyphkeeper"
+      ],
+      "FCF0E180": [
+        "Shadow Thrall"
+      ],
+      "52C9E280": [
+        "Honored Psion",
+        "Esteemed Psion"
+      ],
+      "B0C0E280": [
+        "Corrupted Ravager"
+      ],
+      "4C4EE180": [
+        "Ravenous Dire Centurion",
+        "Servile Centurion",
+        "Dire Centurion"
+      ],
+      "7A9DE280": [
+        "BrayTech Security Frame"
+      ],
+      "9B833E81": [
+        "Uplifted Choral Minotaur"
+      ],
+      "1AF1E180": [
+        "Servile Captain",
+        "Ravenous Taken Captain",
+        "Taken Captain",
+        "Corrupted Navigator",
+        "Drinker of Light",
+        "Drinker of Darkness",
+        "Rot-minder",
+        "Vestige of Demolition",
+        "Ithriks, the Lost"
+      ],
+      "520AE380": [
+        "Hiraks, the Mindbender"
+      ],
+      "8DC9BF80": [
+        "Cayde-6"
+      ],
+      "070EE380": [
+        "hive_trooper"
+      ],
+      "664CE180": [
+        "Ravenous Dire Hobgoblin",
+        "Phased Taken Hobgoblin",
+        "Servile Hobgoblin",
+        "Dire Hobgoblin"
+      ],
+      "18FFE280": [
+        "Fikrul, the Fanatic"
+      ],
+      "E26DA880": [
+        "rahool"
+      ],
+      "CF31C080": [
+        "Devrim"
+      ],
+      "CC6FB880": [
+        "Lord Saladin"
+      ],
+      "3F51E280": [
+        "Eulochus, Fissile Mind",
+        "Linchpin Hydra",
+        "Precursor Nexus Hydra",
+        "Hydra",
+        "Sentinel of the Conductor"
+      ],
+      "CFFDE280": [
+        "Bound Taken Centurion"
+      ],
+      "832CC080": [
+        "Ikora"
+      ],
+      "564CE180": [
+        "Ravenous Dire Goblin",
+        "Dire Goblin"
+      ],
+      "3BD4E280": [
+        "Acolyte's Eye",
+        "Blighted Eye"
+      ],
+      "4B04C080": [
+        "Awoken Corsair"
+      ],
+      "B49BE180": [
+        "Akardon, Pitiless Mind"
+      ],
+      "FE56E180": [
+        "Overload Captain"
+      ],
+      "2FDFBF80": [
+        "fallen_vandal"
+      ],
+      "D53FE280": [
+        "Ether Abomination",
+        "Demented Abomination",
+        "Wish-Twisted Abomination",
+        "Forgotten Abomination",
+        "Macuii, Herald of the Plague",
+        "Itzlii, Herald of the Plague",
+        "Tezcaa, Herald of the Plague",
+        "Paradii, the Vigilant"
+      ],
+      "22B3E280": [
+        "Lightbearer Knight"
+      ],
+      "3E08C680": [
+        "Empress's Thresher",
+        "Imperial Thresher"
+      ],
+      "96C7E280": [
+        "Honored War Beast"
+      ],
+      "E4E4CB80": [
+        "Shaw Han"
+      ],
+      "0821C080": [
+        "fallen_vandal"
+      ],
+      "E087E180": [
+        "Lightblade"
+      ],
+      "F34DE180": [
+        "Ravenous Dire Captain",
+        "Dire Captain",
+        "Servile Captain",
+        "Vanguard's Most Wanted"
+      ],
+      "3FDFBF80": [
+        "fallen_vandal"
+      ],
+      "49A8E180": [
+        "Minotaur",
+        "Storm Minotaur",
+        "Edyx, Exothermic Mind",
+        "Alkestis, Sacrificial Mind"
+      ],
+      "00D7E180": [
+        "Claw of the Witness",
+        "Xirash, Keeper of Memory"
+      ],
+      "21E6E180": [
+        "Claw of the Witness"
+      ],
+      "B904C380": [
+        "player"
+      ],
+      "0B21C080": [
+        "fallen_vandal"
+      ],
+      "AEB1E280": [
+        "Fallen Shield"
+      ],
+      "BDCDE280": [
+        "Hashladûn, Daughter of Crota"
+      ],
+      "46D4E280": [
+        "High Celebrant of Xivu Arath"
+      ],
+      "9326E280": [
+        "Enlightened Omen",
+        "Inga, Subjugator of Truth",
+        "Expector Selin",
+        "Elder Revenant",
+        "Eexonios, Pledged to Yirix",
+        "Vrhiisk, Seeker of Power",
+        "Revenant Baron",
+        "Subjugator of Whispers",
+        "Tempest's Beloved",
+        "Lenurae, Subjugator of Fluxion",
+        "Subjugator of Control",
+        "Cornerstone of the Witness"
+      ],
+      "307BE280": [
+        "Swordbearer"
+      ],
+      "3543E180": [
+        "Lightbearer Wizard",
+        "Lucent Portalguard",
+        "Kerr-Ath, Expedition Commander",
+        "Sacrificial Lightbearer",
+        "Ir Nasrir, Secret Seeker",
+        "Iraaku, Keeper of Revelations",
+        "Lightkeeper"
+      ],
+      "BF833E81": [
+        "Centurion",
+        "Putrid Centurion"
+      ],
+      "9B23E380": [
+        "Bound Chieftan"
+      ],
+      "00D5E280": [
+        "Acolyte's Eye"
+      ],
+      "4441E180": [
+        "Overload Chieftain",
+        "Glyphkeeper",
+        "Night Terror",
+        "Dread Devourer"
+      ],
+      "36D4E280": [
+        "Ogre Ascendant",
+        "Xavoth, the Waking"
+      ],
+      "6AA1CC80": [
+        "Skiff"
+      ],
+      "17E0E280": [
+        "Rhulk, Disciple of the Witness"
+      ],
+      "8024E380": [
+        "Raneiks Unified"
+      ],
+      "67CFE280": [
+        "Abyssal Champion",
+        "Drachna, Favored by Incaru"
+      ],
+      "D6E3BF80": [
+        "Petra Venj"
+      ],
+      "6C13C080": [
+        "Asher"
+      ],
+      "67ECE280": [
+        "Essence Bearer",
+        "Penumbral Centurion"
+      ],
+      "E435E280": [
+        "Exile Ranniks, Vandal Veteran",
+        "Illaszk, Exile Marauder",
+        "Right Hands of the Destruction",
+        "Left Hands of the Destruction"
+      ],
+      "2C40E180": [
+        "Unstoppable Abomination"
+      ],
+      "C9DDB880": [
+        "player"
+      ],
+      "3DBEE280": [
+        "Defiled Servitor, House Salvation",
+        "Unrelenting Servitor",
+        "Servitor, Loyal to Aye-I"
+      ],
+      "42884081": [
+        "Shank"
+      ],
+      "E98FA780": [
+        "Nightmare of Elykris, the Machinist"
+      ],
+      "5D46C080": [
+        "fallen_vandal"
+      ],
+      "9CFDE280": [
+        "Nightmare of Phogoth, the Untamed"
+      ],
+      "E2833E81": [
+        "Minotaur Isolate Inviolate"
+      ],
+      "9FE9A580": [
+        "player"
+      ],
+      "A0B1E280": [
+        "Abundance Monitor"
+      ],
+      "109EE280": [
+        "Shadow Guard Legionary",
+        "Databank Courier"
+      ],
+      "40F9C380": [
+        "civilian_display_name"
+      ],
+      "D80BA880": [
+        "Koregos, the Worldline"
+      ],
+      "09D5E280": [
+        "Revenant Wizard"
+      ],
+      "86EFE280": [
+        "Servitor",
+        "Security Servitor",
+        "Conflux Watch Prime",
+        "Yamiks Prime, House Salvation",
+        "Mimiks-2, Devils Scion",
+        "Mimiks-1, Devils Scion",
+        "Mimiks-0, Devils Scion"
+      ],
+      "34EAC380": [
+        "Walker "
+      ],
+      "42DFBF80": [
+        "fallen_vandal"
+      ],
+      "FECDBF80": [
+        "The Witness"
+      ],
+      "73D0E280": [
+        "Vex Harpy"
+      ],
+      "5C37C080": [
+        "Sedia"
+      ],
+      "8A32C080": [
+        "fallen_vandal"
+      ],
+      "4ED3BF80": [
+        "Saint-14"
+      ],
+      "0863B880": [
+        "The Crow"
+      ],
+      "3215B880": [
+        "Blue"
+      ],
+      "9996B880": [
+        "Osiris"
+      ],
+      "A358E280": [
+        "Lightbearer Wizard",
+        "Luzaku"
+      ],
+      "20DFBF80": [
+        "fallen_vandal"
+      ],
+      "8F44E380": [
+        "Nameless Apprentice"
+      ],
+      "B115B880": [
+        "Blue"
+      ],
+      "47BBE180": [
+        "Colossus",
+        "Artillery Commander",
+        "Ludus, Array Foreguard"
+      ],
+      "07ABE280": [
+        "Loyalist Phalanx",
+        "Nightmare Phalanx",
+        "Avaricious Treasurer"
+      ],
+      "B560A880": [
+        "kadi"
+      ],
+      "871BE380": [
+        "Hydra",
+        "Paraversal Challenger"
+      ],
+      "006ECC80": [
+        "Asher"
+      ],
+      "1A26C080": [
+        "Slain Phantom"
+      ],
+      "BD35C080": [
+        "AE9D03BC"
+      ],
+      "10B5C380": [
+        "Commander's Thresher"
+      ],
+      "BECDBF80": [
+        "The Witness"
+      ],
+      "3D46C080": [
+        "fallen_vandal"
+      ],
+      "B104C380": [
+        "player"
+      ],
+      "EBB1E180": [
+        "Tarnished Lurker",
+        "Corrupted Lurker",
+        "Pit Boss"
+      ],
+      "B0CEBF80": [
+        "Variks"
+      ],
+      "B250E180": [
+        "Dire War Beast"
+      ],
+      "1CFAE180": [
+        "Corrupted Chieftain",
+        "Kruvii, Subversive Chieftain",
+        "Tarnished Chieftain",
+        "Dredge Chieftain"
+      ],
+      "9757E180": [
+        "Resilient Captain",
+        "01966D4E",
+        "Resolute Captain",
+        "Loaded Captain",
+        "Despoiler Captain",
+        "Vanguard's Most Wanted",
+        "Ozone Polluter",
+        "Extractor Captain",
+        "WANTED: Student of Beltrik",
+        "A-Block Scar Captain",
+        "House of Dusk Saboteur",
+        "Captain, House of Dusk",
+        "Lunar Scavenger",
+        "Metal Captain",
+        "Downpour Captain",
+        "Calzar, Scarred Captain",
+        "Drained Captain",
+        "Phyzann, Drowned Captain",
+        "Skexis, Outcast Captain",
+        "Mazan, Lost Captain",
+        "Sunless Captain",
+        "Mineral Conversion Processor",
+        "Fallen Supply Raider",
+        "WANTED: Irxis Partisan",
+        "Paraversal Contender"
+      ],
+      "66C4BF80": [
+        "Saint-14"
+      ],
+      "D323E380": [
+        "E8DFCF42",
+        "Devourer of Tainted Light"
+      ],
+      "4336C080": [
+        "Hawthorne"
+      ],
+      "9170C080": [
+        "fallen_vandal"
+      ],
+      "E84CB880": [
+        "Petra Venj"
+      ],
+      "B809E180": [
+        "Siphon Servitor",
+        "Servitor",
+        "Deksis-5, Taskmaster",
+        "Data Safeguard Servitor",
+        "Paraversal Contestant"
+      ],
+      "55BFB780": [
+        "eris_morn"
+      ],
+      "1870C080": [
+        "Blue"
+      ],
+      "45D2E280": [
+        "Tezcaa, Herald of the Plague",
+        "Varkuuriis, Plague of the Well",
+        "Sikariis, Plague of the Well"
+      ],
+      "7433E280": [
+        "Piker Wretch",
+        "Engineer Wretch",
+        "Trusted Wretch",
+        "Operations Specialist"
+      ],
+      "9D4BE280": [
+        "Agon, Strategic Hydra",
+        "Calixte, System Ward Finality"
+      ],
+      "39FDE180": [
+        "Zo'aurc, Explicator of Planets"
+      ],
+      "C685E180": [
+        "Exile Nezkris, Distribution Overseer",
+        "Saboteur Corsair"
+      ],
+      "DBFEE280": [
+        "Eye of the Swarm"
+      ],
+      "F333E280": [
+        "Piker Captain",
+        "Piker Captain, Riliks's Right Hand",
+        "Trusted Captain",
+        "Engineer Captain",
+        "Inspector",
+        "Retaliator",
+        "Operations Specialist"
+      ],
+      "6F01E380": [
+        "Trammel of Demise"
+      ],
+      "602DE380": [
+        "Nameless Apprentice"
+      ],
+      "52F0D080": [
+        "r1_s4_strike_cosmo_reliquary_ultra0_display_name"
+      ],
+      "8672E280": [
+        "Empress Caiatl"
+      ],
+      "1E0BB880": [
+        "player"
+      ],
+      "E868E180": [
+        "hive_ogre"
+      ],
+      "C77AE380": [
+        "Barrier Servitor"
+      ],
+      "7F1DE280": [
+        "Fractal Attendant",
+        "Frozen Attendant",
+        "Attendant",
+        "Unwritten Attendant",
+        "Eye of Fear",
+        "Artillery Officer",
+        "Tempest's Beloved"
+      ],
+      "0928C080": [
+        "Ikora"
+      ],
+      "ACEFE280": [
+        "Bound Husk"
+      ],
+      "A3BBCC80": [
+        "Osiris"
+      ],
+      "9312C080": [
+        "fallen_vandal"
+      ],
+      "F525E380": [
+        "Nightmare Harpy"
+      ],
+      "8170C080": [
+        "Eris Morn"
+      ],
+      "01D5E280": [
+        "Revenant Knight"
+      ],
+      "6F25E380": [
+        "Nightmare Shank"
+      ],
+      "2EBEE280": [
+        "Unrelenting Servitor",
+        "Defiled Servitor, House Salvation",
+        "5CAABF1A",
+        "Unyielding Servitor",
+        "Sentinel",
+        "Security Optic"
+      ],
+      "887FE380": [
+        "Taken Warden"
+      ],
+      "CCE3BF80": [
+        "Petra Venj"
+      ],
+      "7D33C080": [
+        "Orin"
+      ],
+      "640AE380": [
+        "hive_knight"
+      ],
+      "F343E180": [
+        "Revenant Thrall",
+        "Crystalbound Thrall",
+        "Crystalbound Sacrifice"
+      ],
+      "999EE280": [
+        "Blistered Knight",
+        "Revenant Knight",
+        "Unhallowed Vanquisher",
+        "Vanquisher",
+        "D-Block Cult Knight"
+      ],
+      "80FFE280": [
+        "Commander Dracus",
+        "Bracus Reghusk, Coalition Ally"
+      ],
+      "7C9DE280": [
+        "BrayTech Security Frame"
+      ],
+      "63FEE280": [
+        "Camber, Piker Crime Boss"
+      ],
+      "F3F1E180": [
+        "Ta'aurc, Aspect of War",
+        "Val Belyx, Gauntlet of Incaru",
+        "Servile Centurion",
+        "ultra_taken_centurion_display_name",
+        "Blighted Centurion",
+        "Centurion Echo",
+        "Taken Heat-Drinker"
+      ],
+      "25B7E180": [
+        "Quantum Hobgoblin",
+        "Malignant Hobgoblin",
+        "Xegonion, Warped Mind",
+        "Integrator Hobgoblin",
+        "Integrator Goblin",
+        "Specimen Mu",
+        "Circumstantial Avatar",
+        "Rabble-Rouser"
+      ],
+      "5F25E380": [
+        "Nightmare Wretch"
+      ],
+      "809EE280": [
+        "Lunar Commander"
+      ],
+      "A323E380": [
+        "Bound Wizard"
+      ],
+      "99ADE280": [
+        "DE12D639",
+        "Nightmare of Horkis, Fear of Mithrax"
+      ],
+      "2B8FA780": [
+        "Nightmare of Navôta, Eir-Spawn"
+      ],
+      "0CAFE180": [
+        "Nightmare Shank",
+        "Resilient Shank",
+        "Resolute Shank",
+        "Befouler Shank",
+        "Lunar Scavenger"
+      ],
+      "6F23C080": [
+        "Echo of Navigation"
+      ],
+      "6B2EC080": [
+        "The Crow"
+      ],
+      "75C8BF80": [
+        "The Witness"
+      ],
+      "58B2E180": [
+        "Corrupted Wraith",
+        "Tarnished Wraith"
+      ],
+      "CEB0E180": [
+        "Honored Centurion",
+        "Esteemed Centurion",
+        "WANTED: Bracus Rulaitl",
+        "Val Urgus",
+        "Val Ghuusk",
+        "Impact Centurion",
+        "Outlaw Centurion",
+        "Kurg, the All-Seeing Force",
+        "Artillery Operations Commander",
+        "WANTED: Disgraced Bracus",
+        "Standard Bearer",
+        "Xûr's Siegebringer",
+        "Halphas Honorguard"
+      ],
+      "151EE380": [
+        "Vezuul, Lightflayer"
+      ],
+      "78EFE280": [
+        "Praksis, the Technocrat"
+      ],
+      "37FAE180": [
+        "Corrupted Raider",
+        "Tarnished Raider"
+      ],
+      "5A23E380": [
+        "Malignant Goblin",
+        "Glass Collector"
+      ],
+      "136DE180": [
+        "Malevolent Blade",
+        "Apocalyptic Blade"
+      ],
+      "7F25E380": [
+        "Nightmare Warbeast"
+      ],
+      "0E0BB880": [
+        "player"
+      ],
+      "D538C080": [
+        "Slain Phantom"
+      ],
+      "E5833E81": [
+        "Singular Harpy",
+        "Tharsis Reformation Harpy",
+        "Independent Harpy"
+      ],
+      "A16CE180": [
+        "Nightmare Ogre",
+        "Phry'zhia the Insatiable",
+        "Gothrax, Protector of the Swarm"
+      ],
+      "625AE180": [
+        "Wretch",
+        "Resilient Wretch",
+        "Resolute Wretch"
+      ],
+      "A6B1E180": [
+        "Bracus Han'uk, Coalition Ally",
+        "Ascendant Guard"
+      ],
+      "EDEBE280": [
+        "Infiltrator Psion"
+      ],
+      "8C63E380": [
+        "Pikerider",
+        "Trusted Pikerider"
+      ],
+      "ABD1BF80": [
+        "tess"
+      ],
+      "EEB0E180": [
+        "Esteemed Colossus",
+        "WANTED: Magnar the Rockjaw",
+        "Honored Colossus",
+        "Brawl Gladiator",
+        "FC6CB869",
+        "Kaaron, Blood Infernal",
+        "Saruut, Blood Infernal",
+        "Devourer Darg",
+        "Commander of Eternity",
+        "Valus Gathurn",
+        "Revered Colossus",
+        "Val Kladior"
+      ],
+      "CFF0E180": [
+        "Ogre Ascendant",
+        "Rune-Cursed Ogre",
+        "Iconoclastic Ogre",
+        "Pupating Abyss"
+      ],
+      "CEDEBF80": [
+        "fallen_vandal"
+      ],
+      "666CE180": [
+        "NIghtmare Ogre",
+        "Revenant Ogre",
+        "Blistered Ogre",
+        "Fissure Ogre",
+        "Lunar Scavenger"
+      ],
+      "23FEE280": [
+        "Nightmare of Skolas, Kell of Kells"
+      ],
+      "08C7E280": [
+        "Yächaar, Bound to Sedia",
+        "36010525",
+        "Val Eralus, the Obedient"
+      ],
+      "0F98E280": [
+        "Harrowing Pariah"
+      ],
+      "081EE380": [
+        "Zeerik, Lightflayer"
+      ],
+      "D7F4BF80": [
+        "Ada-1"
+      ],
+      "34C4BF80": [
+        "Ikora"
+      ],
+      "6EEFE280": [
+        "Taken Hobgoblin",
+        "Ravenous Taken Hobgoblin"
+      ],
+      "C7D4E280": [
+        "Riven of a Thousand Voices"
+      ],
+      "73C8BF80": [
+        "Ghost"
+      ],
+      "33B0E180": [
+        "Esteemed Scorpius",
+        "Honored Scorpius"
+      ],
+      "5823E380": [
+        "Servile Acolyte",
+        "Glass Collector"
+      ],
+      "779DE280": [
+        "BrayTech Security Frame"
+      ],
+      "41A1CC80": [
+        "Thresher"
+      ],
+      "4070C080": [
+        "Blue"
+      ],
+      "7DF6E280": [
+        "Fanatic"
+      ],
+      "33FEE280": [
+        "Nightmare of Zydron, Gate Lord"
+      ],
+      "4CEDE280": [
+        "Pykis, House Salvation"
+      ],
+      "98C7E280": [
+        "Xavan, Daughter of Xivu Arath",
+        "Tir Balok, Daughter of Xivu Arath",
+        "An Ragaar, Son of Xivu Arath",
+        "Orm Vashyx"
+      ],
+      "4E6EC080": [
+        "Drifter"
+      ],
+      "F714E380": [
+        "Gorgon"
+      ],
+      "79874081": [
+        "fallen_vandal"
+      ],
+      "B2A1CC80": [
+        "Acolyte's Eye",
+        "Forgotten Eye"
+      ],
+      "266CE180": [
+        "hive_ogre"
+      ],
+      "E9EFE180": [
+        "Omen of the Witness",
+        "Custodian of Terror",
+        "Lens Bearer",
+        "Hrisk, Subjugator of Freedom",
+        "Subjugator of the Devoted",
+        "Tenet of Stillness",
+        "Qeilumn, Subjugator of Wilderness",
+        "Erhnja, Subjugator of Peace",
+        "Vrhaask, Subjugator of Solace",
+        "Vrhada, Subjugator of Insight"
+      ],
+      "D7E3BF80": [
+        "Petra Venj"
+      ],
+      "0128C080": [
+        "Ikora"
+      ],
+      "11ECE180": [
+        "Fikrul, the Fanatic"
+      ],
+      "D961E380": [
+        "Blistered Shadow",
+        "Shade of Sere"
+      ],
+      "884BE280": [
+        "Bous, Shattered Mind",
+        "Vidar, Ascended Mind"
+      ],
+      "2E19E380": [
+        "Assimilated Demolisher Minotaur",
+        "Minotaur",
+        "Choral Antigen Mind",
+        "Macheus, Cryptographic Mind",
+        "Zydron, Gate Lord, Dares Champion"
+      ],
+      "9896B880": [
+        "Osiris"
+      ],
+      "5934C080": [
+        "The Emissary"
+      ],
+      "0E0EE280": [
+        "Nightmare of Dominus Ghaul"
+      ],
+      "4CDFBF80": [
+        "fallen_vandal"
+      ],
+      "CF04E380": [
+        "BAE299F1",
+        "Vision of Gahlran"
+      ],
+      "0442E180": [
+        "BD7D830F",
+        "Abjurant Knight"
+      ],
+      "004DE180": [
+        "Dire Psion"
+      ],
+      "777FE380": [
+        "Barrier Grim"
+      ],
+      "9ED9BF80": [
+        "Zavala"
+      ],
+      "BF82E280": [
+        "Raneiks-10",
+        "Raneiks-1",
+        "Raneiks-2",
+        "Raneiks-3",
+        "Raneiks-4",
+        "Raneiks-5",
+        "Raneiks-6",
+        "Raneiks-7",
+        "Raneiks-8",
+        "Raneiks-9"
+      ],
+      "82B1E280": [
+        "Captain Avarokk the Covetous"
+      ],
+      "B025E380": [
+        "Nightmare of Rovikis, Council Hand"
+      ],
+      "5246E180": [
+        "Blistered Knight",
+        "Revenant Knight",
+        "Wealthy Knight",
+        "D-Block Cult Knight",
+        "Lens Bearer",
+        "Wormcradle Knight",
+        "Arc-Charged Wrathborn",
+        "Eater of Light and Darkness",
+        "Wrathborn Overseer",
+        "Fissure Knight",
+        "Splintered Curator"
+      ],
+      "D923C080": [
+        "Sloane"
+      ],
+      "2AB3E280": [
+        "Uul'nath, Lightcleanser"
+      ],
+      "5C823E81": [
+        "The Machinist"
+      ],
+      "4BAAE280": [
+        "Eramis, Kell of Darkness"
+      ],
+      "4523E380": [
+        "Centroidal Mind"
+      ],
+      "462EC080": [
+        "Glint"
+      ],
+      "BA6DA880": [
+        "tyra"
+      ],
+      "4052E180": [
+        "Tharsis Reformation Imp Swarm"
+      ],
+      "2782E280": [
+        "The Witness"
+      ],
+      "4318CF80": [
+        "Heavy Shank"
+      ],
+      "F304E380": [
+        "BAE299F1",
+        "Nightmare of Gahlran, Sorrow Bearer"
+      ],
+      "F92BC080": [
+        "Rohan"
+      ],
+      "7DDEBF80": [
+        "fallen_vandal"
+      ],
+      "EFF7BF80": [
+        "Savathûn"
+      ],
+      "477FE380": [
+        "Elevated Imperium Centurion"
+      ],
+      "18F1E180": [
+        "Ravenous Taken Acolyte",
+        "Taken Acolyte"
+      ],
+      "9BC8E180": [
+        "Honored Legionary",
+        "Esteemed Legionary",
+        "Redolence of Decay",
+        "Redolence of Splendor",
+        "Patron"
+      ],
+      "1DD1C380": [
+        "Acolyte's Eye"
+      ],
+      "6A63C080": [
+        "fallen_vandal"
+      ],
+      "FC27C080": [
+        "Ikora"
+      ]
+    }
+  }
+}

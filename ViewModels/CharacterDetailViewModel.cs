@@ -1,3 +1,4 @@
+using System.IO;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -153,8 +154,8 @@ public partial class CharacterDetailViewModel : ViewModelBase
                 return;
             }
 
-            // Solicitar componentes 205 (CharacterEquipment) y 300 (ItemInstances)
-            var components = new[] { 205, 300 };
+            // Solicitar componentes: 205=CharEquip, 300=ItemInstances, 302=ItemSockets, 304=ItemCommon, 305=PlugStates, 307=ReusablePlugs
+            var components = new[] { 205, 300, 302, 304, 305, 307 };
             var profileResponse = await _bungieApiService.GetProfileAsync(_membershipType, _membershipId, token, components);
 
             if (profileResponse?.CharacterEquipment?.Data == null)
@@ -171,12 +172,65 @@ public partial class CharacterDetailViewModel : ViewModelBase
             }
 
             var itemInstances = profileResponse.ItemComponents?.Instances?.Data;
+            var itemSockets = profileResponse.ItemComponents?.Sockets?.Data;
+
+            // Log socket data to file for debugging (since WPF doesn't have console)
+            var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "debug_sockets.log");
+            using (var log = new StreamWriter(logPath, false)) // overwrite each time
+            {
+                log.WriteLine($"[{DateTime.Now}] itemSockets is null: {itemSockets == null}");
+                log.WriteLine($"profileResponse.ItemComponents is null: {profileResponse.ItemComponents == null}");
+                log.WriteLine($"profileResponse.ItemComponents?.Sockets is null: {profileResponse.ItemComponents?.Sockets == null}");
+                
+                if (itemSockets != null)
+                {
+                    log.WriteLine($"Got sockets for {itemSockets.Count} items");
+                    foreach (var kvp in itemSockets.Take(3)) // Log first 3 items
+                    {
+                        log.WriteLine($"  Item {kvp.Key}: {kvp.Value.Sockets?.Count ?? 0} sockets");
+                        if (kvp.Value.Sockets != null)
+                        {
+                            for (int i = 0; i < Math.Min(5, kvp.Value.Sockets.Count); i++)
+                            {
+                                var s = kvp.Value.Sockets[i];
+                                log.WriteLine($"    Socket[{i}]: plugHash={s.PlugHash} enabled={s.IsEnabled}");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    log.WriteLine("NO SOCKETS DATA FROM API!");
+                }
+            }
+            Debug.WriteLine($"[CharacterDetail] Socket debug written to: {logPath}");
 
             // Procesar cada ítem equipado
             foreach (var item in equipmentData.Items ?? Enumerable.Empty<EquippedItem>())
             {
-                var invItem = await CreateInventoryItemAsync(item, itemInstances);
+                var invItem = await CreateInventoryItemAsync(item, itemInstances, itemSockets);
                 if (invItem == null) continue;
+
+                // Log sockets for armor items to find shader
+                if (item.ItemInstanceId != null && itemSockets != null && 
+                    (item.BucketHash == BUCKET_HELMET || item.BucketHash == BUCKET_GAUNTLETS ||
+                     item.BucketHash == BUCKET_CHEST || item.BucketHash == BUCKET_LEGS ||
+                     item.BucketHash == BUCKET_CLASS_ITEM))
+                {
+                    if (itemSockets.TryGetValue(item.ItemInstanceId, out var socketData))
+                    {
+                        Debug.WriteLine($"[CharacterDetail] Sockets for {invItem.Name} (hash {item.ItemHash}):");
+                        var socketIndex = 0;
+                        foreach (var socket in socketData.Sockets ?? Enumerable.Empty<SocketEntry>())
+                        {
+                            if (socket.PlugHash.HasValue && socket.PlugHash.Value > 0)
+                            {
+                                Debug.WriteLine($"  Socket[{socketIndex}]: plugHash={socket.PlugHash} enabled={socket.IsEnabled}");
+                            }
+                            socketIndex++;
+                        }
+                    }
+                }
 
                 // Asignar al slot correcto según BucketHash
                 switch (item.BucketHash)
@@ -222,7 +276,8 @@ public partial class CharacterDetailViewModel : ViewModelBase
 
     private async Task<InventoryItem?> CreateInventoryItemAsync(
         EquippedItem item, 
-        Dictionary<string, ItemInstanceData>? instances)
+        Dictionary<string, ItemInstanceData>? instances,
+        Dictionary<string, ItemSocketData>? sockets)
     {
         var invItem = new InventoryItem
         {
@@ -233,6 +288,37 @@ public partial class CharacterDetailViewModel : ViewModelBase
             Name = "Cargando...",
             Icon = null // Usará fallback en IconUrl
         };
+
+        // Extract shader from sockets (typically the last socket is shader)
+        if (item.ItemInstanceId != null && sockets != null)
+        {
+            Debug.WriteLine($"[CharacterDetail] Looking for sockets for instanceId: {item.ItemInstanceId}");
+            
+            if (sockets.TryGetValue(item.ItemInstanceId, out var socketData) &&
+                socketData.Sockets != null && socketData.Sockets.Count > 0)
+            {
+                Debug.WriteLine($"[CharacterDetail] Found {socketData.Sockets.Count} sockets for item {item.ItemHash}");
+                
+                // Shader is usually in one of the last sockets (index varies, often last non-null)
+                // Check last few sockets for a valid plugHash
+                for (int i = socketData.Sockets.Count - 1; i >= Math.Max(0, socketData.Sockets.Count - 4); i--)
+                {
+                    var socket = socketData.Sockets[i];
+                    Debug.WriteLine($"[CharacterDetail]   Socket[{i}]: plugHash={socket.PlugHash} enabled={socket.IsEnabled}");
+                    
+                    if (socket.PlugHash.HasValue && socket.PlugHash.Value > 0 && socket.IsEnabled)
+                    {
+                        invItem.ShaderHash = socket.PlugHash.Value;
+                        Debug.WriteLine($"[CharacterDetail] Selected shader for item {item.ItemHash}: {socket.PlugHash}");
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[CharacterDetail] No sockets found for item {item.ItemHash}");
+            }
+        }
 
         // Intentar obtener definición del Manifest
         try

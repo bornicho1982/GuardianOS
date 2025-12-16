@@ -170,6 +170,45 @@ public class BungieApiService : IBungieApiService
             }
             
             var apiResponse = JsonConvert.DeserializeObject<BungieApiResponse<DestinyProfileResponse>>(content);
+            
+            // Debug: Log parts of raw JSON to see what itemComponents contains
+            try
+            {
+                var debugPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "debug_api_response.log");
+                using (var log = new System.IO.StreamWriter(debugPath, false))
+                {
+                    log.WriteLine($"[{DateTime.Now}] API Response Debug");
+                    log.WriteLine($"URL: {url}");
+                    log.WriteLine($"Components requested: {componentsList}");
+                    
+                    // Parse raw JSON to see structure
+                    var rawJson = Newtonsoft.Json.Linq.JObject.Parse(content);
+                    var itemComponents = rawJson["Response"]?["itemComponents"];
+                    
+                    if (itemComponents != null)
+                    {
+                        log.WriteLine($"itemComponents keys: {string.Join(", ", ((Newtonsoft.Json.Linq.JObject)itemComponents).Properties().Select(p => p.Name))}");
+                        
+                        // Check if sockets exists
+                        var sockets = itemComponents["sockets"];
+                        log.WriteLine($"sockets exists: {sockets != null}");
+                        
+                        if (sockets != null)
+                        {
+                            log.WriteLine($"sockets.data count: {sockets["data"]?.Count() ?? 0}");
+                        }
+                    }
+                    else
+                    {
+                        log.WriteLine("itemComponents is null in raw JSON!");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[BungieAPI] Debug logging error: {ex.Message}");
+            }
+            
             return apiResponse?.Response;
         }
         catch (Exception ex)

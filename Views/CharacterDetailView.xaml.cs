@@ -1,9 +1,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using GuardianOS.Models;
 using GuardianOS.ViewModels;
 using Microsoft.Web.WebView2.Core;
 
@@ -84,24 +86,36 @@ public partial class CharacterDetailView : UserControl
     {
         try
         {
-            // Wait a moment for ViewModel data to load
-            await Task.Delay(500);
+            // Wait for equipment to finish loading (up to 10 seconds)
+            var timeout = DateTime.Now.AddSeconds(10);
+            while (viewModel.IsLoadingEquipment && DateTime.Now < timeout)
+            {
+                await Task.Delay(100);
+            }
             
-            // Collect item hashes from equipped items
+            // Small additional delay for UI update
+            await Task.Delay(200);
+            
+            Debug.WriteLine($"[3DViewer] Equipment loaded. Helmet shader: {viewModel.Helmet?.ShaderHash}");
+            
+            // Collect item hashes and shader hashes from equipped items
             var itemHashes = new List<long>();
+            var shaderHashes = new List<long>();
             
-            if (viewModel.Helmet != null)
-                itemHashes.Add(viewModel.Helmet.ItemHash);
-            if (viewModel.Gauntlets != null)
-                itemHashes.Add(viewModel.Gauntlets.ItemHash);
-            if (viewModel.ChestArmor != null)
-                itemHashes.Add(viewModel.ChestArmor.ItemHash);
-            if (viewModel.LegArmor != null)
-                itemHashes.Add(viewModel.LegArmor.ItemHash);
-            if (viewModel.ClassItem != null)
-                itemHashes.Add(viewModel.ClassItem.ItemHash);
+            void AddItem(InventoryItem? item)
+            {
+                if (item == null) return;
+                itemHashes.Add(item.ItemHash);
+                shaderHashes.Add(item.ShaderHash.HasValue ? item.ShaderHash.Value : 0);
+            }
+            
+            AddItem(viewModel.Helmet);
+            AddItem(viewModel.Gauntlets);
+            AddItem(viewModel.ChestArmor);
+            AddItem(viewModel.LegArmor);
+            AddItem(viewModel.ClassItem);
                 
-            Debug.WriteLine($"[3DViewer] Found {itemHashes.Count} items: {string.Join(", ", itemHashes)}");
+            Debug.WriteLine($"[3DViewer] Found {itemHashes.Count} items with {shaderHashes.Count(s => s > 0)} shaders");
 
             // Create config for JavaScript
             var config = new
@@ -110,6 +124,7 @@ public partial class CharacterDetailView : UserControl
                 config = new
                 {
                     itemHashes = itemHashes,
+                    shaderHashes = shaderHashes,
                     classType = viewModel.Character?.ClassType ?? 0,
                     isFemale = viewModel.Character?.GenderType == 1,
                     apiKey = Core.Constants.BUNGIE_API_KEY

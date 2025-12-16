@@ -59,6 +59,13 @@ public partial class InventoryItem : ObservableObject
     [ObservableProperty]
     private int _state;
 
+    /// <summary>
+    /// Hash del shader aplicado a este item (para armaduras).
+    /// Se extrae del socket de shader del item.
+    /// </summary>
+    [ObservableProperty]
+    private uint? _shaderHash;
+
 
     // --- Datos de Definición (Manifiesto) ---
 
