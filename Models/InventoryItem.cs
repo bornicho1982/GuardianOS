@@ -66,6 +66,13 @@ public partial class InventoryItem : ObservableObject
     [ObservableProperty]
     private uint? _shaderHash;
 
+    /// <summary>
+    /// Hash del ornamento aplicado a este item (para armaduras).
+    /// Los ornamentos cambian la geometría visual del item.
+    /// </summary>
+    [ObservableProperty]
+    private uint? _ornamentHash;
+
 
     // --- Datos de Definición (Manifiesto) ---
 

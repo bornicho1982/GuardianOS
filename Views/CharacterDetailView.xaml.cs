@@ -101,12 +101,14 @@ public partial class CharacterDetailView : UserControl
             // Collect item hashes and shader hashes from equipped items
             var itemHashes = new List<long>();
             var shaderHashes = new List<long>();
+            var ornamentHashes = new List<long>();
             
             void AddItem(InventoryItem? item)
             {
                 if (item == null) return;
                 itemHashes.Add(item.ItemHash);
                 shaderHashes.Add(item.ShaderHash.HasValue ? item.ShaderHash.Value : 0);
+                ornamentHashes.Add(item.OrnamentHash.HasValue ? item.OrnamentHash.Value : 0);
             }
             
             AddItem(viewModel.Helmet);
@@ -115,7 +117,7 @@ public partial class CharacterDetailView : UserControl
             AddItem(viewModel.LegArmor);
             AddItem(viewModel.ClassItem);
                 
-            Debug.WriteLine($"[3DViewer] Found {itemHashes.Count} items with {shaderHashes.Count(s => s > 0)} shaders");
+            Debug.WriteLine($"[3DViewer] Found {itemHashes.Count} items with {shaderHashes.Count(s => s > 0)} shaders, {ornamentHashes.Count(o => o > 0)} ornaments");
 
             // Create config for JavaScript
             var config = new
@@ -125,6 +127,7 @@ public partial class CharacterDetailView : UserControl
                 {
                     itemHashes = itemHashes,
                     shaderHashes = shaderHashes,
+                    ornamentHashes = ornamentHashes,
                     classType = viewModel.Character?.ClassType ?? 0,
                     isFemale = viewModel.Character?.GenderType == 1,
                     apiKey = Core.Constants.BUNGIE_API_KEY

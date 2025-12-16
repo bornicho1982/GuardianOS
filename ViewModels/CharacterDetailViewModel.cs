@@ -299,31 +299,44 @@ public partial class CharacterDetailViewModel : ViewModelBase
             {
                 Debug.WriteLine($"[CharacterDetail] Found {socketData.Sockets.Count} sockets for item {item.ItemHash}");
                 
-                // Search ALL sockets for cosmetic shader (not just last few)
-                // Cosmetic shaders have itemCategoryHashes containing 41 (shader)
+                // Search ALL sockets for cosmetic shader AND ornament
                 for (int i = 0; i < socketData.Sockets.Count; i++)
                 {
                     var socket = socketData.Sockets[i];
                     
                     if (socket.PlugHash.HasValue && socket.PlugHash.Value > 0 && socket.IsEnabled)
                     {
-                        // Check if this plug is a cosmetic shader by querying manifest
                         try
                         {
                             var plugDef = await _manifestRepository.GetItemDefinitionAsync((uint)socket.PlugHash.Value);
                             if (plugDef != null)
                             {
-                                // Shader items have itemCategoryHashes containing 41
-                                // Also check itemTypeDisplayName contains "Shader"
+                                // Check for SHADER (category 41 or ItemTypeDisplayName contains "Shader")
                                 var isShader = plugDef.ItemTypeDisplayName?.Contains("Shader") == true ||
                                              plugDef.ItemTypeDisplayName?.Contains("shader") == true ||
                                              (plugDef.ItemCategoryHashes?.Contains(41) == true);
                                 
-                                if (isShader)
+                                if (isShader && invItem.ShaderHash == null)
                                 {
                                     invItem.ShaderHash = socket.PlugHash.Value;
-                                    Debug.WriteLine($"[CharacterDetail] ✓ Found COSMETIC shader: {plugDef.Name} (hash {socket.PlugHash}) for item {item.ItemHash}");
-                                    break; // Found the shader, stop searching
+                                    Debug.WriteLine($"[CharacterDetail] ✓ Found SHADER: {plugDef.Name} (hash {socket.PlugHash})");
+                                }
+                                
+                                // Check for ORNAMENT (category 3109687656 or ItemTypeDisplayName contains "Ornament")
+                                var isOrnament = plugDef.ItemTypeDisplayName?.Contains("Ornament") == true ||
+                                               plugDef.ItemTypeDisplayName?.Contains("ornament") == true ||
+                                               (plugDef.ItemCategoryHashes?.Contains(3109687656) == true);
+                                
+                                if (isOrnament && invItem.OrnamentHash == null)
+                                {
+                                    invItem.OrnamentHash = socket.PlugHash.Value;
+                                    Debug.WriteLine($"[CharacterDetail] ✓ Found ORNAMENT: {plugDef.Name} (hash {socket.PlugHash})");
+                                }
+                                
+                                // If we found both, stop searching
+                                if (invItem.ShaderHash != null && invItem.OrnamentHash != null)
+                                {
+                                    break;
                                 }
                             }
                         }
@@ -331,10 +344,10 @@ public partial class CharacterDetailViewModel : ViewModelBase
                     }
                 }
                 
-                if (invItem.ShaderHash == null || invItem.ShaderHash == 0)
-                {
-                    Debug.WriteLine($"[CharacterDetail] No cosmetic shader found for item {item.ItemHash}");
-                }
+                if (invItem.ShaderHash == null)
+                    Debug.WriteLine($"[CharacterDetail] No shader found for item {item.ItemHash}");
+                if (invItem.OrnamentHash == null)
+                    Debug.WriteLine($"[CharacterDetail] No ornament found for item {item.ItemHash}");
             }
             else
             {
