@@ -27,22 +27,22 @@ public partial class CharacterDetailView : UserControl
         try
         {
             // Initialize WebView2
-            await Viewer3D.EnsureCoreWebView2Async();
+            await CharacterRenderer.EnsureCoreWebView2Async();
             
             // Configure WebView2 settings
-            Viewer3D.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            Viewer3D.CoreWebView2.Settings.AreDevToolsEnabled = true; // Enable for debugging
-            Viewer3D.CoreWebView2.Settings.IsZoomControlEnabled = false;
+            CharacterRenderer.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            CharacterRenderer.CoreWebView2.Settings.AreDevToolsEnabled = true; // Enable for debugging
+            CharacterRenderer.CoreWebView2.Settings.IsZoomControlEnabled = false;
             
             // Get the path to the 3D viewer HTML
             // POC: Load D2Foundry directly as requested
             string d2FoundryUrl = Services.ThreeJsBridge.GetD2FoundryBaseUrl();
             Debug.WriteLine($"[3DViewer] Loading D2Foundry POC: {d2FoundryUrl}");
             
-            Viewer3D.CoreWebView2.Navigate(d2FoundryUrl);
+            CharacterRenderer.CoreWebView2.Navigate(d2FoundryUrl);
             
             // Subscribe to navigation completed to handle loading state
-            Viewer3D.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+            CharacterRenderer.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
             
             _webViewInitialized = true;
             Debug.WriteLine("[3DViewer] WebView2 initialized successfully");
@@ -99,14 +99,14 @@ public partial class CharacterDetailView : UserControl
         {
             if (!_webViewInitialized)
             {
-                await Viewer3D.EnsureCoreWebView2Async();
+                await CharacterRenderer.EnsureCoreWebView2Async();
                 _webViewInitialized = true;
             }
             
             // Navigate to D2Foundry as POC
             var foundryUrl = Services.ThreeJsBridge.GetD2FoundryBaseUrl();
             Debug.WriteLine($"[3DViewer] Loading D2Foundry POC: {foundryUrl}");
-            Viewer3D.CoreWebView2.Navigate(foundryUrl);
+            CharacterRenderer.CoreWebView2.Navigate(foundryUrl);
         }
         catch (Exception ex)
         {
@@ -173,7 +173,7 @@ public partial class CharacterDetailView : UserControl
             Debug.WriteLine($"[3DViewer] Sending config: {jsonConfig}");
 
             // Send message to JavaScript
-            Viewer3D.CoreWebView2.PostWebMessageAsJson(jsonConfig);
+            CharacterRenderer.CoreWebView2.PostWebMessageAsJson(jsonConfig);
         }
         catch (Exception ex)
         {
