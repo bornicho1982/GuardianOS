@@ -121,14 +121,15 @@ public class LocalProxyServer : IDisposable
                                 await ProxyRequest(context, url);
                             });
 
-                            // Shader gear asset - query Bungie's manifest directly since shaders aren't in local mobile manifest
+                            // Shader item definition - query DestinyInventoryItemDefinition for shader's material_properties
+                            // This is where the actual color data (primary_albedo_tint, etc) lives
                             endpoints.MapGet("/api/shader/{hash}", async context =>
                             {
                                 var hashStr = context.Request.RouteValues["hash"]?.ToString();
-                                Debug.WriteLine($"[LocalProxy] Shader request for hash: {hashStr}");
+                                Debug.WriteLine($"[LocalProxy] Shader definition request for hash: {hashStr}");
                                 
-                                // Try to get shader gear asset from Bungie's API
-                                var url = $"https://www.bungie.net/Platform/Destiny2/Manifest/DestinyGearAssetsDefinition/{hashStr}/";
+                                // Query DestinyInventoryItemDefinition - this contains the shader's material_properties
+                                var url = $"https://www.bungie.net/Platform/Destiny2/Manifest/DestinyInventoryItemDefinition/{hashStr}/";
                                 await ProxyRequest(context, url);
                             });
 

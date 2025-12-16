@@ -299,19 +299,41 @@ public partial class CharacterDetailViewModel : ViewModelBase
             {
                 Debug.WriteLine($"[CharacterDetail] Found {socketData.Sockets.Count} sockets for item {item.ItemHash}");
                 
-                // Shader is usually in one of the last sockets (index varies, often last non-null)
-                // Check last few sockets for a valid plugHash
-                for (int i = socketData.Sockets.Count - 1; i >= Math.Max(0, socketData.Sockets.Count - 4); i--)
+                // Search ALL sockets for cosmetic shader (not just last few)
+                // Cosmetic shaders have itemCategoryHashes containing 41 (shader)
+                for (int i = 0; i < socketData.Sockets.Count; i++)
                 {
                     var socket = socketData.Sockets[i];
-                    Debug.WriteLine($"[CharacterDetail]   Socket[{i}]: plugHash={socket.PlugHash} enabled={socket.IsEnabled}");
                     
                     if (socket.PlugHash.HasValue && socket.PlugHash.Value > 0 && socket.IsEnabled)
                     {
-                        invItem.ShaderHash = socket.PlugHash.Value;
-                        Debug.WriteLine($"[CharacterDetail] Selected shader for item {item.ItemHash}: {socket.PlugHash}");
-                        break;
+                        // Check if this plug is a cosmetic shader by querying manifest
+                        try
+                        {
+                            var plugDef = await _manifestRepository.GetItemDefinitionAsync((uint)socket.PlugHash.Value);
+                            if (plugDef != null)
+                            {
+                                // Shader items have itemCategoryHashes containing 41
+                                // Also check itemTypeDisplayName contains "Shader"
+                                var isShader = plugDef.ItemTypeDisplayName?.Contains("Shader") == true ||
+                                             plugDef.ItemTypeDisplayName?.Contains("shader") == true ||
+                                             (plugDef.ItemCategoryHashes?.Contains(41) == true);
+                                
+                                if (isShader)
+                                {
+                                    invItem.ShaderHash = socket.PlugHash.Value;
+                                    Debug.WriteLine($"[CharacterDetail] ✓ Found COSMETIC shader: {plugDef.Name} (hash {socket.PlugHash}) for item {item.ItemHash}");
+                                    break; // Found the shader, stop searching
+                                }
+                            }
+                        }
+                        catch { /* Ignore manifest lookup errors */ }
                     }
+                }
+                
+                if (invItem.ShaderHash == null || invItem.ShaderHash == 0)
+                {
+                    Debug.WriteLine($"[CharacterDetail] No cosmetic shader found for item {item.ItemHash}");
                 }
             }
             else

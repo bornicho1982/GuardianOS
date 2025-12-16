@@ -365,54 +365,115 @@
             }
         }
 
-        // Load shader data from local proxy (queries Bungie API)
+        // Load shader colors from DestinyInventoryItemDefinition
+        // According to research: Colors are in material_properties of the shader's item definition
         async loadShaderFromLowlidev(shaderHash) {
             try {
-                // Use our local proxy which queries Bungie's manifest API
+                // Query DestinyInventoryItemDefinition for the shader
                 const url = `${this.proxyUrl}/api/shader/${shaderHash}`;
-                console.log('[D2TGXLoader] Trying proxy for shader:', shaderHash);
+                console.log('[D2TGXLoader] Fetching shader definition:', shaderHash);
 
                 const response = await fetch(url);
                 if (!response.ok) {
-                    console.warn('[D2TGXLoader] Shader API failed:', response.status);
+                    console.warn('[D2TGXLoader] Shader definition API failed:', response.status);
                     return null;
                 }
 
                 const data = await response.json();
-                console.log('[D2TGXLoader] Shader API response:', data);
+                console.log('[D2TGXLoader] Shader definition response keys:',
+                    data.Response ? Object.keys(data.Response) : 'no response');
 
-                // Bungie API returns { ErrorCode, Response: { ... } }
                 if (data.ErrorCode === 1 && data.Response) {
-                    const gearAsset = data.Response;
-                    console.log('[D2TGXLoader] Shader gearAsset:', Object.keys(gearAsset));
+                    const shaderDef = data.Response;
 
-                    // If shader has gear JSON, load it
-                    if (gearAsset.gear && gearAsset.gear.length > 0) {
-                        const gearPath = gearAsset.gear[0];
-                        const gearUrl = `${this.proxyUrl}/api/gear/${gearPath}`;
-                        console.log('[D2TGXLoader] Loading shader gear from:', gearUrl);
+                    // Log the full structure for debugging
+                    console.log('[D2TGXLoader] Shader definition:', JSON.stringify(shaderDef).substring(0, 500));
 
-                        const gearResponse = await fetch(gearUrl);
-                        if (gearResponse.ok) {
-                            const gearData = await gearResponse.json();
-                            console.log('[D2TGXLoader] Shader gear data keys:', Object.keys(gearData));
+                    // The shader's color data should be in translucencyBlock or preview properties
+                    // Or in the plug.preview section
+                    const dyeColors = this.extractShaderColorsFromDefinition(shaderDef);
 
-                            // Extract dye colors from shader gear
-                            const dyeColors = this.extractDyeColors(gearData);
-                            if (dyeColors && Object.keys(dyeColors).length > 0) {
-                                console.log('[D2TGXLoader] Got shader dyes!', dyeColors);
-                                return dyeColors;
-                            }
+                    if (dyeColors && Object.keys(dyeColors).length > 0) {
+                        console.log('[D2TGXLoader] ✅ Extracted shader colors!', dyeColors);
+                        return dyeColors;
+                    } else {
+                        console.log('[D2TGXLoader] No colors found in shader definition, checking preview...');
+
+                        // Some shaders have preview.previewVendorHash or other preview data
+                        if (shaderDef.preview) {
+                            console.log('[D2TGXLoader] Shader preview:', shaderDef.preview);
+                        }
+                        if (shaderDef.plug) {
+                            console.log('[D2TGXLoader] Shader plug:', shaderDef.plug);
+                        }
+                        if (shaderDef.translucencyBlock) {
+                            console.log('[D2TGXLoader] Shader translucencyBlock:', shaderDef.translucencyBlock);
                         }
                     }
                 }
 
                 return null;
             } catch (error) {
-                console.warn('[D2TGXLoader] Error loading shader:', error);
+                console.warn('[D2TGXLoader] Error loading shader definition:', error);
                 return null;
             }
         }
+
+        // Extract color data from shader's DestinyInventoryItemDefinition
+        extractShaderColorsFromDefinition(shaderDef) {
+            const dyeColors = {};
+
+            // Try various known locations for shader color data
+            // Based on research: material_properties, translucencyBlock, preview
+
+            // Check for translucencyBlock (some shaders store color data here)
+            if (shaderDef.translucencyBlock) {
+                const tb = shaderDef.translucencyBlock;
+                console.log('[D2TGXLoader] Found translucencyBlock:', tb);
+                // Could contain color hints
+            }
+
+            // Check plug.preview for color information
+            if (shaderDef.plug && shaderDef.plug.preview) {
+                console.log('[D2TGXLoader] Found plug.preview:', shaderDef.plug.preview);
+            }
+
+            // Check if there are any color-related properties directly on the item
+            // Look for common color property names
+            const colorProps = ['backgroundColor', 'foregroundColor', 'secondaryColor',
+                'tertiaryColor', 'colorMaterial', 'materialProperties'];
+
+            for (const prop of colorProps) {
+                if (shaderDef[prop]) {
+                    console.log(`[D2TGXLoader] Found ${prop}:`, shaderDef[prop]);
+                }
+            }
+
+            // Check displayProperties for any color hints
+            if (shaderDef.displayProperties) {
+                console.log('[D2TGXLoader] Shader display:', shaderDef.displayProperties.name);
+            }
+
+            // Check for investment stats or perks that might contain color data
+            if (shaderDef.investmentStats) {
+                console.log('[D2TGXLoader] Investment stats count:', shaderDef.investmentStats.length);
+            }
+
+            // The actual color data might be in a gearDyes array if present
+            if (shaderDef.gearDyes) {
+                console.log('[D2TGXLoader] Found gearDyes!');
+                return this.extractDyeColors({ custom_dyes: shaderDef.gearDyes });
+            }
+
+            // Some shaders reference a "preview" item that contains the actual colors
+            // This might require a second API call
+            if (shaderDef.preview && shaderDef.preview.previewVendorHash) {
+                console.log('[D2TGXLoader] Shader has previewVendorHash:', shaderDef.preview.previewVendorHash);
+            }
+
+            return dyeColors;
+        }
+
 
         // Load gear JSON with dye color data
         async loadGearDyeData(gearAsset) {

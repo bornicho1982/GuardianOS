@@ -25,6 +25,9 @@ public class InventoryItemDefinition
     [JsonProperty("itemTypeDisplayName")]
     public string ItemTypeDisplayName { get; set; } = string.Empty;
 
+    [JsonProperty("itemCategoryHashes")]
+    public List<long>? ItemCategoryHashes { get; set; }
+
     [JsonProperty("inventory")]
     public InventoryDefinition Inventory { get; set; } = new();
     
