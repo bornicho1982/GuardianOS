@@ -27,6 +27,14 @@ public class LocalProxyServer : IDisposable
     private static GearAssetService? _gearAssetService;
     private static ColladaGeneratorService? _colladaService;
     
+    // ============================================================
+    // LOCAL TEXTURE CACHE CONFIGURATION
+    // ============================================================
+    // Path to TextureCache folder (organized by item hash)
+    // Structure: TextureCache/{itemHash}/DestinyModel0/
+    private const string TEXTURE_CACHE_FOLDER = @"E:\GuardianOS\Tools\TextureCache";
+    // ============================================================
+    
     public bool IsRunning { get; private set; }
     public string BaseUrl => $"http://localhost:{_port}";
 
@@ -133,15 +141,177 @@ public class LocalProxyServer : IDisposable
                                 await ProxyRequest(context, url);
                             });
 
-                            // Proxy: Geometry files
+                            // Proxy: Geometry files (with texture fallback)
                             endpoints.MapGet("/api/geometry/{**path}", async context =>
                             {
                                 var path = context.Request.RouteValues["path"]?.ToString();
-                                var url = $"https://www.bungie.net/common/destiny2_content/geometry/{path}";
-                                await ProxyBinaryRequest(context, url);
+                                
+                                // If this is a texture request, try multiple sources
+                                if (path != null && path.Contains("/textures/"))
+                                {
+                                    // FORCE LOCAL MODE (User Request)
+                                    // 1. Extract hash from filename
+                                    // format: /textures/{hash}_{name}.tgxm.bin or similar
+                                    var textureIndex = path.IndexOf("/textures/");
+                                    var fullFilename = path.Substring(textureIndex + "/textures/".Length);
+                                    
+                                    // Try to extract the leading hash digits
+                                    var hashStr = new string(fullFilename.TakeWhile(char.IsDigit).ToArray());
+                                    
+                                    if (string.IsNullOrEmpty(hashStr))
+                                    {
+                                        // Fallback if filename doesn't start with digits (unlikely for TGXM)
+                                        // Try splitting by _ if present
+                                        var parts = fullFilename.Split('_');
+                                        if (parts.Length > 0 && long.TryParse(parts[0], out _))
+                                        {
+                                            hashStr = parts[0];
+                                        }
+                                    }
+
+                                    Debug.WriteLine($"[LocalProxy] Texture Request: {fullFilename} -> Hash: {hashStr}");
+
+                                    // 2. Search in local folder
+                                    var localFolder = @"E:\GuardianOS\Tools\ColladaGenerator\Output\DestinyModel0\Textures";
+                                    
+                                    if (Directory.Exists(localFolder) && !string.IsNullOrEmpty(hashStr))
+                                    {
+                                        var files = Directory.GetFiles(localFolder, $"{hashStr}*.png");
+                                        if (files.Length > 0)
+                                        {
+                                            var match = files[0];
+                                            Debug.WriteLine($"[LocalProxy] Serving LOCAL: {match}");
+                                            context.Response.ContentType = "image/png";
+                                            await context.Response.SendFileAsync(match);
+                                            return;
+                                        }
+                                    }
+                                    
+                                    // 3. Fallback to Bungie CDN if local not found
+                                    Debug.WriteLine($"[LocalProxy] Local texture not found. Fallback to Bungie: {path}");
+                                    var url = $"https://www.bungie.net/common/destiny2_content/geometry/{path}";
+                                    await ProxyBinaryRequest(context, url);
+                                }
+                                else
+                                {
+                                    // For non-texture geometry, use standard request
+                                    var url = $"https://www.bungie.net/common/destiny2_content/geometry/{path}";
+                                    await ProxyBinaryRequest(context, url);
+                                }
                             });
 
-                            // Proxy: Mobile textures
+                            // ============================================================
+                            // LOCAL TEXTURE SERVER - Serves extracted PNG textures
+                            // Serve local textures by item hash - NEW CACHE SYSTEM
+                            // URL: /api/armor-texture/{itemHash}/{textureType}
+                            // textureType: diffuse, normal, gearstack, dyeslot
+                            endpoints.MapGet("/api/armor-texture/{itemHash}/{textureType}", async context =>
+                            {
+                                var itemHash = context.Request.RouteValues["itemHash"]?.ToString();
+                                var textureType = context.Request.RouteValues["textureType"]?.ToString() ?? "diffuse";
+                                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                                
+                                if (string.IsNullOrEmpty(itemHash) || string.IsNullOrEmpty(TEXTURE_CACHE_FOLDER))
+                                {
+                                    context.Response.StatusCode = 404;
+                                    return;
+                                }
+                                
+                                try
+                                {
+                                    // Path: TextureCache/{itemHash}/DestinyModel0/
+                                    var itemFolder = Path.Combine(TEXTURE_CACHE_FOLDER, itemHash, "DestinyModel0");
+                                    
+                                    if (!Directory.Exists(itemFolder))
+                                    {
+                                        Debug.WriteLine($"[LocalProxy] No cached textures for item: {itemHash}");
+                                        context.Response.StatusCode = 404;
+                                        return;
+                                    }
+                                    
+                                    // FLEXIBLE SEARCH (Male/Female agnostic)
+                                    // ColladaGenerator output format: {Gender}-_{type}_{index}.png
+                                    // e.g. Female-_dyeslot_0.png or Male-_diffuse_0.png
+                                    
+                                    var searchPattern = textureType.ToLower() switch
+                                    {
+                                        "dyeslot" => "*_dyeslot_0.png",
+                                        "gearstack" => "*_gearstack_0.png",
+                                        "normal" => "*_normal_0.png",
+                                        "diffuse" => "*_diffuse_0.png",
+                                        _ => $"*_{textureType}_0.png"
+                                    };
+                                    
+                                    var files = Directory.GetFiles(itemFolder, searchPattern);
+                                    
+                                    if (files.Length > 0)
+                                    {
+                                        var texturePath = files[0];
+                                        Debug.WriteLine($"[LocalProxy] Serving cached: {itemHash}/{Path.GetFileName(texturePath)}");
+                                        context.Response.ContentType = "image/png";
+                                        await context.Response.SendFileAsync(texturePath);
+                                        return;
+                                    }
+                                    
+                                    Debug.WriteLine($"[LocalProxy] Texture not found in cache: {itemFolder}\\{searchPattern}");
+                                    context.Response.StatusCode = 404;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine($"[LocalProxy] Cache error: {ex.Message}");
+                                    context.Response.StatusCode = 500;
+                                }
+                            });
+                            
+                            // Legacy endpoint - search by texture hash in any cached folder
+                            endpoints.MapGet("/api/local-texture/{hash}", async context =>
+                            {
+                                var hash = context.Request.RouteValues["hash"]?.ToString();
+                                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                                
+                                if (string.IsNullOrEmpty(hash) || string.IsNullOrEmpty(TEXTURE_CACHE_FOLDER))
+                                {
+                                    context.Response.StatusCode = 404;
+                                    return;
+                                }
+                                
+                                try
+                                {
+                                    if (!Directory.Exists(TEXTURE_CACHE_FOLDER))
+                                    {
+                                        context.Response.StatusCode = 404;
+                                        return;
+                                    }
+                                    
+                                    // Search all item folders for a texture containing this hash
+                                    foreach (var itemDir in Directory.GetDirectories(TEXTURE_CACHE_FOLDER))
+                                    {
+                                        var texturesDir = Path.Combine(itemDir, "DestinyModel0", "Textures");
+                                        if (!Directory.Exists(texturesDir)) continue;
+                                        
+                                        var matchingFile = Directory.GetFiles(texturesDir, "*.*")
+                                            .FirstOrDefault(f => Path.GetFileName(f).Contains(hash));
+                                        
+                                        if (matchingFile != null)
+                                        {
+                                            Debug.WriteLine($"[LocalProxy] Found cached texture: {Path.GetFileName(matchingFile)}");
+                                            var ext = Path.GetExtension(matchingFile).ToLower();
+                                            context.Response.ContentType = ext == ".jpg" || ext == ".jpeg" ? "image/jpeg" : "image/png";
+                                            await context.Response.SendFileAsync(matchingFile);
+                                            return;
+                                        }
+                                    }
+                                    
+                                    context.Response.StatusCode = 404;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine($"[LocalProxy] Search error: {ex.Message}");
+                                    context.Response.StatusCode = 500;
+                                }
+                            });
+                            
+                            // Proxy: Mobile textures (legacy endpoint)
                             endpoints.MapGet("/api/texture/{**path}", async context =>
                             {
                                 var path = context.Request.RouteValues["path"]?.ToString();
@@ -432,6 +602,46 @@ public class LocalProxyServer : IDisposable
             Debug.WriteLine($"[LocalProxy] Binary error: {ex.Message}");
             context.Response.StatusCode = 500;
         }
+    }
+
+    /// <summary>
+    /// Proxy binary content with fallback URLs - tries multiple sources before failing
+    /// </summary>
+    private static async Task ProxyBinaryRequestWithFallback(HttpContext context, string[] urls)
+    {
+        foreach (var url in urls)
+        {
+            try
+            {
+                Debug.WriteLine($"[LocalProxy] Trying binary URL: {url}");
+                
+                var response = await _httpClient!.GetAsync(url);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
+                    var bytes = await response.Content.ReadAsByteArrayAsync();
+
+                    context.Response.ContentType = contentType;
+                    context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                    context.Response.StatusCode = 200;
+                    
+                    await context.Response.Body.WriteAsync(bytes);
+                    Debug.WriteLine($"[LocalProxy] Success from: {url}");
+                    return;
+                }
+                
+                Debug.WriteLine($"[LocalProxy] Failed with {response.StatusCode}: {url}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LocalProxy] Error trying {url}: {ex.Message}");
+            }
+        }
+        
+        // All URLs failed
+        Debug.WriteLine("[LocalProxy] All fallback URLs failed, returning 404");
+        context.Response.StatusCode = 404;
     }
 
     /// <summary>
