@@ -129,10 +129,7 @@
 
         // Parse individual dye data
         parseDyeData(dye) {
-            console.log('[D2TGXLoader] parseDyeData input:', JSON.stringify(dye, null, 2).slice(0, 500));
-
-            if (!dye) {
-                console.warn('[D2TGXLoader] parseDyeData: dye is null/undefined');
+            if (!dye || !dye.material_properties) {
                 return {
                     primaryColor: [0.5, 0.5, 0.5],
                     secondaryColor: [0.3, 0.3, 0.3],
@@ -140,21 +137,10 @@
                 };
             }
 
-            // Try multiple possible property structures
-            let props = dye.material_properties;
-
-            // Fallback: check if colors are directly on dye object
-            if (!props) {
-                props = dye;
-                console.log('[D2TGXLoader] No material_properties, using dye object directly');
-            }
-
-            console.log('[D2TGXLoader] props keys:', props ? Object.keys(props) : 'null');
-
+            const props = dye.material_properties;
             // Helper to normalize color from 0-255 to 0-1
             const normalizeColor = (color) => {
                 if (!color) return null;
-                console.log('[D2TGXLoader] normalizeColor input:', color);
                 // If values are > 1, assume 0-255 range
                 if (color[0] > 1 || color[1] > 1 || color[2] > 1) {
                     return [color[0] / 255, color[1] / 255, color[2] / 255, color[3] !== undefined ? color[3] / 255 : 1];
@@ -162,39 +148,14 @@
                 return color;
             };
 
-            // Try various property names that Bungie might use
-            const primaryColor = normalizeColor(
-                props.primary_albedo_tint ||
-                props.primaryColor ||
-                props.primary_color ||
-                props.diffuse ||
-                null
-            );
-
-            const secondaryColor = normalizeColor(
-                props.secondary_albedo_tint ||
-                props.secondaryColor ||
-                props.secondary_color ||
-                null
-            );
-
-            const wornColor = normalizeColor(
-                props.worn_albedo_tint ||
-                props.wornColor ||
-                null
-            );
-
-            const result = {
-                slotTypeIndex: dye.slot_type_index ?? dye.slotTypeIndex ?? 0,
-                primaryColor: primaryColor || [0.5, 0.5, 0.5],
-                secondaryColor: secondaryColor || [0.3, 0.3, 0.3],
-                wornColor: wornColor || [0.2, 0.2, 0.2],
+            return {
+                slotTypeIndex: dye.slot_type_index || 0,
+                primaryColor: normalizeColor(props.primary_albedo_tint) || [0.5, 0.5, 0.5],
+                secondaryColor: normalizeColor(props.secondary_albedo_tint) || [0.3, 0.3, 0.3],
+                wornColor: normalizeColor(props.worn_albedo_tint) || [0.2, 0.2, 0.2],
                 primaryParams: props.primary_material_params || [0, 0, 0, 0],
                 secondaryParams: props.secondary_material_params || [0, 0, 0, 0]
             };
-
-            console.log('[D2TGXLoader] parseDyeData result:', result);
-            return result;
         }
 
         // Extract texture URLs from content entry - actual structure
@@ -202,7 +163,6 @@
             const result = {
                 diffuse: [],
                 gearstack: [],
-                dyeslots: [],
                 normal: []
             };
 
@@ -234,9 +194,7 @@
 
             for (const idx of dyeIndices) {
                 if (idx < allTextures.length) {
-                    const texName = allTextures[idx];
-                    console.log(`[D2TGXLoader] Dye Texture at index ${idx}: ${texName}`);
-                    result.dyeslots.push(texName);
+                    console.log(`[D2TGXLoader] Dye Texture at index ${idx}: ${allTextures[idx]}`);
                 }
             }
 
@@ -267,207 +225,91 @@
             }
         }
 
-        // ============================================================
-        // SIMPLIFIED TEXTURE LOADING - Tries local PNG first, then TGXM, then fallback
-        // ============================================================
-        // ============================================================
-        // SIMPLIFIED TEXTURE LOADING (USER FORCED MODE)
-        // Assumes Proxy returns a standard PNG from local disk
-        // ============================================================
+        // Load texture from TGXM bin file - these are containers with PNG/JPEG inside
         async loadTextureFromTGXM(filename) {
-            // Check cache first
+            // Check cache
             if (this.loadedTextures[filename]) {
                 return this.loadedTextures[filename];
             }
 
-            // The proxy at this URL is now patched to return a local PNG image stream
             const url = `${this.proxyUrl}/api/geometry/platform/mobile/textures/${filename}`;
-            console.log('[D2TGXLoader] Loading FORCED LOCAL texture:', url);
+            console.log('[D2TGXLoader] Loading texture TGXM:', url);
 
             try {
-                const texture = await new Promise((resolve, reject) => {
-                    this.textureLoader.load(url, resolve, undefined, reject);
-                });
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-                if (texture) {
-                    texture.flipY = false;
-                    texture.name = filename;
-                    // Ensure SRGB encoding for color textures usually, but checking standard
-                    texture.colorSpace = THREE.SRGBColorSpace;
+                const buffer = await response.arrayBuffer();
+                const data = new Uint8Array(buffer);
 
-                    console.log('[D2TGXLoader] ✓ Loaded texture via forced local proxy:', filename);
-                    this.loadedTextures[filename] = texture;
-                    return texture;
+                // Parse TGXM header
+                const magic = Utils.string(data, 0, 4);
+                if (magic !== 'TGXM') {
+                    console.warn('[D2TGXLoader] Invalid texture TGXM:', magic);
+                    return null;
                 }
-            } catch (e) {
-                console.warn('[D2TGXLoader] Texture load failed:', e);
-            }
 
-            // Fallback
-            console.warn('[D2TGXLoader] Creating GRAY fallback for:', filename);
-            const fallback = this.createFallbackTexture(filename);
-            if (fallback) {
-                this.loadedTextures[filename] = fallback;
-            }
-            return fallback;
-        }
+                const fileOffset = Utils.uint(data, 8);
+                const fileCount = Utils.uint(data, 12);
 
-        // ============================================================
-        // LOAD CACHED ARMOR TEXTURES BY ITEM HASH
-        // Uses local TextureCache folder organized by item hash
-        // ============================================================
-        async loadCachedArmorTextures(itemHash) {
-            const cacheKey = `cached_${itemHash}`;
+                console.log('[D2TGXLoader] Texture TGXM has', fileCount, 'files');
 
-            // Check if already loaded
-            if (this.loadedTextures[cacheKey]) {
-                console.log('[D2TGXLoader] Using cached textures for item:', itemHash);
-                return this.loadedTextures[cacheKey];
-            }
+                // Parse files and find images
+                const textures = [];
+                for (let i = 0; i < fileCount; i++) {
+                    const headerOffset = fileOffset + (0x110 * i);
+                    const name = Utils.string(data, headerOffset, 256);
+                    const offset = Utils.uint(data, headerOffset + 0x100);
+                    const size = Utils.uint(data, headerOffset + 0x108);
 
-            const textures = {
-                diffuse: null,
-                normal: null,
-                gearstack: null,
-                dyeslot: null
-            };
+                    const fileData = data.slice(offset, offset + size);
 
-            const textureTypes = ['diffuse', 'normal', 'gearstack', 'dyeslot'];
+                    // Check if this is a PNG or JPEG
+                    const isPng = Utils.string(fileData, 1, 3) === 'PNG';
+                    const isJpeg = fileData[0] === 0xFF && fileData[1] === 0xD8;
 
-            for (const type of textureTypes) {
-                try {
-                    const url = `${this.proxyUrl}/api/armor-texture/${itemHash}/${type}`;
-                    const texture = await this.loadPngTexture(url, `${itemHash}_${type}`);
-                    if (texture) {
-                        textures[type] = texture;
-                        console.log(`[D2TGXLoader] ✓ Cached ${type} for item:`, itemHash);
-                    }
-                } catch (e) {
-                    // Texture not in cache, that's OK
-                }
-            }
+                    if (isPng || isJpeg) {
+                        const mimeType = isPng ? 'image/png' : 'image/jpeg';
+                        const blob = new Blob([fileData], { type: mimeType });
+                        const imageUrl = URL.createObjectURL(blob);
 
-            // Only cache if we got at least the diffuse texture
-            if (textures.diffuse) {
-                this.loadedTextures[cacheKey] = textures;
-                console.log('[D2TGXLoader] ✓ Loaded cached textures for item:', itemHash);
-            }
+                        // Create THREE.js texture
+                        const texture = await new Promise((resolve, reject) => {
+                            const image = new Image();
+                            image.onload = () => {
+                                const tex = new THREE.Texture(image);
+                                tex.needsUpdate = true;
+                                tex.flipY = false;
+                                tex.wrapS = THREE.RepeatWrapping;
+                                tex.wrapT = THREE.RepeatWrapping;
+                                resolve(tex);
+                            };
+                            image.onerror = reject;
+                            image.src = imageUrl;
+                        });
 
-            return textures;
-        }
-
-        // Check if item has cached textures
-        async hasItemCache(itemHash) {
-            try {
-                const response = await fetch(`${this.proxyUrl}/api/armor-texture/${itemHash}/diffuse`, {
-                    method: 'HEAD'
-                });
-                return response.ok;
-            } catch (e) {
-                return false;
-            }
-        }
-
-        // Load a direct PNG texture from URL
-        async loadPngTexture(url, name) {
-            return new Promise((resolve, reject) => {
-                const loader = new THREE.TextureLoader();
-                loader.load(
-                    url,
-                    (texture) => {
                         texture.name = name;
-                        texture.flipY = false;
-                        texture.wrapS = THREE.RepeatWrapping;
-                        texture.wrapT = THREE.RepeatWrapping;
-                        texture.needsUpdate = true;
-                        resolve(texture);
-                    },
-                    undefined,
-                    (error) => {
-                        reject(error);
+                        textures.push({ name, texture, isPng });
+
+                        // CACHE BY NAME SO WE CAN FIND IT LATER
+                        // This fixes the issue where only the first texture was accessible via the filename hash
+                        if (name) {
+                            this.loadedTextures[name] = texture;
+                        }
+
+                        console.log('[D2TGXLoader] Loaded texture image:', name, isPng ? 'PNG' : 'JPEG');
                     }
-                );
-            });
-        }
-
-        // Load texture from Bungie TGXM container (fallback)
-        async loadTgxmTexture(url, filename) {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-            const buffer = await response.arrayBuffer();
-            const data = new Uint8Array(buffer);
-
-            // Parse TGXM header
-            const magic = Utils.string(data, 0, 4);
-            if (magic !== 'TGXM') throw new Error('Invalid TGXM');
-
-            const fileOffset = Utils.uint(data, 8);
-            const fileCount = Utils.uint(data, 12);
-
-            // Parse files and find first image
-            for (let i = 0; i < fileCount; i++) {
-                const headerOffset = fileOffset + (0x110 * i);
-                const name = Utils.string(data, headerOffset, 256);
-                const offset = Utils.uint(data, headerOffset + 0x100);
-                const size = Utils.uint(data, headerOffset + 0x108);
-
-                const fileData = data.slice(offset, offset + size);
-                const isPng = Utils.string(fileData, 1, 3) === 'PNG';
-                const isJpeg = fileData[0] === 0xFF && fileData[1] === 0xD8;
-
-                if (isPng || isJpeg) {
-                    const mimeType = isPng ? 'image/png' : 'image/jpeg';
-                    const blob = new Blob([fileData], { type: mimeType });
-                    const imageUrl = URL.createObjectURL(blob);
-
-                    const texture = await new Promise((resolve, reject) => {
-                        const image = new Image();
-                        image.onload = () => {
-                            const tex = new THREE.Texture(image);
-                            tex.needsUpdate = true;
-                            tex.flipY = false;
-                            tex.wrapS = THREE.RepeatWrapping;
-                            tex.wrapT = THREE.RepeatWrapping;
-                            resolve(tex);
-                        };
-                        image.onerror = reject;
-                        image.src = imageUrl;
-                    });
-
-                    texture.name = name;
-                    if (name) this.loadedTextures[name] = texture;
-                    return texture;
-                }
-            }
-            return null;
-        }
-
-        // Create a simple MATTE GRAY fallback texture
-        createFallbackTexture(name) {
-            try {
-                // Create 4x4 MATTE GRAY texture (0.5, 0.5, 0.5)
-                const size = 4;
-                const data = new Uint8Array(size * size * 4);
-                for (let i = 0; i < size * size; i++) {
-                    data[i * 4 + 0] = 128; // R - 50% gray
-                    data[i * 4 + 1] = 128; // G
-                    data[i * 4 + 2] = 128; // B
-                    data[i * 4 + 3] = 255; // A
                 }
 
-                const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
-                texture.name = `fallback_${name}`;
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.magFilter = THREE.LinearFilter;
-                texture.minFilter = THREE.LinearFilter;
-                texture.needsUpdate = true;
+                // Cache and return first texture (usually diffuse) for legacy lookup by container hash
+                if (textures.length > 0) {
+                    this.loadedTextures[filename] = textures[0].texture;
+                    return textures[0].texture;
+                }
 
-                console.log('[D2TGXLoader] ✓ Created MATTE GRAY fallback for:', name);
-                return texture;
-            } catch (e) {
-                console.error('[D2TGXLoader] ✗ Failed to create fallback:', e);
+                return null;
+            } catch (error) {
+                console.warn('[D2TGXLoader] Failed to load texture TGXM:', filename, error);
                 return null;
             }
         }
@@ -515,7 +357,6 @@
                         gearAsset = await this.getGearAsset(itemHash);
                     }
 
-
                     if (!gearAsset) {
                         console.warn('[D2TGXLoader] No gear asset for', itemHash);
                         continue;
@@ -546,41 +387,7 @@
                         dyeColors = await this.loadGearDyeData(gearAsset);
                     }
 
-                    // ============ LOAD ALL CACHED TEXTURES (OVERRIDE STRATEGY) ============
-                    // Instead of just dyeslot, we load ALL textures available in cache (Diffuse, Normal, Stack)
-                    // and FORCE the material to use them, bypassing the hashes in the TGXM that don't match local files.
-
-                    const cachedTextures = {
-                        dyeslot: null,
-                        diffuse: null,
-                        normal: null,
-                        gearstack: null
-                    };
-
-                    const loadCachedTex = async (type) => {
-                        try {
-                            const url = `${this.proxyUrl}/api/armor-texture/${itemHash}/${type}`;
-                            return await new Promise((resolve) => {
-                                this.textureLoader.load(url,
-                                    (tex) => {
-                                        console.log(`[D2TGXLoader] ✓ Loaded cached ${type} for: ${itemHash}`);
-                                        tex.name = `cached_${type}_${itemHash}`;
-                                        tex.flipY = false; // TGX usually needs flipY false
-                                        resolve(tex);
-                                    },
-                                    undefined,
-                                    () => resolve(null) // Silent fail
-                                );
-                            });
-                        } catch (e) { return null; }
-                    };
-
-                    cachedTextures.dyeslot = await loadCachedTex('dyeslot');
-                    cachedTextures.diffuse = await loadCachedTex('diffuse');
-                    cachedTextures.normal = await loadCachedTex('normal');
-                    cachedTextures.gearstack = await loadCachedTex('gearstack');
-
-                    const mesh = await this.loadItemGeometry(gearAsset, isFemale, onProgress, dyeColors, cachedTextures);
+                    const mesh = await this.loadItemGeometry(gearAsset, isFemale, onProgress, dyeColors);
                     if (mesh) meshes.push(mesh);
                 }
 
@@ -766,22 +573,6 @@
             const dyes = {};
             const dyeOrder = ['default_dyes', 'custom_dyes', 'locked_dyes'];
 
-            // CRITICAL: Normalize colors from 0-255 to 0-1 range
-            const normalizeColor = (color) => {
-                if (!color || color.length < 3) return null;
-                // If any RGB value > 1, assume 0-255 range and normalize
-                const needsNormalize = color[0] > 1 || color[1] > 1 || color[2] > 1;
-                if (needsNormalize) {
-                    return [
-                        color[0] / 255.0,
-                        color[1] / 255.0,
-                        color[2] / 255.0,
-                        color.length > 3 ? color[3] / 255.0 : 1.0
-                    ];
-                }
-                return color;
-            };
-
             let foundAny = false;
             for (const dyeType of dyeOrder) {
                 const dyeArray = gearData[dyeType] || [];
@@ -802,20 +593,15 @@
                         let worn = matProps.worn_albedo_tint ||
                             matProps.worn_color || null;
 
-                        // NORMALIZE COLORS from 0-255 to 0-1
-                        const normPrimary = normalizeColor(primary);
-                        const normSecondary = normalizeColor(secondary);
-                        const normWorn = normalizeColor(worn);
-
-                        if (normPrimary || normSecondary) {
+                        if (primary || secondary) {
                             dyes[slotIndex] = {
-                                primaryColor: normPrimary || [0.5, 0.5, 0.5],
-                                secondaryColor: normSecondary || [0.4, 0.4, 0.4],
-                                wornColor: normWorn || [0.3, 0.3, 0.3]
+                                primaryColor: primary || [0.5, 0.5, 0.5],
+                                secondaryColor: secondary || [0.4, 0.4, 0.4],
+                                wornColor: worn || [0.3, 0.3, 0.3]
                             };
                             console.log('[D2TGXLoader] Dye slot', slotIndex,
-                                'primary (normalized):', dyes[slotIndex].primaryColor.map(c => c.toFixed(3)),
-                                'secondary (normalized):', dyes[slotIndex].secondaryColor.map(c => c.toFixed(3)));
+                                'primary:', dyes[slotIndex].primaryColor,
+                                'secondary:', dyes[slotIndex].secondaryColor);
                             foundAny = true;
                         }
                     }
@@ -829,7 +615,7 @@
             return dyes;
         }
 
-        async loadItemGeometry(gearAsset, isFemale, onProgress, dyeColors = null, cachedTextures = {}) {
+        async loadItemGeometry(gearAsset, isFemale, onProgress, dyeColors = null) {
             const content = gearAsset.content;
             if (!content || content.length === 0) return null;
 
@@ -841,50 +627,11 @@
             const gearDyes = this.extractGearDyes(contentEntry);
             const texturePaths = this.extractTextures(contentEntry, isFemale);
 
-            // PRIORITY: 
-            // 1. Use dyeColors param if provided (shader from game)
-            // 2. Fall back to gearDyes from gear JSON (default_dyes)
-            let resolvedDyeColors = {};
-            if (dyeColors && Object.keys(dyeColors).length > 0) {
-                resolvedDyeColors = dyeColors;
-                console.log('[D2TGXLoader] Using shader dye colors:', resolvedDyeColors);
-            } else if (gearDyes && Object.keys(gearDyes).length > 0) {
-                // Convert gearDyes format to the expected format for materials
-                for (const slot in gearDyes) {
-                    if (gearDyes[slot] && gearDyes[slot].primaryColor) {
-                        resolvedDyeColors[slot] = gearDyes[slot];
-                    }
-                }
-                console.log('[D2TGXLoader] Using default dye colors from gear:', resolvedDyeColors);
-            } else {
-                console.warn('[D2TGXLoader] No dye colors available, using neutral');
-            }
+            // Use dyeColors from gear JSON if available, otherwise use empty
+            const resolvedDyeColors = dyeColors || {};
+            console.log('[D2TGXLoader] Using dye colors:', resolvedDyeColors);
 
             // Try to load textures for this item
-
-            // NEW: Fallback to load dyeslot from Bungie if local failed
-            // Note: cachedTextures.dyeslot check is done later inside loadItemGeometry caller, 
-            // but here we check the argument dyeslotTexture (which is now cachedTextures object)
-            // Wait, logic change: We're passing a cachedTextures object now.
-
-            // Extract dyeslot from object if present
-            let dyeslotTexture = cachedTextures ? cachedTextures.dyeslot : null;
-
-            if (!dyeslotTexture && texturePaths.dyeslots && texturePaths.dyeslots.length > 0) {
-                // Usually the first one is the dyeslot, or we can iterate
-                const dyeslotFile = texturePaths.dyeslots[0];
-                console.log('[D2TGXLoader] No local dyeslot provided, attempting to load from Bungie TGXM:', dyeslotFile);
-                try {
-                    dyeslotTexture = await this.loadTextureFromTGXM(dyeslotFile);
-                    if (dyeslotTexture) {
-                        dyeslotTexture.name = `dyeslot_remote_${dyeslotFile}`;
-                        console.log('[D2TGXLoader] Successfully loaded remote dyeslot texture:', dyeslotFile);
-                    }
-                } catch (e) {
-                    console.warn('[D2TGXLoader] Remote dyeslot load failed:', e);
-                }
-            }
-
             // Try to load textures for this item
             let loadedTexture = null;
             if (texturePaths.diffuse && texturePaths.diffuse.length > 0) {
@@ -931,7 +678,7 @@
                 if (index < 0 || index >= geometryFiles.length) continue;
                 const geometryFile = geometryFiles[index];
                 try {
-                    const mesh = await this.loadTGXM(geometryFile, onProgress, resolvedDyeColors, texturePaths, loadedTexture, this.loadedTextures, cachedTextures);
+                    const mesh = await this.loadTGXM(geometryFile, onProgress, resolvedDyeColors, texturePaths, loadedTexture, this.loadedTextures);
                     if (mesh) meshes.push(mesh);
                 } catch (error) {
                     console.warn('[D2TGXLoader] Failed to load geometry:', geometryFile, error);
@@ -962,7 +709,7 @@
             return resolved;
         }
 
-        async loadTGXM(filename, onProgress, gearDyes = {}, texturePaths = {}, loadedTexture = null, loadedTextures = {}, cachedTextures = {}) {
+        async loadTGXM(filename, onProgress, gearDyes = {}, texturePaths = {}, loadedTexture = null, loadedTextures = {}) {
             let cleanName = filename;
             if (cleanName.endsWith('.bin')) cleanName = cleanName.slice(0, -4);
 
@@ -976,7 +723,7 @@
                 const buffer = await response.arrayBuffer();
                 const data = new Uint8Array(buffer);
 
-                return this.parseTGXM(data, cleanName, gearDyes, texturePaths, loadedTexture, loadedTextures, cachedTextures);
+                return this.parseTGXM(data, cleanName, gearDyes, texturePaths, loadedTexture, loadedTextures);
 
             } catch (error) {
                 console.error('[D2TGXLoader] Failed to load TGXM:', error);
@@ -984,7 +731,7 @@
             }
         }
 
-        parseTGXM(data, filename, gearDyes = {}, texturePaths = {}, loadedTexture = null, loadedTextures = {}, cachedTextures = {}) {
+        parseTGXM(data, filename, gearDyes = {}, texturePaths = {}, loadedTexture = null, loadedTextures = {}) {
             const magic = Utils.string(data, 0, 4);
             if (magic !== 'TGXM') {
                 console.error('[D2TGXLoader] Invalid TGXM magic:', magic);
@@ -1038,11 +785,11 @@
             }
 
             // Parse geometry using proper TGX format
-            return this.parseTGXAsset({ metadata, files, lookup }, filename, gearDyes, texturePaths, loadedTexture, loadedTextures, cachedTextures);
+            return this.parseTGXAsset({ metadata, files, lookup }, filename, gearDyes, texturePaths, loadedTexture, loadedTextures);
         }
 
         // Based on lowlidev's parseTGXAsset
-        parseTGXAsset(tgxBin, geometryHash, gearDyes = {}, texturePaths = {}, loadedTexture = null, loadedTextures = {}, cachedTextures = {}) {
+        parseTGXAsset(tgxBin, geometryHash, gearDyes = {}, texturePaths = {}, loadedTexture = null, loadedTextures = {}) {
             const metadata = tgxBin.metadata;
             const renderMeshes = metadata.render_model.render_meshes;
 
@@ -1152,9 +899,6 @@
                 const materials = [];
                 const materialMap = new Map(); // Key -> Index
 
-                // DEBUG: Log what gearDyes we have at material creation
-                console.log('[D2TGXLoader] Material creation - gearDyes:', JSON.stringify(gearDyes, null, 2));
-
                 // Helper to get or create a material
                 const getMaterialIndex = (part) => {
                     const dyeIndex = part.gear_dye_change_color_index || 0;
@@ -1179,26 +923,7 @@
                     let normalTex = null;
                     let stackTex = null;
 
-                    // OVERRIDE STRATEGY: 
-                    // If we have cached textures from local extraction, USE THEM ALWAYS.
-                    // This bypasses the hash mismatch between Bungie API (in TGX) and ColladaGenerator (in Cache).
-                    if (cachedTextures) {
-                        if (cachedTextures.diffuse) {
-                            diffuseTex = cachedTextures.diffuse;
-                            // console.log('[D2TGXLoader] Overriding Diffuse with Cached');
-                        }
-                        if (cachedTextures.normal) {
-                            normalTex = cachedTextures.normal;
-                            // console.log('[D2TGXLoader] Overriding Normal with Cached');
-                        }
-                        if (cachedTextures.gearstack) {
-                            stackTex = cachedTextures.gearstack;
-                            // console.log('[D2TGXLoader] Overriding Stack with Cached');
-                        }
-                    }
-
-                    // Only search TGXM textures if we didn't override
-                    if ((!diffuseTex || !normalTex || !stackTex) && part.shader && part.shader.static_textures) {
+                    if (part.shader && part.shader.static_textures) {
                         for (const texId of part.shader.static_textures) {
                             if (!texId) continue;
                             const lowerId = texId.toLowerCase();
@@ -1231,31 +956,21 @@
 
                     if (materialMap.has(matKey)) return materialMap.get(matKey);
 
-                    // =============================================
-                    // PBR MATERIAL SETUP WITH PROPER COLORSPACE
-                    // =============================================
-
-                    // Set correct colorSpace for textures
-                    if (diffuseTex) {
-                        diffuseTex.colorSpace = THREE.SRGBColorSpace;
-                    }
-                    if (normalTex) {
-                        normalTex.colorSpace = THREE.LinearSRGBColorSpace;
-                    }
-                    if (stackTex) {
-                        stackTex.colorSpace = THREE.LinearSRGBColorSpace;
-                    }
+                    // Set correct ColorSpace for textures
+                    if (diffuseTex) diffuseTex.colorSpace = THREE.SRGBColorSpace;
+                    if (normalTex) normalTex.colorSpace = THREE.LinearSRGBColorSpace;
+                    if (stackTex) stackTex.colorSpace = THREE.LinearSRGBColorSpace;
 
                     const mat = new THREE.MeshStandardMaterial({
                         color: new THREE.Color(1, 1, 1),
                         map: diffuseTex || loadedTexture, // Diffuse is base (sRGB)
-                        normalMap: normalTex,             // Normal map (Linear)
-                        roughnessMap: stackTex,           // Use gearstack G channel via shader
-                        metalnessMap: stackTex,           // Use gearstack B channel via shader
-                        aoMap: stackTex,                  // Use gearstack R channel (needs UV2)
-                        aoMapIntensity: 0.5,              // Subtle AO
-                        roughness: 0.8,                   // Base roughness (overridden by shader)
-                        metalness: 0.3,                   // Base metalness (overridden by shader)
+                        normalMap: normalTex,              // Normal map (Linear)
+                        roughnessMap: stackTex,            // ORM G channel via shader override
+                        metalnessMap: stackTex,            // ORM B channel via shader override
+                        aoMap: stackTex,                   // ORM R channel (needs UV2)
+                        aoMapIntensity: 0.8,
+                        roughness: 1.0,                    // Base (overridden by shader for G channel)
+                        metalness: 1.0,                    // Base (overridden by shader for B channel)
                         side: THREE.DoubleSide
                     });
 
@@ -1293,7 +1008,6 @@
                         }
 
                         mat.userData.stackMap = { value: stackTex };
-                        mat.userData.dyeslotTexture = { value: cachedTextures ? cachedTextures.dyeslot : null }; // Use from cachedTextures
                         mat.userData.dyePrimary = { value: new THREE.Color(prim[0], prim[1], prim[2]) };
                         mat.userData.dyeSecondary = { value: new THREE.Color(sec[0], sec[1], sec[2]) };
 
@@ -1313,10 +1027,8 @@
 
                             const uniformBlock = `
 uniform sampler2D stackMap;
-uniform sampler2D dyeslotMap;
 uniform vec3 dyePrimary;
 uniform vec3 dyeSecondary;
-uniform float hasDyeslot;
 `;
 
                             // --- ROBUST UNIFORM SETUP ---
@@ -1339,24 +1051,9 @@ uniform float hasDyeslot;
                                 uStackMap = window._d2DummyStackTex;
                             }
 
-                            // 3. Dyeslot Map (NEW - for proper color slot masking)
-                            let uDyeslotMap = (mat.userData.dyeslotTexture && mat.userData.dyeslotTexture.value) || null;
-                            let uHasDyeslot = uDyeslotMap ? 1.0 : 0.0;
-                            if (!uDyeslotMap) {
-                                // Create a dummy texture that gives full Armor (R=1, G=0, B=0) coverage
-                                if (!window._d2DummyDyeslotTex) {
-                                    const data = new Uint8Array([255, 0, 0, 255]); // Red = Armor Primary
-                                    window._d2DummyDyeslotTex = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat);
-                                    window._d2DummyDyeslotTex.needsUpdate = true;
-                                }
-                                uDyeslotMap = window._d2DummyDyeslotTex;
-                            }
-
                             shader.uniforms.stackMap = { value: uStackMap };
-                            shader.uniforms.dyeslotMap = { value: uDyeslotMap };
                             shader.uniforms.dyePrimary = { value: uDyePrimary };
                             shader.uniforms.dyeSecondary = { value: uDyeSecondary };
-                            shader.uniforms.hasDyeslot = { value: uHasDyeslot };
 
                             // --- SHADER INJECTION ---
 
@@ -1370,8 +1067,6 @@ uniform float hasDyeslot;
                                 shader.fragmentShader = uniformBlock + '\n' + shader.fragmentShader;
                             }
 
-
-
                             // 2. Logic Injection (Restored functionality)
                             // We replace <map_fragment> to intercept the diffuse color.
                             // Even if USE_MAP is false, we want to allow tinting (though stackMap sampling relies on vMapUv)
@@ -1381,105 +1076,46 @@ uniform float hasDyeslot;
                                 `
                                 #include <map_fragment>
                                 
-                                // =============================================
-                                // DESTINY 2 DYE SYSTEM v2 - WITH DYESLOT MASK
-                                // =============================================
-                                // Uses dyeslot texture as mask for color slots:
-                                // R = Armor (metalness 1.0) -> use PRIMARY color
-                                // G = Cloth (metalness 0.0) -> use SECONDARY color
-                                // B = Suit (metalness 0.1) -> mix of both
+                                // DYE MIXING LOGIC
+                                // Use stackMap (MRC texture) R/G channels as masks for dye application
+                                // Red Channel -> Primary Dye
+                                // Green Channel -> Secondary Dye
                                 
                                 #ifdef USE_MAP
-                                    // Sample the dyeslot texture for slot determination
-                                    vec4 dyeslotColor = texture2D(dyeslotMap, vUv);
+                                    vec4 stackColor = texture2D(stackMap, vUv);
                                     
-                                    // Determine which slot based on dominant channel
-                                    float armorMask = dyeslotColor.r;  // Metal areas
-                                    float clothMask = dyeslotColor.g;  // Cloth areas
-                                    float suitMask = dyeslotColor.b;   // Suit/undersuit areas
+                                    // Start with the original diffuse color (from the map_fragment include)
+                                    vec3 finalColor = diffuseColor.rgb;
                                     
-                                    // Calculate weighted color blend based on dyeslot
-                                    // Armor uses primary, Cloth uses secondary, Suit uses mix
-                                    vec3 armorColor = dyePrimary;
-                                    vec3 clothColor = dyeSecondary;
-                                    vec3 suitColor = mix(dyePrimary, dyeSecondary, 0.5);
+                                    // Calculate total mask coverage
+                                    float totalMask = stackColor.r + stackColor.g;
                                     
-                                    // Combine colors weighted by dyeslot masks
-                                    float totalMask = armorMask + clothMask + suitMask + 0.001;
-                                    vec3 weightedDye = (armorColor * armorMask + clothColor * clothMask + suitColor * suitMask) / totalMask;
+                                    if (totalMask < 0.01) {
+                                        // No MRC mask data (dummy texture or no mask region)
+                                        // Apply primary dye as base tint to entire surface
+                                        finalColor = finalColor * dyePrimary;
+                                    } else {
+                                        // MRC mask exists - use R/G channels for blending
+                                        // Apply primary dye using red channel as mask
+                                        finalColor = mix(finalColor, finalColor * dyePrimary, stackColor.r);
+                                        
+                                        // Apply secondary dye using green channel as mask
+                                        finalColor = mix(finalColor, finalColor * dyeSecondary, stackColor.g);
+                                    }
                                     
-                                    // OVERLAY BLEND with the base texture
-                                    vec3 base = diffuseColor.rgb;
-                                    vec3 blend = weightedDye;
-                                    vec3 result;
-                                    result.r = base.r < 0.5 ? (2.0 * base.r * blend.r) : (1.0 - 2.0 * (1.0 - base.r) * (1.0 - blend.r));
-                                    result.g = base.g < 0.5 ? (2.0 * base.g * blend.g) : (1.0 - 2.0 * (1.0 - base.g) * (1.0 - blend.g));
-                                    result.b = base.b < 0.5 ? (2.0 * base.b * blend.b) : (1.0 - 2.0 * (1.0 - base.b) * (1.0 - blend.b));
-                                    
-                                    // Apply dye with controlled intensity (reduced from 0.9)
-                                    diffuseColor.rgb = mix(diffuseColor.rgb, result, 0.6);
-                                    
-                                    // Boost saturation slightly (reduced from 1.2)
-                                    float gray = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
-                                    diffuseColor.rgb = mix(vec3(gray), diffuseColor.rgb, 1.05);
-                                #else
-                                    // No texture map - apply primary color directly
-                                    diffuseColor.rgb = dyePrimary;
+                                    diffuseColor.rgb = finalColor;
                                 #endif
                                 `
                             );
 
-                            // 3. PBR ORM CHANNEL EXTRACTION FROM GEARSTACK
-                            // Gearstack texture is ORM packed:
-                            // R = Ambient Occlusion
-                            // G = Roughness  
-                            // B = Metalness
+                            // NOTE: Three.js r128 already reads correct ORM channels:
+                            // - roughnessmap_fragment reads .g (green) ✓
+                            // - metalnessmap_fragment reads .b (blue) ✓
+                            // No manual override needed!
 
-                            // 3a. ROUGHNESS from gearstack G channel
-                            shader.fragmentShader = shader.fragmentShader.replace(
-                                '#include <roughnessmap_fragment>',
-                                `
-                                #ifdef USE_ROUGHNESSMAP
-                                    // Read roughness from gearstack GREEN channel (ORM-G)
-                                    vec4 texelRoughness = texture2D(roughnessMap, vRoughnessMapUv);
-                                    roughnessFactor *= texelRoughness.g;
-                                #endif
-                                `
-                            );
-
-                            // 3b. METALNESS from gearstack B channel + dyeslot override
-                            shader.fragmentShader = shader.fragmentShader.replace(
-                                '#include <metalnessmap_fragment>',
-                                `
-                                #ifdef USE_METALNESSMAP
-                                    // Read metalness from gearstack BLUE channel (ORM-B)
-                                    vec4 texelMetalness = texture2D(metalnessMap, vMetalnessMapUv);
-                                    metalnessFactor *= texelMetalness.b;
-                                #endif
-                                
-                                // Additional dyeslot-based metalness override
-                                #ifdef USE_MAP
-                                    vec4 dyeslotForMetal = texture2D(dyeslotMap, vUv);
-                                    float armorM = dyeslotForMetal.r;  // Metal areas
-                                    float clothM = dyeslotForMetal.g;  // Cloth areas
-                                    float suitM = dyeslotForMetal.b;   // Suit areas
-                                    float totalM = armorM + clothM + suitM + 0.001;
-                                    
-                                    // Blend gearstack metalness with dyeslot hints
-                                    float dyeslotMetalness = (armorM * 0.9 + clothM * 0.0 + suitM * 0.15) / totalM;
-                                    metalnessFactor = mix(metalnessFactor, dyeslotMetalness, 0.5);
-                                    metalnessFactor = clamp(metalnessFactor, 0.0, 0.95);
-                                #endif
-                                `
-                            );
-
-                            // Duplicate Guard is handled by the caller or outer logic, but ensuring uniqueness here is good practice.
-
-                            // Log ALWAYS (for debugging this persistent error)
-                            // Log ALWAYS (for debugging this persistent error)
+                            // Log for debugging
                             const texName = stackTex ? stackTex.name : (diffuseTex ? diffuseTex.name : 'No_Texture');
                             console.log(`[D2TGXLoader] Compiling Shader for [${texName}]`);
-                            console.log('[D2TGXLoader] Fragment Source:', shader.fragmentShader);
 
 
 

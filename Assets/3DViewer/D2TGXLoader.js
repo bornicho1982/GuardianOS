@@ -956,12 +956,21 @@
 
                     if (materialMap.has(matKey)) return materialMap.get(matKey);
 
+                    // Set correct ColorSpace for textures
+                    if (diffuseTex) diffuseTex.colorSpace = THREE.SRGBColorSpace;
+                    if (normalTex) normalTex.colorSpace = THREE.LinearSRGBColorSpace;
+                    if (stackTex) stackTex.colorSpace = THREE.LinearSRGBColorSpace;
+
                     const mat = new THREE.MeshStandardMaterial({
                         color: new THREE.Color(1, 1, 1),
-                        map: diffuseTex || loadedTexture, // Diffuse is base
-                        normalMap: normalTex,
-                        roughness: 0.8,
-                        metalness: 0.5, // Default metalness
+                        map: diffuseTex || loadedTexture, // Diffuse is base (sRGB)
+                        normalMap: normalTex,              // Normal map (Linear)
+                        roughnessMap: stackTex,            // ORM G channel via shader override
+                        metalnessMap: stackTex,            // ORM B channel via shader override
+                        aoMap: stackTex,                   // ORM R channel (needs UV2)
+                        aoMapIntensity: 0.8,
+                        roughness: 1.0,                    // Base (overridden by shader for G channel)
+                        metalness: 1.0,                    // Base (overridden by shader for B channel)
                         side: THREE.DoubleSide
                     });
 
@@ -1099,13 +1108,14 @@ uniform vec3 dyeSecondary;
                                 `
                             );
 
-                            // Duplicate Guard is handled by the caller or outer logic, but ensuring uniqueness here is good practice.
+                            // NOTE: Three.js r128 already reads correct ORM channels:
+                            // - roughnessmap_fragment reads .g (green) ✓
+                            // - metalnessmap_fragment reads .b (blue) ✓
+                            // No manual override needed!
 
-                            // Log ALWAYS (for debugging this persistent error)
-                            // Log ALWAYS (for debugging this persistent error)
+                            // Log for debugging
                             const texName = stackTex ? stackTex.name : (diffuseTex ? diffuseTex.name : 'No_Texture');
                             console.log(`[D2TGXLoader] Compiling Shader for [${texName}]`);
-                            console.log('[D2TGXLoader] Fragment Source:', shader.fragmentShader);
 
 
 
@@ -1200,6 +1210,8 @@ uniform vec3 dyeSecondary;
                 geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
                 geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
                 geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+                // Duplicate UV to UV2 for Ambient Occlusion mapping (required by MeshStandardMaterial)
+                geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(uvs, 2));
                 geometry.setIndex(validIndices);
 
                 // DO NOT recompute normals, use the imported ones

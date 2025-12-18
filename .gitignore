@@ -88,3 +88,7 @@ Desktop.ini
 *.wmv
 *.db
 *.log
+
+# Exception: Keep browser logs for debugging
+!log del navegador/
+!log del navegador/**
