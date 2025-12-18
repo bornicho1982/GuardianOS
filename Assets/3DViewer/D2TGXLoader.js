@@ -971,14 +971,39 @@
                     // Green Channel -> Secondary Color
                     // Blue Channel -> (Usually emission or detail, ignored for now)
                     {
+                        // NORMALIZE colors - Bungie sometimes sends 0-255, we need 0-1
+                        const normalizeColor = (c) => {
+                            if (!c || c.length < 3) return [1, 1, 1];
+                            // If any value > 1, assume it's 0-255 range
+                            const needsNormalize = c.some(v => v > 1);
+                            if (needsNormalize) {
+                                return c.map(v => Math.min(1, v / 255));
+                            }
+                            return c;
+                        };
+
                         // Store dye colors in userdata for shader access
                         const dyeData = (gearDyes && gearDyes[slot]) ? gearDyes[slot] : null;
-                        const prim = dyeData?.primaryColor || [1, 1, 1];
-                        const sec = dyeData?.secondaryColor || [0.5, 0.5, 0.5];
+
+                        let prim = [1, 1, 1];  // Default white
+                        let sec = [0.5, 0.5, 0.5];  // Default gray
+
+                        if (dyeData) {
+                            if (dyeData.primaryColor) {
+                                prim = normalizeColor(dyeData.primaryColor);
+                            }
+                            if (dyeData.secondaryColor) {
+                                sec = normalizeColor(dyeData.secondaryColor);
+                            }
+                            console.log(`[D2TGXLoader] Material slot ${slot}: Primary=[${prim.map(c => c.toFixed(2))}] Secondary=[${sec.map(c => c.toFixed(2))}]`);
+                        }
 
                         mat.userData.stackMap = { value: stackTex };
                         mat.userData.dyePrimary = { value: new THREE.Color(prim[0], prim[1], prim[2]) };
                         mat.userData.dyeSecondary = { value: new THREE.Color(sec[0], sec[1], sec[2]) };
+
+                        // Also set the base material color to primary for fallback visibility
+                        mat.color = new THREE.Color(prim[0], prim[1], prim[2]);
 
                         mat.onBeforeCompile = (shader) => {
                             shader.uniforms.stackMap = mat.userData.stackMap;

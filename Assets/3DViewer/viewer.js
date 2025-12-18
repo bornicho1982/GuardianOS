@@ -34,6 +34,8 @@ function init() {
     renderer.shadowMap.enabled = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    renderer.physicallyCorrectLights = true;
     container.appendChild(renderer.domElement);
 
     setupLighting();

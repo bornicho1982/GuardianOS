@@ -1231,12 +1231,31 @@
 
                     if (materialMap.has(matKey)) return materialMap.get(matKey);
 
+                    // =============================================
+                    // PBR MATERIAL SETUP WITH PROPER COLORSPACE
+                    // =============================================
+
+                    // Set correct colorSpace for textures
+                    if (diffuseTex) {
+                        diffuseTex.colorSpace = THREE.SRGBColorSpace;
+                    }
+                    if (normalTex) {
+                        normalTex.colorSpace = THREE.LinearSRGBColorSpace;
+                    }
+                    if (stackTex) {
+                        stackTex.colorSpace = THREE.LinearSRGBColorSpace;
+                    }
+
                     const mat = new THREE.MeshStandardMaterial({
                         color: new THREE.Color(1, 1, 1),
-                        map: diffuseTex || loadedTexture, // Diffuse is base
-                        normalMap: normalTex,
-                        roughness: 0.8,
-                        metalness: 0.5, // Default metalness
+                        map: diffuseTex || loadedTexture, // Diffuse is base (sRGB)
+                        normalMap: normalTex,             // Normal map (Linear)
+                        roughnessMap: stackTex,           // Use gearstack G channel via shader
+                        metalnessMap: stackTex,           // Use gearstack B channel via shader
+                        aoMap: stackTex,                  // Use gearstack R channel (needs UV2)
+                        aoMapIntensity: 0.5,              // Subtle AO
+                        roughness: 0.8,                   // Base roughness (overridden by shader)
+                        metalness: 0.3,                   // Base metalness (overridden by shader)
                         side: THREE.DoubleSide
                     });
 
@@ -1410,26 +1429,46 @@ uniform float hasDyeslot;
                                 `
                             );
 
-                            // 3. METALNESS FIX - Modify metalness based on dyeslot
-                            // Armor areas should be shiny (metalness 1.0), cloth matte (0.0)
+                            // 3. PBR ORM CHANNEL EXTRACTION FROM GEARSTACK
+                            // Gearstack texture is ORM packed:
+                            // R = Ambient Occlusion
+                            // G = Roughness  
+                            // B = Metalness
+
+                            // 3a. ROUGHNESS from gearstack G channel
+                            shader.fragmentShader = shader.fragmentShader.replace(
+                                '#include <roughnessmap_fragment>',
+                                `
+                                #ifdef USE_ROUGHNESSMAP
+                                    // Read roughness from gearstack GREEN channel (ORM-G)
+                                    vec4 texelRoughness = texture2D(roughnessMap, vRoughnessMapUv);
+                                    roughnessFactor *= texelRoughness.g;
+                                #endif
+                                `
+                            );
+
+                            // 3b. METALNESS from gearstack B channel + dyeslot override
                             shader.fragmentShader = shader.fragmentShader.replace(
                                 '#include <metalnessmap_fragment>',
                                 `
-                                #include <metalnessmap_fragment>
+                                #ifdef USE_METALNESSMAP
+                                    // Read metalness from gearstack BLUE channel (ORM-B)
+                                    vec4 texelMetalness = texture2D(metalnessMap, vMetalnessMapUv);
+                                    metalnessFactor *= texelMetalness.b;
+                                #endif
                                 
-                                // Override metalness based on dyeslot
+                                // Additional dyeslot-based metalness override
                                 #ifdef USE_MAP
                                     vec4 dyeslotForMetal = texture2D(dyeslotMap, vUv);
-                                    // R = Armor -> metalness 1.0
-                                    // G = Cloth -> metalness 0.0
-                                    // B = Suit -> metalness 0.1
-                                    float armorM = dyeslotForMetal.r;
-                                    float clothM = dyeslotForMetal.g;
-                                    float suitM = dyeslotForMetal.b;
+                                    float armorM = dyeslotForMetal.r;  // Metal areas
+                                    float clothM = dyeslotForMetal.g;  // Cloth areas
+                                    float suitM = dyeslotForMetal.b;   // Suit areas
                                     float totalM = armorM + clothM + suitM + 0.001;
-                                    // Reduce max metalness to 0.8 to avoid whiteout
-                                    metalnessFactor = (armorM * 0.8 + clothM * 0.0 + suitM * 0.1) / totalM;
-                                    metalnessFactor = clamp(metalnessFactor, 0.0, 0.9);
+                                    
+                                    // Blend gearstack metalness with dyeslot hints
+                                    float dyeslotMetalness = (armorM * 0.9 + clothM * 0.0 + suitM * 0.15) / totalM;
+                                    metalnessFactor = mix(metalnessFactor, dyeslotMetalness, 0.5);
+                                    metalnessFactor = clamp(metalnessFactor, 0.0, 0.95);
                                 #endif
                                 `
                             );
@@ -1535,6 +1574,8 @@ uniform float hasDyeslot;
                 geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
                 geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
                 geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+                // Duplicate UV to UV2 for Ambient Occlusion mapping (required by MeshStandardMaterial)
+                geometry.setAttribute('uv2', new THREE.Float32BufferAttribute(uvs, 2));
                 geometry.setIndex(validIndices);
 
                 // DO NOT recompute normals, use the imported ones

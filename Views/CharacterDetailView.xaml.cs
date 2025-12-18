@@ -35,23 +35,27 @@ public partial class CharacterDetailView : UserControl
             CharacterRenderer.CoreWebView2.Settings.IsZoomControlEnabled = false;
             
             // Get the path to the 3D viewer HTML
-            // POC: Load D2Foundry directly as requested
-            string d2FoundryUrl = Services.ThreeJsBridge.GetD2FoundryBaseUrl();
-            Debug.WriteLine($"[3DViewer] Loading D2Foundry POC: {d2FoundryUrl}");
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string viewerPath = System.IO.Path.Combine(basePath, "Assets", "3DViewer", "index.html");
             
-            CharacterRenderer.CoreWebView2.Navigate(d2FoundryUrl);
+            // Check if file exists
+            if (!System.IO.File.Exists(viewerPath))
+            {
+                Debug.WriteLine($"[3DViewer] ERROR: Viewer file not found at {viewerPath}");
+                return;
+            }
+            
+            // Navigate using file:// URL to allow HTTP API calls without mixed content issues
+            string viewerUrl = new Uri(viewerPath).AbsoluteUri;
+            Debug.WriteLine($"[3DViewer] Loading local viewer: {viewerUrl}");
+            
+            CharacterRenderer.CoreWebView2.Navigate(viewerUrl);
             
             // Subscribe to navigation completed to handle loading state
             CharacterRenderer.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
             
             _webViewInitialized = true;
-            Debug.WriteLine("[3DViewer] WebView2 initialized successfully");
-
-            /* Local viewer code for future use
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            string viewerPath = Path.Combine(basePath, "Assets", "3DViewer", "index.html");
-            if (File.Exists(viewerPath)) { ... }
-            */
+            Debug.WriteLine("[3DViewer] WebView2 initialized with local 3D viewer");
         }
         catch (Exception ex)
         {
