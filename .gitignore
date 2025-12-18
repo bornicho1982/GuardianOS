@@ -1,3 +1,20 @@
+# GuardianOS Strict Gitignore
+
+# Ignore ALL Tools by default (prevent large binaries)
+Tools/
+
+# Allow specific useful scripts/configs in Tools
+!Tools/extract_full_loadout.py
+!Tools/extract_loadout.ps1
+!Tools/extract_equipped.py
+!Tools/extract_armor_hashes.py
+!Tools/texture_mapping.json
+
+# Explicitly ignore headers/generators inside Tools just in case
+Tools/ColladaGenerator/
+Tools/TextureCache/
+Tools/Output/
+
 # Build results
 [Dd]ebug/
 [Rr]elease/
@@ -60,7 +77,7 @@ Desktop.ini
 .AppleDouble
 .LSOverride
 
-# Large files that GitHub won't accept (>100MB)
+# Large files
 *.zip
 *.rar
 *.7z
@@ -69,12 +86,5 @@ Desktop.ini
 *.mov
 *.avi
 *.wmv
-
-# Sensitive data
-appsettings.Development.json
-secrets.json
-*.pfx
-*.p12
-
-# Cache
-*.cache
+*.db
+*.log
