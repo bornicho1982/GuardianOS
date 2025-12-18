@@ -956,23 +956,25 @@
 
                     if (materialMap.has(matKey)) return materialMap.get(matKey);
 
-                    // Set correct ColorSpace for textures
-                    if (diffuseTex) diffuseTex.colorSpace = THREE.SRGBColorSpace;
-                    if (normalTex) normalTex.colorSpace = THREE.LinearSRGBColorSpace;
-                    if (stackTex) stackTex.colorSpace = THREE.LinearSRGBColorSpace;
+                    // Set correct encoding for textures (Three.js r128 uses .encoding)
+                    if (diffuseTex) diffuseTex.encoding = THREE.sRGBEncoding;
+                    if (normalTex) normalTex.encoding = THREE.LinearEncoding;
+                    if (stackTex) stackTex.encoding = THREE.LinearEncoding;
 
                     const mat = new THREE.MeshStandardMaterial({
                         color: new THREE.Color(1, 1, 1),
                         map: diffuseTex || loadedTexture, // Diffuse is base (sRGB)
                         normalMap: normalTex,              // Normal map (Linear)
-                        roughnessMap: stackTex,            // ORM G channel via shader override
-                        metalnessMap: stackTex,            // ORM B channel via shader override
-                        aoMap: stackTex,                   // ORM R channel (needs UV2)
-                        aoMapIntensity: 0.8,
-                        roughness: 1.0,                    // Base (overridden by shader for G channel)
-                        metalness: 1.0,                    // Base (overridden by shader for B channel)
+                        roughnessMap: stackTex,            // ORM G channel (Standard Three.js handles it)
+                        metalnessMap: stackTex,            // ORM B channel (Standard Three.js handles it)
+                        aoMap: stackTex,                   // ORM R channel (requires UV2)
+                        aoMapIntensity: 1.0,               // Ensure full intensity
+                        roughness: 1.0,                    // Base values, modulated by maps
+                        metalness: 1.0,
                         side: THREE.DoubleSide
                     });
+
+                    mat.needsUpdate = true; // Refresh material after texture assignment
 
                     // INJECT CUSTOM SHADER FOR DYE MASKING (Applied to ALL materials for debugging)
                     // This uses the 'stackTex' (MRC texture) to mix dye colors
@@ -1007,12 +1009,23 @@
                             console.log(`[D2TGXLoader] Material slot ${slot}: Primary=[${prim.map(c => c.toFixed(2))}] Secondary=[${sec.map(c => c.toFixed(2))}]`);
                         }
 
-                        mat.userData.stackMap = { value: stackTex };
-                        mat.userData.dyePrimary = { value: new THREE.Color(prim[0], prim[1], prim[2]) };
-                        mat.userData.dyeSecondary = { value: new THREE.Color(sec[0], sec[1], sec[2]) };
+                        // 1. Dyes - mat.userData contains {value: Color}, extract the Color
+                        const uDyePrimary = (mat.userData.dyePrimary && mat.userData.dyePrimary.value) || new THREE.Color(1, 1, 1);
+                        const uDyeSecondary = (mat.userData.dyeSecondary && mat.userData.dyeSecondary.value) || new THREE.Color(1, 1, 1);
 
-                        // Also set the base material color to primary for fallback visibility
-                        mat.color = new THREE.Color(prim[0], prim[1], prim[2]);
+                        // Fallback check for albedo map
+                        if (!mat.map) {
+                            console.warn(`[D2TGXLoader] Warning: No albedo map found for material slot ${slot}. Character might appear white.`);
+                        } else {
+                            // Ensure encoding is set on the actual map being used
+                            mat.map.encoding = THREE.sRGBEncoding;
+                        }
+
+                        // Apply base tint (multiplies with map)
+                        // If character is too white, this ensures the base dye color is applied to the texture
+                        mat.color = uDyePrimary.clone();
+
+                        mat.needsUpdate = true; // Ensure material changes are applied
 
                         mat.onBeforeCompile = (shader) => {
                             shader.uniforms.stackMap = mat.userData.stackMap;
