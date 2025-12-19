@@ -96,17 +96,31 @@
         }
 
         void main() {
-            // ===== BASE TEXTURES =====
-            vec3 albedo = hasAlbedoMap ? texture2D(albedoMap, vUv).rgb : vec3(0.5);
+            // ===== sRGB TO LINEAR CONVERSION FUNCTION =====
+            // Critical for matching Destiny 2's color space
+            vec3 sRGBToLinear(vec3 srgb) {
+                return pow(srgb, vec3(2.2));
+            }
             
-            // ORM: R = AO, G = Roughness, B = Metalness
+            // ===== BASE TEXTURES =====
+            vec3 albedoSRGB = hasAlbedoMap ? texture2D(albedoMap, vUv).rgb : vec3(0.5);
+            // Convert albedo from sRGB to linear space
+            vec3 albedo = sRGBToLinear(albedoSRGB);
+            
+            // ORM: R = AO, G = Roughness, B = Metalness (already linear)
             vec3 orm = hasOrmMap ? texture2D(ormMap, vUv).rgb : vec3(1.0, 0.5, 0.0);
             float ao = orm.r;
             float roughness = clamp(orm.g + roughnessAdjust, 0.0, 1.0);
             float metalness = clamp(orm.b + metallicBoost, 0.0, 1.0);
 
-            // Dye mask: R = primary, G = secondary, B = tertiary
+            // Dye mask: R = primary, G = secondary, B = tertiary (already linear)
             vec3 dyeMask = hasDyeMaskMap ? texture2D(dyeMaskMap, vUv).rgb : vec3(1.0, 0.0, 0.0);
+
+            // ===== CONVERT DYE COLORS TO LINEAR SPACE =====
+            // Dye colors from API are in sRGB, must convert to linear for correct blending
+            vec3 dyePrimaryLin = sRGBToLinear(dyePrimary);
+            vec3 dyeSecondaryLin = sRGBToLinear(dyeSecondary);
+            vec3 dyeTertiaryLin = sRGBToLinear(dyeTertiary);
 
             // ===== APPLY DYES =====
             // The Destiny 2 formula: multiply albedo by dye colors based on mask channels
@@ -115,18 +129,18 @@
             if (hasDyeMaskMap) {
                 // Use the dye mask to blend colors
                 dyedColor = 
-                    albedo * dyePrimary * dyeMask.r +
-                    albedo * dyeSecondary * dyeMask.g +
-                    albedo * dyeTertiary * dyeMask.b;
+                    albedo * dyePrimaryLin * dyeMask.r +
+                    albedo * dyeSecondaryLin * dyeMask.g +
+                    albedo * dyeTertiaryLin * dyeMask.b;
                 
                 // Areas not covered by any mask channel get base albedo tinted by primary
                 float totalMask = dyeMask.r + dyeMask.g + dyeMask.b;
                 if (totalMask < 0.1) {
-                    dyedColor = albedo * dyePrimary * 0.8;
+                    dyedColor = albedo * dyePrimaryLin * 0.8;
                 }
             } else {
                 // No dye mask - apply primary dye to entire surface
-                dyedColor = albedo * dyePrimary * dyeIntensity;
+                dyedColor = albedo * dyePrimaryLin * dyeIntensity;
             }
 
             // ===== NORMAL MAP =====
