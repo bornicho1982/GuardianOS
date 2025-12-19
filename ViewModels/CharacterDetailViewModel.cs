@@ -19,6 +19,9 @@ public partial class CharacterDetailViewModel : ViewModelBase
     private readonly IManifestRepository _manifestRepository;
     private readonly string _membershipId;
     private readonly int _membershipType;
+    
+    // Server for local output
+    private static LocalViewerServer? _viewerServer;
 
     // Bucket Hashes de Destiny 2
     private const long BUCKET_KINETIC = 1498876634;
@@ -142,6 +145,208 @@ public partial class CharacterDetailViewModel : ViewModelBase
         catch (Exception ex)
         {
             Debug.WriteLine($"Error abriendo visor 3D: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Exporta datos del personaje a JSON y abre el visor 3D local.
+    /// </summary>
+    [RelayCommand]
+    private async Task ExportToViewer()
+    {
+        try
+        {
+            Debug.WriteLine("[Export] Starting export to local viewer...");
+
+            // Ruta del archivo JSON
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var exportPath = Path.Combine(basePath, "Assets", "CharmExport");
+            var jsonPath = Path.Combine(exportPath, "character_data.json");
+            
+            // Asegurar directorio
+            if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
+            
+            // Recolectar definiciones de materiales (Shaders reales)
+            var materialsDict = new Dictionary<string, object>();
+            
+            // Función auxiliar local para procesar pieza
+            async Task ProcessPiece(string key, uint? itemHash, uint? shaderHash)
+            {
+                ShaderDefinition? def = null;
+
+                // 1. Try Shader Hash first
+                if (shaderHash.HasValue && shaderHash.Value != 0)
+                {
+                    def = await _manifestRepository.GetShaderDefinitionAsync(shaderHash.Value);
+                }
+
+                // 2. Fallback to Item Hash if shader invalid or empty
+                if (def == null && itemHash.HasValue && itemHash.Value != 0)
+                {
+                    Console.WriteLine($"[Export] Shader {shaderHash} has no dyes. Trying Item {itemHash}...");
+                    def = await _manifestRepository.GetShaderDefinitionAsync(itemHash.Value);
+                }
+
+                if (def != null)
+                {
+                    materialsDict[key] = def;
+                }
+                else 
+                {
+                     Console.WriteLine($"[Export] No dyes found for piece {key} (Shader {shaderHash}, Item {itemHash})");
+                }
+            }
+
+            // Cargar materiales en paralelo
+            await Task.WhenAll(
+                ProcessPiece("helmet", (uint?)Helmet?.ItemHash, Helmet?.ShaderHash),
+                ProcessPiece("arms", (uint?)Gauntlets?.ItemHash, Gauntlets?.ShaderHash),
+                ProcessPiece("chest", (uint?)ChestArmor?.ItemHash, ChestArmor?.ShaderHash),
+                ProcessPiece("legs", (uint?)LegArmor?.ItemHash, LegArmor?.ShaderHash),
+                ProcessPiece("classItem", (uint?)ClassItem?.ItemHash, ClassItem?.ShaderHash)
+            );
+
+            // Crear objeto con datos del personaje
+            // Mapa de archivos encontrados/copiados
+            var modelFiles = new Dictionary<string, string>();
+            
+            // Lógica de importación externa (Hardcoded path requested by user)
+            string externalPath = @"E:\D2_Exports\ApiOutput1";
+            if (Directory.Exists(externalPath))
+            {
+                 Debug.WriteLine($"[Export] Importing assets from {externalPath}...");
+                 
+                 // 1. Copy Textures
+                 var textSrc = Path.Combine(externalPath, "Textures");
+                 var textDst = Path.Combine(exportPath, "Textures");
+                 if (Directory.Exists(textSrc))
+                 {
+                     if (!Directory.Exists(textDst)) Directory.CreateDirectory(textDst);
+                     foreach (var file in Directory.GetFiles(textSrc, "*.png"))
+                     {
+                         var fname = Path.GetFileName(file);
+                         File.Copy(file, Path.Combine(textDst, fname), true);
+                     }
+                 }
+
+                 // 2. Scan and Copy FBX (Heuristic Mapping)
+                 foreach (var file in Directory.GetFiles(externalPath, "*.fbx"))
+                 {
+                     var fname = Path.GetFileName(file);
+                     var lower = fname.ToLower();
+                     string? targetKey = null;
+
+                     if (lower.Contains("mask") || lower.Contains("helmet")) targetKey = "helmet";
+                     else if (lower.Contains("grasps") || lower.Contains("arms") || lower.Contains("gauntlets") || lower.Contains("gloves")) targetKey = "arms";
+                     else if (lower.Contains("vest") || lower.Contains("chest") || lower.Contains("plate") || lower.Contains("robes")) targetKey = "chest";
+                     else if (lower.Contains("strides") || lower.Contains("legs") || lower.Contains("boots") || lower.Contains("greaves")) targetKey = "legs";
+                     else if (lower.Contains("cloak") || lower.Contains("mark") || lower.Contains("bond")) targetKey = "classItem";
+
+                     if (targetKey != null)
+                     {
+                         var destFile = Path.Combine(exportPath, fname);
+                         File.Copy(file, destFile, true);
+                         modelFiles[targetKey] = fname; // Guardar nombre de archivo
+                         Debug.WriteLine($"[Export] Mapped {fname} to {targetKey}");
+                     }
+                 }
+            }
+
+            var exportData = new
+            {
+                timestamp = DateTime.Now,
+                character = new
+                {
+                    id = Character.CharacterId,
+                    className = Character.ClassName,
+                    gender = (Character.GenderType == 1 ? "Female" : "Male"),
+                    race = Character.RaceType switch { 0 => "Human", 1 => "Awoken", 2 => "Exo", _ => "Unknown" },
+                    light = Character.Light
+                },
+                armor = new
+                {
+                    helmet = new { 
+                        itemHash = Helmet?.ItemHash, 
+                        shaderHash = Helmet?.ShaderHash, 
+                        ornamentHash = Helmet?.OrnamentHash,
+                        name = Helmet?.Name,
+                        modelFile = modelFiles.ContainsKey("helmet") ? modelFiles["helmet"] : null
+                    },
+                    arms = new { 
+                        itemHash = Gauntlets?.ItemHash, 
+                        shaderHash = Gauntlets?.ShaderHash, 
+                        ornamentHash = Gauntlets?.OrnamentHash,
+                        name = Gauntlets?.Name,
+                        modelFile = modelFiles.ContainsKey("arms") ? modelFiles["arms"] : null
+                    },
+                    chest = new { 
+                        itemHash = ChestArmor?.ItemHash, 
+                        shaderHash = ChestArmor?.ShaderHash, 
+                        ornamentHash = ChestArmor?.OrnamentHash,
+                        name = ChestArmor?.Name,
+                        modelFile = modelFiles.ContainsKey("chest") ? modelFiles["chest"] : null
+                    },
+                    legs = new { 
+                        itemHash = LegArmor?.ItemHash, 
+                        shaderHash = LegArmor?.ShaderHash, 
+                        ornamentHash = LegArmor?.OrnamentHash,
+                        name = LegArmor?.Name,
+                        modelFile = modelFiles.ContainsKey("legs") ? modelFiles["legs"] : null
+                    },
+                    classItem = new { 
+                        itemHash = ClassItem?.ItemHash, 
+                        shaderHash = ClassItem?.ShaderHash, 
+                        ornamentHash = ClassItem?.OrnamentHash,
+                        name = ClassItem?.Name,
+                        modelFile = modelFiles.ContainsKey("classItem") ? modelFiles["classItem"] : null
+                    }
+                },
+                weapons = new
+                {
+                    kinetic = new { itemHash = KineticWeapon?.ItemHash, name = KineticWeapon?.Name },
+                    energy = new { itemHash = EnergyWeapon?.ItemHash, name = EnergyWeapon?.Name },
+                    power = new { itemHash = PowerWeapon?.ItemHash, name = PowerWeapon?.Name }
+                },
+                materials = materialsDict // Nuevos datos reales del shader
+            };
+            
+            // Serializar y guardar
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(exportData, Newtonsoft.Json.Formatting.Indented);
+            await File.WriteAllTextAsync(jsonPath, json);
+            
+            Debug.WriteLine($"[Export] Data saved to: {jsonPath}");
+            
+            // Iniciar servidor local (singleton pattern simple)
+            if (_viewerServer == null)
+            {
+                _viewerServer = new Services.LocalViewerServer(exportPath);
+                _viewerServer.Start();
+            }
+            else 
+            {
+                // Ensure it's running
+                _viewerServer.Start();
+            }
+            
+            // Abrir el visor HTML vía HTTP (Bypasses CORS)
+            var viewerUrl = _viewerServer.Url + "viewer.html";
+            Debug.WriteLine($"[Export] Opening viewer at: {viewerUrl}");
+
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = viewerUrl,
+                UseShellExecute = true
+            });
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[Export] Error: {ex.Message}");
+            System.Windows.MessageBox.Show(
+                $"Error al exportar: {ex.Message}",
+                "Error",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Error);
         }
     }
 

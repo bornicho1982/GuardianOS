@@ -1009,9 +1009,13 @@
                             console.log(`[D2TGXLoader] Material slot ${slot}: Primary=[${prim.map(c => c.toFixed(2))}] Secondary=[${sec.map(c => c.toFixed(2))}]`);
                         }
 
-                        // 1. Dyes - mat.userData contains {value: Color}, extract the Color
-                        const uDyePrimary = (mat.userData.dyePrimary && mat.userData.dyePrimary.value) || new THREE.Color(1, 1, 1);
-                        const uDyeSecondary = (mat.userData.dyeSecondary && mat.userData.dyeSecondary.value) || new THREE.Color(1, 1, 1);
+                        // 1. Populate userData for uniforms
+                        mat.userData.stackMap = { value: stackTex };
+                        mat.userData.dyePrimary = { value: new THREE.Color(prim[0], prim[1], prim[2]) };
+                        mat.userData.dyeSecondary = { value: new THREE.Color(sec[0], sec[1], sec[2]) };
+
+                        const uDyePrimary = mat.userData.dyePrimary.value;
+                        const uDyeSecondary = mat.userData.dyeSecondary.value;
 
                         // Fallback check for albedo map
                         if (!mat.map) {
@@ -1022,8 +1026,7 @@
                         }
 
                         // Apply base tint (multiplies with map)
-                        // If character is too white, this ensures the base dye color is applied to the texture
-                        mat.color = uDyePrimary.clone();
+                        mat.color.copy(uDyePrimary);
 
                         mat.needsUpdate = true; // Ensure material changes are applied
 

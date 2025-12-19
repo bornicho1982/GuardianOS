@@ -34,11 +34,12 @@ function init() {
     renderer.shadowMap.enabled = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.0;
     renderer.physicallyCorrectLights = true;
     container.appendChild(renderer.domElement);
 
     setupLighting();
+    setupEnvironment(); // NEW: PBR Environment
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.rotateSpeed = 1.2;
@@ -59,34 +60,74 @@ function init() {
 }
 
 function setupLighting() {
-    // Ambient - soft white for base visibility
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+    // Hemisphere - slight blue sky / neutral ground
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+    scene.add(hemiLight);
 
-    // Key Light - neutral white from front-right
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    keyLight.position.set(3, 5, 4);
-    keyLight.castShadow = true;
+    // Key Light - main illumination (Neutral White)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    keyLight.position.set(5, 10, 7);
     scene.add(keyLight);
 
-    // Fill Light - softer white from left
-    const fillLight = new THREE.DirectionalLight(0xf0f0f0, 0.5);
-    fillLight.position.set(-3, 3, 3);
+    // Fill Light - soft blue-tinted fill
+    const fillLight = new THREE.DirectionalLight(0xccddff, 1.0);
+    fillLight.position.set(-7, 5, 5);
     scene.add(fillLight);
 
-    // Rim Light - white backlight for silhouette
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.6);
-    rimLight.position.set(0, 2, -5);
+    // Rim Light - sharper backlight for silhouette (High Impact)
+    const rimLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    rimLight.position.set(0, 5, -10);
     scene.add(rimLight);
 
-    // Top light - soft from above
-    const topLight = new THREE.DirectionalLight(0xffffff, 0.4);
-    topLight.position.set(0, 10, 0);
-    scene.add(topLight);
+    // Bottom light - reflect from floor
+    const bounceLight = new THREE.DirectionalLight(0x444444, 0.3);
+    bounceLight.position.set(0, -10, 0);
+    scene.add(bounceLight);
 
-    // Subtle cool accent for depth
-    const accentLight = new THREE.PointLight(0xaaccff, 0.3, 10);
-    accentLight.position.set(-1, 0, 2);
-    scene.add(accentLight);
+    console.log('[Guardian3D] Lighting setup complete');
+}
+
+/**
+ * Procedural PBR Environment
+ * Uses PMREMGenerator to create reflections from scene lights + a studio box
+ */
+function setupEnvironment() {
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+
+    // 1. Create a "Studio Room" box temporarily to generate reflections
+    const studioBox = new THREE.Mesh(
+        new THREE.BoxGeometry(100, 100, 100),
+        new THREE.MeshBasicMaterial({
+            color: 0x222222, // Lighter background for more ambient reflection
+            side: THREE.BackSide
+        })
+    );
+    scene.add(studioBox);
+
+    // Add larger "Light Panels" for more reflection surface
+    const panel1 = new THREE.Mesh(
+        new THREE.PlaneGeometry(40, 40),
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    panel1.position.set(30, 30, 30);
+    panel1.lookAt(0, 0, 0);
+    studioBox.add(panel1);
+
+    const panel2 = panel1.clone();
+    panel2.position.set(-30, 20, 30);
+    panel2.lookAt(0, 0, 0);
+    studioBox.add(panel2);
+
+    // Generate from scene
+    setTimeout(() => {
+        const envRT = pmremGenerator.fromScene(scene, 0.04); // subtle blur
+        scene.environment = envRT.texture;
+
+        // Cleanup studio box
+        scene.remove(studioBox);
+        console.log('[Guardian3D] PBR environment generated with Studio Panels');
+    }, 200);
 }
 
 function onWindowResize() {
@@ -102,18 +143,10 @@ function animate() {
     const elapsed = clock.getElapsedTime();
 
     if (guardian) {
-        // Natural breathing animation
-        const breathCycle = Math.sin(elapsed * 1.2) * 0.003;  // Slower, more natural
-        const breathCycle2 = Math.sin(elapsed * 0.8) * 0.001;  // Secondary subtle
-
-        // Chest expansion (Y scale)
+        // Natural breathing animation (very subtle)
+        const breathCycle = Math.sin(elapsed * 1.5) * 0.002;
         guardian.scale.y = 1 + breathCycle;
-
-        // Slight shoulder movement (X scale)
-        guardian.scale.x = 1 + breathCycle2 * 0.5;
-
-        // Very subtle forward/back sway
-        guardian.rotation.x = Math.sin(elapsed * 0.5) * 0.005;
+        guardian.rotation.y = modelRotationY; // Apply manual rotation
     }
 
     controls.update();
@@ -344,7 +377,7 @@ async function loadGuardian(config) {
     var itemHashes = config.itemHashes || [];
     var shaderHashes = config.shaderHashes || [];
     var classType = config.classType || 1;
-    var isFemale = config.isFemale || false;
+    var isFemale = config.isFemale !== undefined ? config.isFemale : (classType === 1); // Default Hunter to female, others to male as per user
 
     if (itemHashes.length === 0) {
         console.warn('[Guardian3D] No item hashes, showing placeholder');

@@ -68,3 +68,21 @@ public class InventoryDefinition
     [JsonProperty("tierTypeName")]
     public string TierTypeName { get; set; } = string.Empty;
 }
+
+/// <summary>
+/// Modelo simplificado para extraer colores de shader.
+/// </summary>
+public class ShaderDefinition
+{
+    public uint Hash { get; set; }
+    public List<ShaderColorLayer> Colors { get; set; } = new();
+}
+
+public class ShaderColorLayer
+{
+    public string ChannelName { get; set; } = "Unknown";
+    public uint ChannelHash { get; set; }
+    public string HexColor { get; set; } = "#FFFFFF"; // HTML Hex w/ Alpha
+    public byte[] ARGB { get; set; } = new byte[4];
+}
+

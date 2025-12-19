@@ -1,0 +1,237 @@
+{
+  "Hash": "2A1FF880",
+  "Scopes": [
+    "FRAME",
+    "VIEW",
+    "SKINNING",
+    "TRANSPARENT",
+    "TRANSPARENT_ADVANCED",
+    "GEAR_PLATED_TEXTURES",
+    "GEAR_DYE_012"
+  ],
+  "Externs": [],
+  "RenderStates": {
+    "Blend": {
+      "AlphaToCoverageEnable": false,
+      "IndependentBlendEnable": true,
+      "BlendDesc": {
+        "IsBlendEnabled": {},
+        "SourceBlend": "One",
+        "DestinationBlend": "InverseSourceAlpha",
+        "BlendOperation": "Add",
+        "SourceAlphaBlend": "One",
+        "DestinationAlphaBlend": "InverseSourceAlpha",
+        "AlphaBlendOperation": "Add",
+        "RenderTargetWriteMask": "All"
+      }
+    },
+    "Rasterizer": null,
+    "DepthBias": null
+  },
+  "Material": {
+    "Pixel": {
+      "Hash": "551FF880",
+      "Textures": {},
+      "CBuffers": [
+        {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 0.0
+        },
+        {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 0.0
+        },
+        {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 0.0
+        },
+        {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 0.0
+        },
+        {
+          "X": 1.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 1.0
+        },
+        {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0,
+          "Magnitude": 1.0
+        },
+        {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 0.0
+        },
+        {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 0.0
+        },
+        {
+          "X": 1.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0,
+          "Magnitude": 1.4142135623730951
+        },
+        {
+          "X": 3.554006,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 3.5540061213795373
+        },
+        {
+          "X": 0.441442,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 0.0,
+          "Magnitude": 0.441442015557686
+        }
+      ],
+      "Bytecode": [
+        91,
+        0,
+        88,
+        33,
+        91,
+        1,
+        88,
+        34,
+        91,
+        2,
+        88,
+        35,
+        91,
+        3,
+        88,
+        36,
+        91,
+        4,
+        88,
+        37
+      ],
+      "Constants": [],
+      "Samplers": {
+        "1": {
+          "Filter": "MIN_MAG_MIP_LINEAR",
+          "AddressU": "WRAP",
+          "AddressV": "WRAP",
+          "AddressW": "WRAP",
+          "MipLODBias": -0.5,
+          "MaxAnisotropy": 1,
+          "ComparisonFunc": "NEVER",
+          "BorderColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "MinLOD": 0.0,
+          "MaxLOD": 3.4028235E+38
+        },
+        "2": {
+          "Filter": "ANISOTROPIC",
+          "AddressU": "CLAMP",
+          "AddressV": "CLAMP",
+          "AddressW": "CLAMP",
+          "MipLODBias": -0.5,
+          "MaxAnisotropy": 4,
+          "ComparisonFunc": "NEVER",
+          "BorderColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "MinLOD": 0.0,
+          "MaxLOD": 3.4028235E+38
+        },
+        "3": {
+          "Filter": "ANISOTROPIC",
+          "AddressU": "CLAMP",
+          "AddressV": "CLAMP",
+          "AddressW": "CLAMP",
+          "MipLODBias": -0.5,
+          "MaxAnisotropy": 4,
+          "ComparisonFunc": "NEVER",
+          "BorderColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "MinLOD": 0.0,
+          "MaxLOD": 3.4028235E+38
+        },
+        "4": {
+          "Filter": "MIN_MAG_MIP_LINEAR",
+          "AddressU": "CLAMP",
+          "AddressV": "CLAMP",
+          "AddressW": "CLAMP",
+          "MipLODBias": -0.5,
+          "MaxAnisotropy": 1,
+          "ComparisonFunc": "NEVER",
+          "BorderColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "MinLOD": 0.0,
+          "MaxLOD": 3.4028235E+38
+        },
+        "5": {
+          "Filter": "MIN_MAG_LINEAR_MIP_POINT",
+          "AddressU": "CLAMP",
+          "AddressV": "CLAMP",
+          "AddressW": "CLAMP",
+          "MipLODBias": -0.5,
+          "MaxAnisotropy": 1,
+          "ComparisonFunc": "NEVER",
+          "BorderColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "MinLOD": 0.0,
+          "MaxLOD": 3.4028235E+38
+        }
+      },
+      "TileTextureDetails": {}
+    },
+    "Vertex": {
+      "Hash": "E722A780",
+      "Textures": {},
+      "CBuffers": [],
+      "Bytecode": [],
+      "Constants": [],
+      "Samplers": {},
+      "TileTextureDetails": {}
+    }
+  },
+  "UsedChannelNames": {}
+}

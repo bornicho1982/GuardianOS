@@ -8,6 +8,10 @@ Tools/
 !Tools/extract_loadout.ps1
 !Tools/extract_equipped.py
 !Tools/extract_armor_hashes.py
+!Tools/extract_shader_colors.py
+!Tools/exchange_token.py
+!Tools/bungie_oauth_server.py
+!Tools/inspect_shader.py
 !Tools/texture_mapping.json
 
 # Explicitly ignore headers/generators inside Tools just in case
@@ -92,3 +96,5 @@ Desktop.ini
 # Exception: Keep browser logs for debugging
 !log del navegador/
 !log del navegador/**
+
+inspect_shader.py

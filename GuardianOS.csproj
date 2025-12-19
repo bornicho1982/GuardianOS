@@ -60,4 +60,12 @@
     </None>
   </ItemGroup>
 
+  <!-- Copy CharmExport files (local viewer) to output -->
+  <ItemGroup>
+    <None Include="Assets\CharmExport\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assets\CharmExport\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
 </Project>

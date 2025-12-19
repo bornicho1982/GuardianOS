@@ -147,54 +147,77 @@ public class LocalProxyServer : IDisposable
                                 var path = context.Request.RouteValues["path"]?.ToString();
                                 
                                 // If this is a texture request, try multiple sources
-                                if (path != null && path.Contains("/textures/"))
+                                if (path != null && (path.Contains("/textures/") || path.Contains("/plated_textures/") || path.Contains("_textures/")))
                                 {
-                                    // FORCE LOCAL MODE (User Request)
-                                    // 1. Extract hash from filename
-                                    // format: /textures/{hash}_{name}.tgxm.bin or similar
-                                    var textureIndex = path.IndexOf("/textures/");
-                                    var fullFilename = path.Substring(textureIndex + "/textures/".Length);
+                                    var filename = Path.GetFileName(path);
+                                    var cleanFilename = filename.Replace(".tgxm.bin", "").Replace(".png", "");
                                     
-                                    // Try to extract the leading hash digits
-                                    var hashStr = new string(fullFilename.TakeWhile(char.IsDigit).ToArray());
-                                    
-                                    if (string.IsNullOrEmpty(hashStr))
+                                    // Try to extract any digits for folder lookup
+                                    var hashStr = new string(filename.TakeWhile(char.IsDigit).ToArray());
+
+                                    Debug.WriteLine($"[LocalProxy] Texture Request: {filename}");
+
+                                    // 1. Search in local folders (Recursive)
+                                    // Try both Tools (generated) and Assets (manual exports)
+                                    // 1. Search in local folders (Recursive)
+                                    // Try both Tools (generated), Assets, and External Exports
+                                    var searchRoots = new[] { 
+                                        @"E:\GuardianOS\Tools", 
+                                        @"E:\GuardianOS\Assets",
+                                        @"E:\D2_Exports",
+                                        @"E:\D2_Exports\ApiOutput1"
+                                    };
+                                    foreach (var root in searchRoots)
                                     {
-                                        // Fallback if filename doesn't start with digits (unlikely for TGXM)
-                                        // Try splitting by _ if present
-                                        var parts = fullFilename.Split('_');
-                                        if (parts.Length > 0 && long.TryParse(parts[0], out _))
+                                        if (Directory.Exists(root))
                                         {
-                                            hashStr = parts[0];
+                                            var localMatch = Directory.GetFiles(root, $"*{cleanFilename}*", SearchOption.AllDirectories)
+                                                .FirstOrDefault(f => f.EndsWith(".png") || f.EndsWith(".tgxm.bin") || f.EndsWith(".jpg"));
+
+                                            if (localMatch != null)
+                                            {
+                                                Debug.WriteLine($"[LocalProxy] Serving LOCAL (Recursive): {localMatch}");
+                                                var ext = Path.GetExtension(localMatch).ToLower();
+                                                context.Response.ContentType = ext == ".png" ? "image/png" : 
+                                                                              (ext == ".jpg" || ext == ".jpeg" ? "image/jpeg" : "application/octet-stream");
+                                                await context.Response.SendFileAsync(localMatch);
+                                                return;
+                                            }
                                         }
                                     }
-
-                                    Debug.WriteLine($"[LocalProxy] Texture Request: {fullFilename} -> Hash: {hashStr}");
-
-                                    // 2. Search in local folder
-                                    var localFolder = @"E:\GuardianOS\Tools\ColladaGenerator\Output\DestinyModel0\Textures";
                                     
-                                    if (Directory.Exists(localFolder) && !string.IsNullOrEmpty(hashStr))
+                                    // 2. Search in TextureCache (Recursive)
+                                    if (Directory.Exists(TEXTURE_CACHE_FOLDER))
                                     {
-                                        var files = Directory.GetFiles(localFolder, $"{hashStr}*.png");
-                                        if (files.Length > 0)
+                                        var cacheMatch = Directory.GetFiles(TEXTURE_CACHE_FOLDER, $"{cleanFilename}*", SearchOption.AllDirectories)
+                                            .FirstOrDefault();
+                                        
+                                        if (cacheMatch != null)
                                         {
-                                            var match = files[0];
-                                            Debug.WriteLine($"[LocalProxy] Serving LOCAL: {match}");
-                                            context.Response.ContentType = "image/png";
-                                            await context.Response.SendFileAsync(match);
+                                            Debug.WriteLine($"[LocalProxy] Serving CACHED (Recursive): {cacheMatch}");
+                                            var ext = Path.GetExtension(cacheMatch).ToLower();
+                                            context.Response.ContentType = ext == ".png" ? "image/png" : "application/octet-stream";
+                                            await context.Response.SendFileAsync(cacheMatch);
                                             return;
                                         }
                                     }
                                     
-                                    // 3. Fallback to Bungie CDN if local not found
-                                    Debug.WriteLine($"[LocalProxy] Local texture not found. Fallback to Bungie: {path}");
-                                    var url = $"https://www.bungie.net/common/destiny2_content/geometry/{path}";
-                                    await ProxyBinaryRequest(context, url);
+                                    // 3. Fallback to Bungie CDN with expanded path guessing
+                                    var baseBungie = "https://www.bungie.net/common/destiny2_content/geometry";
+                                    var urls = new[] {
+                                        $"{baseBungie}/{path}",
+                                        $"{baseBungie}/platform/mobile/textures/{filename}",
+                                        $"{baseBungie}/platform/mobile/plated_textures/{filename}",
+                                        $"{baseBungie}/platform/mobile/geometry_textures/{filename}",
+                                        $"{baseBungie}/platform/pc/textures/{filename}",
+                                        $"{baseBungie}/platform/pc/plated_textures/{filename}"
+                                    };
+                                    
+                                    await ProxyBinaryRequestWithFallback(context, urls);
                                 }
                                 else
                                 {
-                                    // For non-texture geometry, use standard request
+                                    // Standard geometry request
                                     var url = $"https://www.bungie.net/common/destiny2_content/geometry/{path}";
                                     await ProxyBinaryRequest(context, url);
                                 }

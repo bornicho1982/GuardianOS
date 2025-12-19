@@ -1009,23 +1009,23 @@
                             console.log(`[D2TGXLoader] Material slot ${slot}: Primary=[${prim.map(c => c.toFixed(2))}] Secondary=[${sec.map(c => c.toFixed(2))}]`);
                         }
 
-                        // 1. Dyes - mat.userData contains {value: Color}, extract the Color
-                        const uDyePrimary = (mat.userData.dyePrimary && mat.userData.dyePrimary.value) || new THREE.Color(1, 1, 1);
-                        const uDyeSecondary = (mat.userData.dyeSecondary && mat.userData.dyeSecondary.value) || new THREE.Color(1, 1, 1);
+                        // 1. Populate userData for uniforms
+                        mat.userData.stackMap = { value: stackTex };
+                        mat.userData.dyePrimary = { value: new THREE.Color(prim[0], prim[1], prim[2]) };
+                        mat.userData.dyeSecondary = { value: new THREE.Color(sec[0], sec[1], sec[2]) };
 
-                        // Fallback check for albedo map
-                        if (!mat.map) {
-                            console.warn(`[D2TGXLoader] Warning: No albedo map found for material slot ${slot}. Character might appear white.`);
-                        } else {
-                            // Ensure encoding is set on the actual map being used
+                        const uDyePrimary = mat.userData.dyePrimary.value;
+                        const uDyeSecondary = mat.userData.dyeSecondary.value;
+
+                        // Ensure encoding is set to sRGB for base albedo
+                        if (mat.map) {
                             mat.map.encoding = THREE.sRGBEncoding;
                         }
 
-                        // Apply base tint (multiplies with map)
-                        // If character is too white, this ensures the base dye color is applied to the texture
-                        mat.color = uDyePrimary.clone();
+                        // Use neutral white tint for pure PBR lighting
+                        mat.color.setRGB(1.0, 1.0, 1.0);
 
-                        mat.needsUpdate = true; // Ensure material changes are applied
+                        mat.needsUpdate = true;
 
                         mat.onBeforeCompile = (shader) => {
                             shader.uniforms.stackMap = mat.userData.stackMap;
@@ -1089,34 +1089,34 @@ uniform vec3 dyeSecondary;
                                 `
                                 #include <map_fragment>
                                 
-                                // DYE MIXING LOGIC
-                                // Use stackMap (MRC texture) R/G channels as masks for dye application
-                                // Red Channel -> Primary Dye
-                                // Green Channel -> Secondary Dye
+                                // DYE MIXING LOGIC (REVAMPED v3)
+                                // Dye REPLACES base albedo where mask is high
                                 
                                 #ifdef USE_MAP
                                     vec4 stackColor = texture2D(stackMap, vUv);
+                                    vec3 baseColor = diffuseColor.rgb;
                                     
-                                    // Start with the original diffuse color (from the map_fragment include)
-                                    vec3 finalColor = diffuseColor.rgb;
+                                    // Detect if we have a valid mask. If not, we'll use a global fallback.
+                                    float maskPresence = max(stackColor.r, stackColor.g);
                                     
-                                    // Calculate total mask coverage
-                                    float totalMask = stackColor.r + stackColor.g;
+                                    // Layer 1: Primary Dye (Red Mask)
+                                    vec3 primaryDye = dyePrimary * 1.8; // Calibrated for ACESToneMapping
+                                    vec3 color1 = mix(baseColor, primaryDye, stackColor.r);
                                     
-                                    if (totalMask < 0.01) {
-                                        // No MRC mask data (dummy texture or no mask region)
-                                        // Apply primary dye as base tint to entire surface
-                                        finalColor = finalColor * dyePrimary;
-                                    } else {
-                                        // MRC mask exists - use R/G channels for blending
-                                        // Apply primary dye using red channel as mask
-                                        finalColor = mix(finalColor, finalColor * dyePrimary, stackColor.r);
-                                        
-                                        // Apply secondary dye using green channel as mask
-                                        finalColor = mix(finalColor, finalColor * dyeSecondary, stackColor.g);
+                                    // Layer 2: Secondary Dye (Green Mask)
+                                    vec3 secondaryDye = dyeSecondary * 1.8;
+                                    vec3 finalColorResource = mix(color1, secondaryDye, stackColor.g);
+                                    
+                                    // ROBUST FALLBACK: If map is missing (black), force strong primary dye
+                                    if (maskPresence < 0.05) {
+                                        // Was 0.15 (mostly white), now 0.85 (mostly color)
+                                        finalColorResource = mix(baseColor, primaryDye, 0.85);
                                     }
                                     
-                                    diffuseColor.rgb = finalColor;
+                                    diffuseColor.rgb = finalColorResource;
+                                #else
+                                    // Fallback: Use primary dye as solid color if map is missing
+                                    diffuseColor.rgb = dyePrimary * 1.5;
                                 #endif
                                 `
                             );

@@ -78,10 +78,22 @@
                     <TextBlock Text="{Binding Character.RaceName, Mode=OneWay}" Foreground="#888" FontSize="16" VerticalAlignment="Center"/>
                 </StackPanel>
                 
-                <Button HorizontalAlignment="Right" Command="{Binding GoBackCommand}" 
-                        Style="{StaticResource MaterialDesignIconButton}" Width="40" Height="40">
-                    <materialDesign:PackIcon Kind="Close" Width="28" Height="28" Foreground="White"/>
-                </Button>
+                <!-- Header Buttons (right side) -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <!-- Export to 3D Viewer Button -->
+                    <Button Command="{Binding ExportToViewerCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}" 
+                            Width="40" Height="40" Margin="0,0,8,0"
+                            ToolTip="Ver en Visor 3D Local">
+                        <materialDesign:PackIcon Kind="CubeOutline" Width="24" Height="24" Foreground="#7dd3fc"/>
+                    </Button>
+                    
+                    <!-- Close Button -->
+                    <Button Command="{Binding GoBackCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}" Width="40" Height="40">
+                        <materialDesign:PackIcon Kind="Close" Width="28" Height="28" Foreground="White"/>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -157,17 +169,6 @@
                                    Margin="0,12,0,0" HorizontalAlignment="Center" FontSize="12"/>
                     </StackPanel>
                 </Border>
-                
-                <!-- Toggle Button (User requested TopRight inside this column) -->
-                <ToggleButton IsChecked="{Binding Is3DEnabled}" 
-                              HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20"
-                              Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                              ToolTip="Activar/Desactivar Vista 3D"
-                              RenderTransformOrigin="0.5,0.5">
-                    <ToggleButton.RenderTransform>
-                        <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
-                    </ToggleButton.RenderTransform>
-                </ToggleButton>
             </Grid>
 
             <!-- RIGHT COLUMN: ARMOR + SUBCLASS + STATS -->
