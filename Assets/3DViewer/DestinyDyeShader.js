@@ -95,13 +95,14 @@
             return diffuse + specular + fill + rim + ambient;
         }
 
+        // ===== sRGB TO LINEAR CONVERSION FUNCTION =====
+        // Critical for matching Destiny 2's color space
+        // Must be declared OUTSIDE main() in GLSL
+        vec3 sRGBToLinear(vec3 srgb) {
+            return pow(srgb, vec3(2.2));
+        }
+
         void main() {
-            // ===== sRGB TO LINEAR CONVERSION FUNCTION =====
-            // Critical for matching Destiny 2's color space
-            vec3 sRGBToLinear(vec3 srgb) {
-                return pow(srgb, vec3(2.2));
-            }
-            
             // ===== BASE TEXTURES =====
             vec3 albedoSRGB = hasAlbedoMap ? texture2D(albedoMap, vUv).rgb : vec3(0.5);
             // Convert albedo from sRGB to linear space
