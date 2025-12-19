@@ -961,180 +961,71 @@
                     if (normalTex) normalTex.encoding = THREE.LinearEncoding;
                     if (stackTex) stackTex.encoding = THREE.LinearEncoding;
 
-                    const mat = new THREE.MeshStandardMaterial({
-                        color: new THREE.Color(1, 1, 1),
-                        map: diffuseTex || loadedTexture, // Diffuse is base (sRGB)
-                        normalMap: normalTex,              // Normal map (Linear)
-                        roughnessMap: stackTex,            // ORM G channel (Standard Three.js handles it)
-                        metalnessMap: stackTex,            // ORM B channel (Standard Three.js handles it)
-                        aoMap: stackTex,                   // ORM R channel (requires UV2)
-                        aoMapIntensity: 1.0,               // Ensure full intensity
-                        roughness: 1.0,                    // Base values, modulated by maps
-                        metalness: 1.0,
-                        side: THREE.DoubleSide
-                    });
-
-                    mat.needsUpdate = true; // Refresh material after texture assignment
-
-                    // INJECT CUSTOM SHADER FOR DYE MASKING (Applied to ALL materials for debugging)
-                    // This uses the 'stackTex' (MRC texture) to mix dye colors
-                    // Red Channel -> Primary Color
-                    // Green Channel -> Secondary Color
-                    // Blue Channel -> (Usually emission or detail, ignored for now)
-                    {
-                        // NORMALIZE colors - Bungie sometimes sends 0-255, we need 0-1
-                        const normalizeColor = (c) => {
-                            if (!c || c.length < 3) return [1, 1, 1];
-                            // If any value > 1, assume it's 0-255 range
-                            const needsNormalize = c.some(v => v > 1);
-                            if (needsNormalize) {
-                                return c.map(v => Math.min(1, v / 255));
-                            }
-                            return c;
-                        };
-
-                        // Store dye colors in userdata for shader access
-                        const dyeData = (gearDyes && gearDyes[slot]) ? gearDyes[slot] : null;
-
-                        let prim = [1, 1, 1];  // Default white
-                        let sec = [0.5, 0.5, 0.5];  // Default gray
-
-                        if (dyeData) {
-                            if (dyeData.primaryColor) {
-                                prim = normalizeColor(dyeData.primaryColor);
-                            }
-                            if (dyeData.secondaryColor) {
-                                sec = normalizeColor(dyeData.secondaryColor);
-                            }
-                            console.log(`[D2TGXLoader] Material slot ${slot}: Primary=[${prim.map(c => c.toFixed(2))}] Secondary=[${sec.map(c => c.toFixed(2))}]`);
+                    // ====================================================
+                    // USE DESTINY DYE SHADER SYSTEM
+                    // ====================================================
+                    // NORMALIZE colors - Bungie sometimes sends 0-255, we need 0-1
+                    const normalizeColor = (c) => {
+                        if (!c || c.length < 3) return [1, 1, 1];
+                        const needsNormalize = c.some(v => v > 1);
+                        if (needsNormalize) {
+                            return c.map(v => Math.min(1, v / 255));
                         }
+                        return c;
+                    };
 
-                        // 1. Populate userData for uniforms
-                        mat.userData.stackMap = { value: stackTex };
-                        mat.userData.dyePrimary = { value: new THREE.Color(prim[0], prim[1], prim[2]) };
-                        mat.userData.dyeSecondary = { value: new THREE.Color(sec[0], sec[1], sec[2]) };
+                    // Get dye colors for this slot
+                    const dyeData = (gearDyes && gearDyes[slot]) ? gearDyes[slot] : null;
 
-                        const uDyePrimary = mat.userData.dyePrimary.value;
-                        const uDyeSecondary = mat.userData.dyeSecondary.value;
+                    let prim = [0.8, 0.8, 0.8];  // Default light gray
+                    let sec = [0.5, 0.5, 0.5];   // Default medium gray
+                    let tert = [0.3, 0.3, 0.3];  // Default dark gray
 
-                        // Ensure encoding is set to sRGB for base albedo
-                        if (mat.map) {
-                            mat.map.encoding = THREE.sRGBEncoding;
-                        }
-
-                        // Use neutral white tint for pure PBR lighting
-                        mat.color.setRGB(1.0, 1.0, 1.0);
-
-                        mat.needsUpdate = true;
-
-                        mat.onBeforeCompile = (shader) => {
-                            shader.uniforms.stackMap = mat.userData.stackMap;
-                            shader.uniforms.dyePrimary = mat.userData.dyePrimary;
-                            shader.uniforms.dyeSecondary = mat.userData.dyeSecondary;
-
-                            // DEBUG: Guard against double-injection
-                            if (shader.fragmentShader.includes('uniform sampler2D stackMap;')) {
-                                // Already injected, skip to prevent 'redefinition' errors
-                                return;
-                            }
-
-                            const uniformBlock = `
-uniform sampler2D stackMap;
-uniform vec3 dyePrimary;
-uniform vec3 dyeSecondary;
-`;
-
-                            // --- ROBUST UNIFORM SETUP ---
-                            // Ensure we have valid values for all uniforms to prevent crashes/compilation errors
-
-                            // 1. Dyes - mat.userData contains {value: Color}, extract the Color
-                            const uDyePrimary = (mat.userData.dyePrimary && mat.userData.dyePrimary.value) || new THREE.Color(1, 1, 1);
-                            const uDyeSecondary = (mat.userData.dyeSecondary && mat.userData.dyeSecondary.value) || new THREE.Color(1, 1, 1);
-
-                            // 2. Stack Map (Critical: Must be a Texture)
-                            let uStackMap = stackTex;
-                            if (!uStackMap) {
-                                // Create a 1x1 dummy black texture if missing
-                                // This prevents 'uniform sampler2D' from being unbound or invalid
-                                if (!window._d2DummyStackTex) {
-                                    const data = new Uint8Array([0, 0, 0, 255]); // Black, opaque
-                                    window._d2DummyStackTex = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat);
-                                    window._d2DummyStackTex.needsUpdate = true;
-                                }
-                                uStackMap = window._d2DummyStackTex;
-                            }
-
-                            shader.uniforms.stackMap = { value: uStackMap };
-                            shader.uniforms.dyePrimary = { value: uDyePrimary };
-                            shader.uniforms.dyeSecondary = { value: uDyeSecondary };
-
-                            // --- SHADER INJECTION ---
-
-                            // 1. Uniforms Declaration (Safe Injection)
-                            // uniformBlock is already defined above at line 994
-
-
-                            if (shader.fragmentShader.includes('#include <common>')) {
-                                shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + uniformBlock);
-                            } else {
-                                shader.fragmentShader = uniformBlock + '\n' + shader.fragmentShader;
-                            }
-
-                            // 2. Logic Injection (Restored functionality)
-                            // We replace <map_fragment> to intercept the diffuse color.
-                            // Even if USE_MAP is false, we want to allow tinting (though stackMap sampling relies on vMapUv)
-
-                            shader.fragmentShader = shader.fragmentShader.replace(
-                                '#include <map_fragment>',
-                                `
-                                #include <map_fragment>
-                                
-                                // DYE MIXING LOGIC (REVAMPED v3)
-                                // Dye REPLACES base albedo where mask is high
-                                
-                                #ifdef USE_MAP
-                                    vec4 stackColor = texture2D(stackMap, vUv);
-                                    vec3 baseColor = diffuseColor.rgb;
-                                    
-                                    // Detect if we have a valid mask. If not, we'll use a global fallback.
-                                    float maskPresence = max(stackColor.r, stackColor.g);
-                                    
-                                    // Layer 1: Primary Dye (Red Mask)
-                                    vec3 primaryDye = dyePrimary * 1.8; // Calibrated for ACESToneMapping
-                                    vec3 color1 = mix(baseColor, primaryDye, stackColor.r);
-                                    
-                                    // Layer 2: Secondary Dye (Green Mask)
-                                    vec3 secondaryDye = dyeSecondary * 1.8;
-                                    vec3 finalColorResource = mix(color1, secondaryDye, stackColor.g);
-                                    
-                                    // ROBUST FALLBACK: If map is missing (black), force strong primary dye
-                                    if (maskPresence < 0.05) {
-                                        // Was 0.15 (mostly white), now 0.85 (mostly color)
-                                        finalColorResource = mix(baseColor, primaryDye, 0.85);
-                                    }
-                                    
-                                    diffuseColor.rgb = finalColorResource;
-                                #else
-                                    // Fallback: Use primary dye as solid color if map is missing
-                                    diffuseColor.rgb = dyePrimary * 1.5;
-                                #endif
-                                `
-                            );
-
-                            // NOTE: Three.js r128 already reads correct ORM channels:
-                            // - roughnessmap_fragment reads .g (green) ✓
-                            // - metalnessmap_fragment reads .b (blue) ✓
-                            // No manual override needed!
-
-                            // Log for debugging
-                            const texName = stackTex ? stackTex.name : (diffuseTex ? diffuseTex.name : 'No_Texture');
-                            console.log(`[D2TGXLoader] Compiling Shader for [${texName}]`);
-
-
-
-
-                        };
+                    if (dyeData) {
+                        if (dyeData.primaryColor) prim = normalizeColor(dyeData.primaryColor);
+                        if (dyeData.secondaryColor) sec = normalizeColor(dyeData.secondaryColor);
+                        if (dyeData.wornColor) tert = normalizeColor(dyeData.wornColor);
+                        console.log(`[D2TGXLoader] Dye Slot ${slot}: Primary=[${prim.map(c => c.toFixed(2))}] Secondary=[${sec.map(c => c.toFixed(2))}] Tertiary=[${tert.map(c => c.toFixed(2))}]`);
                     }
+
+                    let mat;
+
+                    // Try to use DestinyDyeShader if available
+                    if (window.DestinyDyeShader && window.DestinyDyeShader.createMaterial) {
+                        mat = window.DestinyDyeShader.createMaterial({
+                            albedoMap: diffuseTex || loadedTexture,
+                            normalMap: normalTex,
+                            ormMap: stackTex,
+                            dyeMaskMap: stackTex,  // Destiny uses ORM/Stack as dye mask
+                            dyePrimary: new THREE.Color(prim[0], prim[1], prim[2]),
+                            dyeSecondary: new THREE.Color(sec[0], sec[1], sec[2]),
+                            dyeTertiary: new THREE.Color(tert[0], tert[1], tert[2]),
+                            specularTint: new THREE.Color(1.0, 1.0, 1.0),
+                            clearCoatStrength: 0.2,
+                            fresnelStrength: 0.4,
+                            dyeIntensity: 1.8,
+                            metallicBoost: 0.0,
+                            roughnessAdjust: 0.0
+                        });
+                        console.log(`[D2TGXLoader] ✅ Using DestinyDyeShader for slot ${slot}`);
+                    } else {
+                        // Fallback to MeshStandardMaterial
+                        mat = new THREE.MeshStandardMaterial({
+                            color: new THREE.Color(prim[0], prim[1], prim[2]),
+                            map: diffuseTex || loadedTexture,
+                            normalMap: normalTex,
+                            roughnessMap: stackTex,
+                            metalnessMap: stackTex,
+                            aoMap: stackTex,
+                            aoMapIntensity: 1.0,
+                            roughness: 0.5,
+                            metalness: 0.5,
+                            side: THREE.DoubleSide
+                        });
+                        console.log(`[D2TGXLoader] ⚠️ Fallback to MeshStandardMaterial for slot ${slot}`);
+                    }
+
+                    mat.needsUpdate = true;
 
                     if (stackTex) {
                         console.log(`[D2TGXLoader] DEBUG: Visualizing STACK / MRC Texture: ${stackTex.name} `);
