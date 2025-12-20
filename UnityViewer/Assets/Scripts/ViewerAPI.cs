@@ -1,13 +1,14 @@
 using UnityEngine;
 using System;
+using System.Net;
+using System.Net.Sockets;
 using System.IO;
-using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 
 /// <summary>
 /// Main API for controlling the Guardian 3D Viewer from external applications (WPF).
-/// Communicates via Named Pipes for real-time commands.
+/// Uses TCP sockets for reliable IPC communication.
 /// </summary>
 public class ViewerAPI : MonoBehaviour
 {
@@ -19,14 +20,16 @@ public class ViewerAPI : MonoBehaviour
     public CameraController cameraController;
 
     [Header("IPC Settings")]
-    public string pipeName = "GuardianOS_Viewer";
+    public int port = 12345;
     public bool autoConnect = true;
 
-    private NamedPipeServerStream pipeServer;
-    private StreamReader pipeReader;
-    private StreamWriter pipeWriter;
+    private TcpListener tcpListener;
+    private TcpClient tcpClient;
+    private StreamReader reader;
+    private StreamWriter writer;
     private CancellationTokenSource cancellationSource;
     private bool isConnected = false;
+    private bool isShuttingDown = false;
 
     public event Action<string> OnCommandReceived;
     public event Action<bool> OnConnectionChanged;
@@ -55,47 +58,86 @@ public class ViewerAPI : MonoBehaviour
         StopServer();
     }
 
+    private void OnApplicationQuit()
+    {
+        isShuttingDown = true;
+        StopServer();
+    }
+
     public void StartServer()
     {
         cancellationSource = new CancellationTokenSource();
         Task.Run(() => ServerLoop(cancellationSource.Token));
-        Debug.Log($"[ViewerAPI] Named Pipe server started: {pipeName}");
+        Debug.Log($"[ViewerAPI] TCP server started on port: {port}");
     }
 
     public void StopServer()
     {
-        cancellationSource?.Cancel();
-        pipeServer?.Dispose();
-        isConnected = false;
+        try
+        {
+            isConnected = false;
+            cancellationSource?.Cancel();
+            
+            reader?.Close();
+            writer?.Close();
+            tcpClient?.Close();
+            tcpListener?.Stop();
+            
+            Debug.Log("[ViewerAPI] Server stopped");
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"[ViewerAPI] Stop error: {ex.Message}");
+        }
     }
 
     private async Task ServerLoop(CancellationToken token)
     {
-        while (!token.IsCancellationRequested)
+        while (!token.IsCancellationRequested && !isShuttingDown)
         {
             try
             {
-                pipeServer = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message);
+                tcpListener = new TcpListener(IPAddress.Loopback, port);
+                tcpListener.Start();
                 
                 Debug.Log("[ViewerAPI] Waiting for client connection...");
-                await pipeServer.WaitForConnectionAsync(token);
+                
+                // Use polling to check for pending connections (allows cancellation)
+                while (!tcpListener.Pending())
+                {
+                    if (token.IsCancellationRequested || isShuttingDown)
+                    {
+                        tcpListener.Stop();
+                        return;
+                    }
+                    await Task.Delay(100, token);
+                }
+                
+                tcpClient = await tcpListener.AcceptTcpClientAsync();
                 
                 isConnected = true;
                 Debug.Log("[ViewerAPI] Client connected!");
 
-                pipeReader = new StreamReader(pipeServer);
-                pipeWriter = new StreamWriter(pipeServer) { AutoFlush = true };
+                var stream = tcpClient.GetStream();
+                reader = new StreamReader(stream);
+                writer = new StreamWriter(stream) { AutoFlush = true };
 
                 SendEvent("ready", "1.0");
 
-                while (pipeServer.IsConnected && !token.IsCancellationRequested)
+                while (tcpClient.Connected && !token.IsCancellationRequested && !isShuttingDown)
                 {
-                    string message = await pipeReader.ReadLineAsync();
-                    if (!string.IsNullOrEmpty(message))
+                    if (stream.DataAvailable)
                     {
-                        // Process on main thread
-                        string msg = message;
-                        UnityMainThread.Execute(() => ProcessCommand(msg));
+                        string message = await reader.ReadLineAsync();
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            string msg = message;
+                            UnityMainThread.Execute(() => ProcessCommand(msg));
+                        }
+                    }
+                    else
+                    {
+                        await Task.Delay(50, token);
                     }
                 }
             }
@@ -105,15 +147,22 @@ public class ViewerAPI : MonoBehaviour
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[ViewerAPI] Pipe error: {ex.Message}");
+                if (!isShuttingDown)
+                {
+                    Debug.LogError($"[ViewerAPI] Server error: {ex.Message}");
+                }
             }
             finally
             {
                 isConnected = false;
-                pipeServer?.Dispose();
+                tcpClient?.Close();
+                tcpListener?.Stop();
             }
 
-            await Task.Delay(1000, token);
+            if (!isShuttingDown)
+            {
+                await Task.Delay(1000, token);
+            }
         }
     }
 
@@ -124,7 +173,6 @@ public class ViewerAPI : MonoBehaviour
             Debug.Log($"[ViewerAPI] Received: {json}");
             OnCommandReceived?.Invoke(json);
             
-            // Simple JSON parsing without Newtonsoft
             if (json.Contains("\"loadModel\""))
             {
                 int pathStart = json.IndexOf("\"path\":\"") + 8;
@@ -157,12 +205,12 @@ public class ViewerAPI : MonoBehaviour
 
     public void SendEvent(string eventName, string data)
     {
-        if (!isConnected || pipeWriter == null) return;
+        if (!isConnected || writer == null) return;
 
         try
         {
             string json = $"{{\"event\":\"{eventName}\",\"data\":\"{data}\"}}";
-            pipeWriter.WriteLine(json);
+            writer.WriteLine(json);
         }
         catch (Exception ex)
         {
