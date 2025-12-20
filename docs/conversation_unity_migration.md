@@ -1,42 +1,52 @@
-# GuardianOS Development Conversation Log
-## Session: Unity HDRP Viewer Migration
-## Date: 2025-12-19/20
+# Historial de Conversaciones - GuardianOS
 
-### Summary
-This conversation covers the complete migration from Three.js to Unity HDRP for the GuardianOS 3D character viewer.
+## Índice de Sesiones
 
-### Key Accomplishments
+### Diciembre 2025
 
-1. **Three.js Viewer Deprecated**
-   - Moved all Three.js files to `_deprecated/3DViewer_ThreeJS/`
-   - Files: D2TGXLoader.js, DestinyDyeShader.js, viewer.js, etc.
+| Fecha | Tema | Estado |
+|-------|------|--------|
+| 2025-12-19/20 | Unity HDRP Viewer Migration | ✅ Completado |
 
-2. **Unity HDRP Project Created**
-   - Location: `E:\GuardianOS\UnityViewer\`
-   - Scripts: ViewerAPI.cs, CharacterLoader.cs, DyeController.cs, CameraController.cs
-   - Shader: DestinyDyeFunctions.hlsl
+---
 
-3. **Unity Setup Completed**
-   - Installed Unity 6.3 LTS (6000.3.2f1)
-   - Configured HDRP Asset
-   - Created ViewerScene
-   - Set up ViewerManager with all scripts
-   - Connected references between components
+## Sesión 2025-12-19/20: Unity HDRP
 
-4. **Build Completed**
-   - Platform: Windows x64
-   - Output: `E:\GuardianOS\UnityViewer\Build\`
+### Resumen
+Migración del visor 3D de Three.js a Unity HDRP para mejor fidelidad visual.
 
-5. **WPF Integration Bridge Created**
-   - `Services/UnityViewerBridge.cs` - Named Pipes IPC client
+### Logros
+- ✅ Archivado visor Three.js en `_deprecated/`
+- ✅ Creado proyecto Unity HDRP (`UnityViewer/`)
+- ✅ Scripts: ViewerAPI, CharacterLoader, DyeController, CameraController
+- ✅ Shader HLSL para sistema tintes Destiny 2
+- ✅ Instalado Unity 6.3 LTS
+- ✅ Configurado HDRP Asset y escena
+- ✅ Build del visor creado
+- ✅ Integración WPF (UnityViewerBridge.cs)
+- ✅ Documentos técnicos guardados en `docs/work_sessions/`
 
-### Next Steps
-- Integrate Unity viewer into WPF via WindowsFormsHost
-- Test IPC communication between WPF and Unity
-- Add model loading functionality
-- Create Shader Graph for Destiny dye system
+### Pendiente
+- [ ] Integrar Unity viewer en la aplicación WPF
+- [ ] Crear Shader Graph completo en Unity
+- [ ] Probar comunicación IPC Named Pipes
+- [ ] Test visual con modelos reales
 
-### Technical Notes
-- Unity 6 uses HDRP 17.x instead of 16.x
-- GLTFast package requires OpenUPM registry
-- Named Pipes used for WPF ↔ Unity communication
+### Archivos clave
+- `UnityViewer/` - Proyecto Unity completo
+- `Services/UnityViewerBridge.cs` - Cliente IPC para WPF
+- `docs/work_sessions/` - Documentación técnica
+
+---
+
+## Notas
+
+### Ubicación conversaciones Antigravity
+```
+C:\Users\borni\.gemini\antigravity\conversations\
+```
+Formato: `.pb` (Protocol Buffer) - binario, no legible directamente.
+
+---
+
+*Última actualización: 2025-12-20 06:51*
