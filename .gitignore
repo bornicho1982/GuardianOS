@@ -93,8 +93,59 @@ Desktop.ini
 *.db
 *.log
 
+# =====================================
+# UNITY PROJECT (UnityViewer/)
+# =====================================
+
+# Unity generated folders
+UnityViewer/[Ll]ibrary/
+UnityViewer/[Tt]emp/
+UnityViewer/[Oo]bj/
+UnityViewer/[Bb]uild/
+UnityViewer/[Bb]uilds/
+UnityViewer/[Ll]ogs/
+UnityViewer/[Uu]ser[Ss]ettings/
+
+# Unity generated files
+UnityViewer/*.csproj
+UnityViewer/*.unityproj
+UnityViewer/*.sln
+UnityViewer/*.suo
+UnityViewer/*.tmp
+UnityViewer/*.user
+UnityViewer/*.userprefs
+UnityViewer/*.pidb
+UnityViewer/*.booproj
+UnityViewer/*.svd
+UnityViewer/*.pdb
+UnityViewer/*.mdb
+UnityViewer/*.opendb
+UnityViewer/*.VC.db
+
+# Unity3D generated meta files
+UnityViewer/*.pidb.meta
+UnityViewer/*.pdb.meta
+UnityViewer/*.mdb.meta
+
+# Crashlytics
+UnityViewer/crashlytics-build.properties
+
+# Builds - keep only the final exe, not all intermediate files
+UnityViewer/Build/*_BurstDebugInformation_DoNotShip/
+UnityViewer/Build/*_BackUpThisFolder_ButDontShipItWithYourGame/
+
+# =====================================
+# DEPRECATED FILES (old Three.js viewer)
+# =====================================
+_deprecated/
+
+# =====================================
+# CONVERSATIONS (will be saved separately)
+# =====================================
+# Keep conversation files for backup
+!conversacion*.txt
+
 # Exception: Keep browser logs for debugging
 !log del navegador/
 !log del navegador/**
 
-inspect_shader.py

@@ -1,13 +1,9 @@
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.HighDefinition;
 using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 /// <summary>
 /// Main API for controlling the Guardian 3D Viewer from external applications (WPF).
@@ -59,9 +55,6 @@ public class ViewerAPI : MonoBehaviour
         StopServer();
     }
 
-    /// <summary>
-    /// Start the Named Pipe server for IPC communication
-    /// </summary>
     public void StartServer()
     {
         cancellationSource = new CancellationTokenSource();
@@ -69,9 +62,6 @@ public class ViewerAPI : MonoBehaviour
         Debug.Log($"[ViewerAPI] Named Pipe server started: {pipeName}");
     }
 
-    /// <summary>
-    /// Stop the Named Pipe server
-    /// </summary>
     public void StopServer()
     {
         cancellationSource?.Cancel();
@@ -91,21 +81,21 @@ public class ViewerAPI : MonoBehaviour
                 await pipeServer.WaitForConnectionAsync(token);
                 
                 isConnected = true;
-                MainThreadDispatcher.Enqueue(() => OnConnectionChanged?.Invoke(true));
                 Debug.Log("[ViewerAPI] Client connected!");
 
                 pipeReader = new StreamReader(pipeServer);
                 pipeWriter = new StreamWriter(pipeServer) { AutoFlush = true };
 
-                // Send ready message
-                SendEvent("ready", new { version = "1.0" });
+                SendEvent("ready", "1.0");
 
                 while (pipeServer.IsConnected && !token.IsCancellationRequested)
                 {
                     string message = await pipeReader.ReadLineAsync();
                     if (!string.IsNullOrEmpty(message))
                     {
-                        MainThreadDispatcher.Enqueue(() => ProcessCommand(message));
+                        // Process on main thread
+                        string msg = message;
+                        UnityMainThread.Execute(() => ProcessCommand(msg));
                     }
                 }
             }
@@ -120,99 +110,58 @@ public class ViewerAPI : MonoBehaviour
             finally
             {
                 isConnected = false;
-                MainThreadDispatcher.Enqueue(() => OnConnectionChanged?.Invoke(false));
                 pipeServer?.Dispose();
             }
 
-            // Wait before retrying
             await Task.Delay(1000, token);
         }
     }
 
-    /// <summary>
-    /// Process incoming command from WPF
-    /// </summary>
     private void ProcessCommand(string json)
     {
         try
         {
-            var command = JObject.Parse(json);
-            string action = command["action"]?.ToString();
-
-            Debug.Log($"[ViewerAPI] Received command: {action}");
+            Debug.Log($"[ViewerAPI] Received: {json}");
             OnCommandReceived?.Invoke(json);
-
-            switch (action)
+            
+            // Simple JSON parsing without Newtonsoft
+            if (json.Contains("\"loadModel\""))
             {
-                case "loadModel":
-                    string modelPath = command["path"]?.ToString();
-                    if (!string.IsNullOrEmpty(modelPath))
-                    {
-                        characterLoader.LoadModel(modelPath, (success) => {
-                            SendEvent("modelLoaded", new { success = success, path = modelPath });
-                        });
-                    }
-                    break;
-
-                case "setDyes":
-                    int slot = command["slot"]?.ToObject<int>() ?? 0;
-                    var primary = command["primary"]?.ToObject<float[]>();
-                    var secondary = command["secondary"]?.ToObject<float[]>();
-                    var tertiary = command["tertiary"]?.ToObject<float[]>();
-                    
-                    if (primary != null)
-                        dyeController.SetDye(slot, DyeType.Primary, new Color(primary[0], primary[1], primary[2]));
-                    if (secondary != null)
-                        dyeController.SetDye(slot, DyeType.Secondary, new Color(secondary[0], secondary[1], secondary[2]));
-                    if (tertiary != null)
-                        dyeController.SetDye(slot, DyeType.Tertiary, new Color(tertiary[0], tertiary[1], tertiary[2]));
-                    
-                    SendEvent("dyesApplied", new { slot = slot });
-                    break;
-
-                case "setCamera":
-                    float distance = command["distance"]?.ToObject<float>() ?? 3f;
-                    float height = command["height"]?.ToObject<float>() ?? 1.5f;
-                    cameraController.SetPosition(distance, height);
-                    break;
-
-                case "rotate":
-                    float angle = command["angle"]?.ToObject<float>() ?? 0f;
-                    cameraController.RotateBy(angle);
-                    break;
-
-                case "screenshot":
-                    string savePath = command["path"]?.ToString();
-                    TakeScreenshot(savePath);
-                    break;
-
-                case "ping":
-                    SendEvent("pong", new { timestamp = DateTime.UtcNow.ToString("o") });
-                    break;
-
-                default:
-                    SendEvent("error", new { message = $"Unknown action: {action}" });
-                    break;
+                int pathStart = json.IndexOf("\"path\":\"") + 8;
+                int pathEnd = json.IndexOf("\"", pathStart);
+                string path = json.Substring(pathStart, pathEnd - pathStart);
+                characterLoader?.LoadModel(path, (success) => {
+                    SendEvent("modelLoaded", success.ToString());
+                });
+            }
+            else if (json.Contains("\"rotate\""))
+            {
+                int angleStart = json.IndexOf("\"angle\":") + 8;
+                int angleEnd = json.IndexOf("}", angleStart);
+                if (float.TryParse(json.Substring(angleStart, angleEnd - angleStart), out float angle))
+                {
+                    cameraController?.RotateBy(angle);
+                }
+            }
+            else if (json.Contains("\"ping\""))
+            {
+                SendEvent("pong", DateTime.UtcNow.ToString("o"));
             }
         }
         catch (Exception ex)
         {
             Debug.LogError($"[ViewerAPI] Command error: {ex.Message}");
-            SendEvent("error", new { message = ex.Message });
+            SendEvent("error", ex.Message);
         }
     }
 
-    /// <summary>
-    /// Send event back to WPF
-    /// </summary>
-    public void SendEvent(string eventName, object data)
+    public void SendEvent(string eventName, string data)
     {
         if (!isConnected || pipeWriter == null) return;
 
         try
         {
-            var eventObj = new { @event = eventName, data = data };
-            string json = JsonConvert.SerializeObject(eventObj);
+            string json = $"{{\"event\":\"{eventName}\",\"data\":\"{data}\"}}";
             pipeWriter.WriteLine(json);
         }
         catch (Exception ex)
@@ -220,14 +169,30 @@ public class ViewerAPI : MonoBehaviour
             Debug.LogError($"[ViewerAPI] Send error: {ex.Message}");
         }
     }
+}
 
-    private void TakeScreenshot(string path)
+/// <summary>
+/// Helper class to execute actions on Unity main thread
+/// </summary>
+public static class UnityMainThread
+{
+    private static SynchronizationContext mainContext;
+    
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Initialize()
     {
-        if (string.IsNullOrEmpty(path))
+        mainContext = SynchronizationContext.Current;
+    }
+    
+    public static void Execute(Action action)
+    {
+        if (mainContext != null)
         {
-            path = Path.Combine(Application.persistentDataPath, $"screenshot_{DateTime.Now:yyyyMMdd_HHmmss}.png");
+            mainContext.Post(_ => action(), null);
         }
-        ScreenCapture.CaptureScreenshot(path);
-        SendEvent("screenshotTaken", new { path = path });
+        else
+        {
+            action();
+        }
     }
 }

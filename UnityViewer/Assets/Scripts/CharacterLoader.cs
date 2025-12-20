@@ -1,12 +1,11 @@
 using UnityEngine;
-using GLTFast;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 /// <summary>
-/// Loads GLTF/FBX models and applies Destiny Dye materials
+/// Loads FBX/OBJ models from Resources or AssetBundles
+/// For runtime GLTF loading, install glTFast from OpenUPM after setup
 /// </summary>
 public class CharacterLoader : MonoBehaviour
 {
@@ -20,8 +19,6 @@ public class CharacterLoader : MonoBehaviour
     public GameObject currentModel;
     public List<Renderer> modelRenderers = new List<Renderer>();
 
-    private GltfImport gltfImport;
-
     private void Awake()
     {
         if (modelParent == null)
@@ -29,48 +26,32 @@ public class CharacterLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// Load a 3D model from file path
+    /// Load a 3D model from Resources folder
     /// </summary>
-    public async void LoadModel(string path, Action<bool> onComplete = null)
+    public void LoadModel(string resourcePath, Action<bool> onComplete = null)
     {
-        Debug.Log($"[CharacterLoader] Loading model: {path}");
+        Debug.Log($"[CharacterLoader] Loading model: {resourcePath}");
 
         // Clear existing model
         ClearModel();
 
-        if (!File.Exists(path))
-        {
-            Debug.LogError($"[CharacterLoader] File not found: {path}");
-            onComplete?.Invoke(false);
-            return;
-        }
-
-        string extension = Path.GetExtension(path).ToLower();
-
         try
         {
-            if (extension == ".gltf" || extension == ".glb")
+            // Try to load from Resources
+            GameObject prefab = Resources.Load<GameObject>(resourcePath);
+            
+            if (prefab != null)
             {
-                await LoadGLTF(path);
-            }
-            else if (extension == ".fbx")
-            {
-                await LoadFBX(path);
-            }
-            else
-            {
-                Debug.LogError($"[CharacterLoader] Unsupported format: {extension}");
-                onComplete?.Invoke(false);
-                return;
-            }
-
-            if (currentModel != null)
-            {
+                currentModel = Instantiate(prefab, modelParent);
                 SetupModel();
                 onComplete?.Invoke(true);
+                Debug.Log("[CharacterLoader] Model loaded from Resources");
             }
             else
             {
+                // For runtime loading, we'll need to use AssetBundles or glTFast
+                Debug.LogWarning($"[CharacterLoader] Model not found in Resources: {resourcePath}");
+                Debug.LogWarning("[CharacterLoader] For runtime file loading, install glTFast from Package Manager");
                 onComplete?.Invoke(false);
             }
         }
@@ -81,42 +62,23 @@ public class CharacterLoader : MonoBehaviour
         }
     }
 
-    private async Task LoadGLTF(string path)
+    /// <summary>
+    /// Load a model from a prefab reference (for editor setup)
+    /// </summary>
+    public void LoadFromPrefab(GameObject prefab, Action<bool> onComplete = null)
     {
-        gltfImport = new GltfImport();
-        
-        bool success = await gltfImport.Load(path);
-        
-        if (success)
-        {
-            currentModel = new GameObject("LoadedModel");
-            currentModel.transform.SetParent(modelParent);
-            await gltfImport.InstantiateMainSceneAsync(currentModel.transform);
-            Debug.Log("[CharacterLoader] GLTF loaded successfully");
-        }
-        else
-        {
-            Debug.LogError("[CharacterLoader] GLTF load failed");
-        }
-    }
-
-    private Task LoadFBX(string path)
-    {
-        // FBX loading requires runtime import plugin or pre-converted assets
-        // For now, log a warning and suggest using GLTF
-        Debug.LogWarning("[CharacterLoader] FBX runtime loading requires additional setup. Consider converting to GLTF.");
-        
-        // Placeholder: Try to load from Resources if pre-imported
-        string resourceName = Path.GetFileNameWithoutExtension(path);
-        GameObject prefab = Resources.Load<GameObject>($"Models/{resourceName}");
+        ClearModel();
         
         if (prefab != null)
         {
             currentModel = Instantiate(prefab, modelParent);
-            return Task.CompletedTask;
+            SetupModel();
+            onComplete?.Invoke(true);
         }
-
-        return Task.CompletedTask;
+        else
+        {
+            onComplete?.Invoke(false);
+        }
     }
 
     private void SetupModel()
@@ -134,12 +96,11 @@ public class CharacterLoader : MonoBehaviour
         modelRenderers.Clear();
         modelRenderers.AddRange(currentModel.GetComponentsInChildren<Renderer>());
 
-        // Apply Destiny Dye material
+        // Apply Destiny Dye material if assigned
         if (destinyDyeMaterial != null)
         {
             foreach (var renderer in modelRenderers)
             {
-                // Create material instance for each renderer
                 Material[] materials = renderer.sharedMaterials;
                 for (int i = 0; i < materials.Length; i++)
                 {
