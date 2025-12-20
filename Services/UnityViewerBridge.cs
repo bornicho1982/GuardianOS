@@ -14,7 +14,7 @@ namespace GuardianOS.Services
     public class UnityViewerBridge : IDisposable
     {
         private const string PIPE_NAME = "GuardianOS_Viewer";
-        private const string UNITY_EXE_PATH = @"UnityViewer\Build\GuardianOS_Viewer.exe";
+        private const string UNITY_EXE_PATH = @"UnityViewer\Build\UnityViewer.exe";
 
         private NamedPipeClientStream? pipeClient;
         private StreamReader? pipeReader;

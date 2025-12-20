@@ -9,6 +9,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon></ApplicationIcon>
     
+    <!-- Exclude Unity project from .NET compilation -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);UnityViewer\**</DefaultItemExcludes>
+    
     <!-- Información de ensamblado -->
     <AssemblyName>GuardianOS</AssemblyName>
     <RootNamespace>GuardianOS</RootNamespace>
