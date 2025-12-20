@@ -22,6 +22,9 @@ public partial class CharacterDetailViewModel : ViewModelBase
     
     // Server for local output
     private static LocalViewerServer? _viewerServer;
+    
+    // Unity HDRP Viewer Bridge
+    private static UnityViewerBridge? _unityBridge;
 
     // Bucket Hashes de Destiny 2
     private const long BUCKET_KINETIC = 1498876634;
@@ -145,6 +148,46 @@ public partial class CharacterDetailViewModel : ViewModelBase
         catch (Exception ex)
         {
             Debug.WriteLine($"Error abriendo visor 3D: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Launches the Unity HDRP 3D Viewer
+    /// </summary>
+    [RelayCommand]
+    private async Task LaunchUnityViewer()
+    {
+        try
+        {
+            Debug.WriteLine("[Unity] Launching Unity HDRP Viewer...");
+
+            // Dispose existing bridge if any
+            _unityBridge?.Dispose();
+            _unityBridge = new UnityViewerBridge();
+
+            // Set up event handlers
+            _unityBridge.OnError += (error) => Debug.WriteLine($"[Unity] Error: {error}");
+            _unityBridge.OnEventReceived += (evt) => Debug.WriteLine($"[Unity] Event: {evt}");
+            _unityBridge.OnConnectionChanged += (connected) => Debug.WriteLine($"[Unity] Connected: {connected}");
+
+            // Start Unity and connect
+            bool connected = await _unityBridge.StartAndConnectAsync();
+            
+            if (connected)
+            {
+                Debug.WriteLine("[Unity] Connected successfully!");
+                
+                // Send ping to verify connection
+                await _unityBridge.PingAsync();
+            }
+            else
+            {
+                Debug.WriteLine("[Unity] Failed to connect to Unity viewer");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[Unity] Error launching viewer: {ex.Message}");
         }
     }
 

@@ -80,6 +80,14 @@
                 
                 <!-- Header Buttons (right side) -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <!-- Unity HDRP Viewer Button -->
+                    <Button Command="{Binding LaunchUnityViewerCommand}" 
+                            Style="{StaticResource MaterialDesignIconButton}" 
+                            Width="40" Height="40" Margin="0,0,8,0"
+                            ToolTip="Ver en Unity HDRP Viewer">
+                        <materialDesign:PackIcon Kind="Unity" Width="24" Height="24" Foreground="#00FF00"/>
+                    </Button>
+                    
                     <!-- Export to 3D Viewer Button -->
                     <Button Command="{Binding ExportToViewerCommand}" 
                             Style="{StaticResource MaterialDesignIconButton}" 
