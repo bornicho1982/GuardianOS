@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Traveler.AI/Traveler.AI.csproj" />
+  <Project Path="Traveler.Core/Traveler.Core.csproj" />
+  <Project Path="Traveler.Data/Traveler.Data.csproj" />
+  <Project Path="Traveler.Desktop/Traveler.Desktop.csproj" />
+</Solution>

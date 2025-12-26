@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Traveler.Desktop.ViewModels"
+             xmlns:controls="using:Traveler.Desktop.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Traveler.Desktop.Views.InventoryView"
+             x:DataType="vm:InventoryViewModel">
+
+    <Grid RowDefinitions="Auto,*">
+        <Button Grid.Row="0" Command="{Binding RefreshCommand}" Content="Refresh Inventory" Margin="10"/>
+
+        <ScrollViewer Grid.Row="1">
+            <ListBox ItemsSource="{Binding Items}" Background="Transparent">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <controls:ItemControl />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                
+                <!-- Drag and Drop Interaction should be attached here via Behaviours 
+                     For simplicity in XAML-only, we might rely on the ItemControl or Styles -->
+            </ListBox>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

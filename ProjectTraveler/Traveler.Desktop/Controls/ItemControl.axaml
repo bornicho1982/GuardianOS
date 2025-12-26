@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="using:Traveler.Core.Models"
+             mc:Ignorable="d" d:DesignWidth="96" d:DesignHeight="96"
+             x:Class="Traveler.Desktop.Controls.ItemControl"
+             x:DataType="models:InventoryItem">
+
+  <Border BorderThickness="2" 
+          BorderBrush="Goldenrod" 
+          CornerRadius="0"
+          Width="64" Height="64" Margin="4">
+    <Panel>
+        <!-- Icon would go here (AsyncImage) -->
+        <Image Stretch="UniformToFill" Opacity="0.5"/>
+        <Panel Background="Gray" Opacity="0.2" />
+        
+        <!-- Power Level Overlay -->
+        <Border Background="#CC000000" VerticalAlignment="Bottom" Height="16">
+            <TextBlock Text="{Binding PowerLevel}" 
+                       Foreground="White" 
+                       FontSize="10" 
+                       HorizontalAlignment="Right" 
+                       Margin="0,0,2,0"/>
+        </Border>
+        
+        <!-- Name Tooltip -->
+        <ToolTip.Tip>
+            <StackPanel>
+                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                <TextBlock Text="{Binding ItemType}"/>
+            </StackPanel>
+        </ToolTip.Tip>
+    </Panel>
+  </Border>
+</UserControl>
