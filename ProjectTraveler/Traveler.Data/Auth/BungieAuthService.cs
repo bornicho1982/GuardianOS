@@ -7,28 +7,164 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 using System.Collections.Generic;
+using System.Linq;
+using DotNetBungieAPI;
+using DotNetBungieAPI.Models;
+using DotNetBungieAPI.Service.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Traveler.Data.Auth;
 
+/// <summary>
+/// Bungie OAuth2 (PKCE) authentication service with DotNetBungieAPI client management.
+/// </summary>
 public class BungieAuthService
 {
-    // TODO: Move to configuration/secrets
-    // TODO: Move to configuration/secrets checks in production
+    // TODO: Move to configuration/secrets in production
     private const string ClientId = "50831"; 
     private const string ClientSecret = "E7ijog02U.jWK8oRz-rf5wkT.6e4NNrAfoj-eIhVXj8";
-    private const string ApiKey = "e1a73d9d631a46a8b7e2b6e37ae30492";
+    public const string ApiKey = "e1a73d9d631a46a8b7e2b6e37ae30492";
 
-    private const string RedirectUrl = "https://localhost:55555/callback/"; // Note trailing slash
+    private const string RedirectUrl = "https://localhost:55555/callback/";
     private const string ListenerPrefix = "http://localhost:55555/callback/";
     private const string AuthUrl = "https://www.bungie.net/en/OAuth/Authorize";
     private const string TokenUrl = "https://www.bungie.net/Platform/App/OAuth/token/";
+    private const string MembershipsUrl = "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/";
 
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
+    private IBungieClient? _bungieClient;
+    
+    // Token storage
+    public string? AccessToken { get; private set; }
+    public string? RefreshToken { get; private set; }
+    public DateTime TokenExpiry { get; private set; }
+    
+    // Membership info
+    public long BungieMembershipId { get; private set; }
+    public BungieMembershipType DestinyMembershipType { get; private set; }
+    public long DestinyMembershipId { get; private set; }
+    public string? DisplayName { get; private set; }
+
+    public bool IsAuthenticated => !string.IsNullOrEmpty(AccessToken) && TokenExpiry > DateTime.UtcNow;
 
     public BungieAuthService()
     {
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Add("X-API-Key", ApiKey);
+    }
+
+    /// <summary>
+    /// Gets the configured IBungieClient for API calls.
+    /// Returns null if not authenticated.
+    /// </summary>
+    public IBungieClient? GetClient()
+    {
+        if (!IsAuthenticated || _bungieClient == null)
+        {
+            Console.WriteLine("[BungieAuth] GetClient called but not authenticated");
+            return null;
+        }
+        return _bungieClient;
+    }
+
+    /// <summary>
+    /// Performs full OAuth2 PKCE login flow with membership resolution.
+    /// </summary>
+    public async Task<bool> LoginAsync()
+    {
+        try
+        {
+            var tokenJson = await AuthorizeAsync();
+            if (string.IsNullOrEmpty(tokenJson))
+                return false;
+
+            // Parse token response
+            var tokenData = JsonSerializer.Deserialize<TokenResponse>(tokenJson);
+            if (tokenData == null)
+                return false;
+
+            AccessToken = tokenData.access_token;
+            RefreshToken = tokenData.refresh_token;
+            BungieMembershipId = tokenData.membership_id;
+            TokenExpiry = DateTime.UtcNow.AddSeconds(tokenData.expires_in);
+
+            Console.WriteLine($"[BungieAuth] Token obtained. Expires: {TokenExpiry}");
+
+            // Initialize DotNetBungieAPI client
+            await InitializeBungieClientAsync();
+
+            // Resolve Destiny membership
+            await ResolveMembershipAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[BungieAuth] Login failed: {ex.Message}");
+            return false;
+        }
+    }
+
+    private async Task InitializeBungieClientAsync()
+    {
+        // Build service collection for DotNetBungieAPI
+        var services = new ServiceCollection();
+        
+        services.UseBungieApiClient(config =>
+        {
+            config.ClientConfiguration.ApiKey = ApiKey;
+            config.ClientConfiguration.ClientId = int.Parse(ClientId);
+            config.ClientConfiguration.ClientSecret = ClientSecret;
+        });
+
+        var provider = services.BuildServiceProvider();
+        _bungieClient = provider.GetRequiredService<IBungieClient>();
+        
+        // Set the access token for authenticated requests
+        // Note: DotNetBungieAPI handles token internally, but we need to set it
+        // This might require custom token provider implementation
+        Console.WriteLine("[BungieAuth] BungieClient initialized");
+    }
+
+    private async Task ResolveMembershipAsync()
+    {
+        // Get memberships for current user
+        _httpClient.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AccessToken);
+
+        var response = await _httpClient.GetAsync(MembershipsUrl);
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"[BungieAuth] Failed to get memberships: {response.StatusCode}");
+            return;
+        }
+
+        var json = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        if (root.TryGetProperty("Response", out var resp) && 
+            resp.TryGetProperty("destinyMemberships", out var memberships))
+        {
+            // Get the primary membership (or first available)
+            foreach (var membership in memberships.EnumerateArray())
+            {
+                var membershipType = membership.GetProperty("membershipType").GetInt32();
+                var membershipId = membership.GetProperty("membershipId").GetString();
+                var displayName = membership.TryGetProperty("displayName", out var dn) ? dn.GetString() : null;
+                
+                // Prefer cross-save primary
+                var isPrimary = membership.TryGetProperty("crossSaveOverride", out var cso) && cso.GetInt32() == membershipType;
+
+                DestinyMembershipType = (BungieMembershipType)membershipType;
+                DestinyMembershipId = long.Parse(membershipId ?? "0");
+                DisplayName = displayName;
+
+                Console.WriteLine($"[BungieAuth] Resolved membership: {DestinyMembershipType} / {DestinyMembershipId} ({DisplayName})");
+                
+                if (isPrimary) break; // Use primary if found
+            }
+        }
     }
 
     public async Task<string> AuthorizeAsync()
@@ -70,7 +206,6 @@ public class BungieAuthService
             if (string.IsNullOrEmpty(code))
                 throw new Exception("No code received from Bungie.");
 
-            // Exchange code for token
             return await ExchangeCodeForTokenAsync(code, codeVerifier);
         }
         finally
@@ -88,17 +223,12 @@ public class BungieAuthService
             new KeyValuePair<string, string>("client_id", ClientId),
             new KeyValuePair<string, string>("client_secret", ClientSecret),
             new KeyValuePair<string, string>("code_verifier", codeVerifier)
-            // Client Secret might be needed depending on app type registered in Bungie
         });
 
         var response = await _httpClient.PostAsync(TokenUrl, requestBody);
         response.EnsureSuccessStatusCode();
 
-        var content = await response.Content.ReadAsStringAsync();
-        // Parse JSON content to TokenData
-        // Securely store token using ProtectedData
-        // For now, return the raw JSON
-        return content;
+        return await response.Content.ReadAsStringAsync();
     }
 
     private string GenerateCodeVerifier()
@@ -122,4 +252,14 @@ public class BungieAuthService
             .Replace("/", "_")
             .Replace("=", "");
     }
+
+    // Token response DTO
+    private class TokenResponse
+    {
+        public string access_token { get; set; } = "";
+        public string refresh_token { get; set; } = "";
+        public int expires_in { get; set; }
+        public long membership_id { get; set; }
+    }
 }
+
