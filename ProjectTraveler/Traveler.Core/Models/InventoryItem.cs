@@ -41,4 +41,36 @@ public record InventoryItem
     // Logic for Loadout Optimizer
     public bool IsLocked { get; set; }
     public bool IsJunk { get; set; }
+    
+    // ===== Location & State (for SmartMove) =====
+    
+    /// <summary>
+    /// Current location: Character ID or "vault".
+    /// </summary>
+    public string Location { get; set; } = "vault";
+    
+    /// <summary>
+    /// Bucket hash from manifest (e.g., Helmet, Kinetic Weapon).
+    /// </summary>
+    public uint BucketHash { get; init; }
+    
+    /// <summary>
+    /// Whether this item is currently equipped on a character.
+    /// </summary>
+    public bool IsEquipped { get; set; }
+    
+    /// <summary>
+    /// Damage type hash (Solar, Arc, Void, Strand, Stasis).
+    /// </summary>
+    public uint DamageTypeHash { get; init; }
+    
+    /// <summary>
+    /// User-defined tags (e.g., "keep", "junk", "pvp", "pve").
+    /// </summary>
+    public List<string> Tags { get; set; } = new();
+    
+    /// <summary>
+    /// User notes/annotations for this item.
+    /// </summary>
+    public string? Notes { get; set; }
 }

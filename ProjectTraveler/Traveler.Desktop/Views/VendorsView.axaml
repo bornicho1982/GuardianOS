@@ -2,9 +2,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Traveler.Desktop.Views.VendorsView">
-  <Grid>
-      <TextBlock Text="Vendors Screen" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+             xmlns:vm="using:Traveler.Desktop.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             x:Class="Traveler.Desktop.Views.VendorsView"
+             x:DataType="vm:VendorsViewModel">
+  
+  <Grid RowDefinitions="Auto, Auto, *" Margin="20">
+    
+    <!-- Header -->
+    <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,16">
+      <TextBlock Text="Vendors" FontSize="28" FontWeight="Bold"/>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+        <ToggleButton IsChecked="{Binding ShowAffordableOnly}" Content="Affordable Only"/>
+        <ToggleButton IsChecked="{Binding ShowWishlistOnly}" Content="Wishlist Only"/>
+        <Button Content="↻ Refresh" Command="{Binding RefreshCommand}"/>
+      </StackPanel>
+    </Grid>
+    
+    <!-- Loading -->
+    <Border Grid.Row="1" IsVisible="{Binding IsLoading}" Margin="0,0,0,10">
+      <TextBlock Text="Loading vendor inventories..." Foreground="Gray"/>
+    </Border>
+    
+    <!-- Vendor Sales List -->
+    <ScrollViewer Grid.Row="2">
+      <ItemsControl ItemsSource="{Binding Sales}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Border Background="#2D2D30" CornerRadius="8" Padding="12" Margin="6" Width="280">
+              <StackPanel Spacing="8">
+                
+                <!-- Vendor Name Badge -->
+                <Border Background="#3E3E42" CornerRadius="4" Padding="6,3" HorizontalAlignment="Left">
+                  <TextBlock Text="{Binding VendorName}" FontSize="10" Foreground="Gray"/>
+                </Border>
+                
+                <!-- Item Info -->
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding ItemType}" FontSize="11" Foreground="Gray"/>
+                
+                <!-- Wishlist Badge -->
+                <Border IsVisible="{Binding IsWishlistMatch}"
+                        Background="#FFD54F" 
+                        CornerRadius="4" 
+                        Padding="8,4" 
+                        HorizontalAlignment="Left">
+                  <TextBlock Text="⭐ GOD ROLL" FontSize="10" FontWeight="Bold" Foreground="Black"/>
+                </Border>
+                
+                <!-- Affordability -->
+                <TextBlock Text="{Binding IsAffordable, StringFormat=Affordable: {0}}" 
+                           FontSize="10" 
+                           Foreground="Gray"/>
+                
+              </StackPanel>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        
+      </ItemsControl>
+    </ScrollViewer>
+    
   </Grid>
 </UserControl>

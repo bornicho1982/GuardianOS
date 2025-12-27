@@ -2,9 +2,112 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Traveler.Desktop.Views.SettingsView">
-  <Grid>
-      <TextBlock Text="Settings Screen" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-  </Grid>
+             xmlns:vm="using:Traveler.Desktop.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="Traveler.Desktop.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  
+  <ScrollViewer>
+    <StackPanel Margin="20" Spacing="24" MaxWidth="500">
+      
+      <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
+      
+      <!-- Appearance Section -->
+      <Border Background="#2D2D30" CornerRadius="8" Padding="16">
+        <StackPanel Spacing="16">
+          <TextBlock Text="APPEARANCE" FontWeight="SemiBold" Foreground="Gray"/>
+          
+          <!-- Theme -->
+          <Grid ColumnDefinitions="*, *">
+            <TextBlock Text="Theme" VerticalAlignment="Center"/>
+            <ComboBox Grid.Column="1" 
+                      ItemsSource="{Binding AvailableThemes}" 
+                      SelectedItem="{Binding Theme}"
+                      HorizontalAlignment="Stretch"/>
+          </Grid>
+          
+          <!-- Language -->
+          <Grid ColumnDefinitions="*, *">
+            <StackPanel>
+              <TextBlock Text="Language" VerticalAlignment="Center"/>
+              <TextBlock Text="Requires manifest reload" FontSize="10" Foreground="Gray"/>
+            </StackPanel>
+            <ComboBox Grid.Column="1" 
+                      ItemsSource="{Binding AvailableLanguages}" 
+                      SelectedItem="{Binding Language}"
+                      HorizontalAlignment="Stretch"/>
+          </Grid>
+          
+          <Button Content="Reload Manifest" 
+                  Command="{Binding ReloadManifestCommand}"
+                  HorizontalAlignment="Left"/>
+          
+        </StackPanel>
+      </Border>
+      
+      <!-- AI Configuration Section -->
+      <Border Background="#2D2D30" CornerRadius="8" Padding="16">
+        <StackPanel Spacing="16">
+          <TextBlock Text="AI BUILD ARCHITECT" FontWeight="SemiBold" Foreground="Gray"/>
+          
+          <!-- Ollama Endpoint -->
+          <Grid ColumnDefinitions="*, 2*">
+            <TextBlock Text="Ollama URL" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" 
+                     Text="{Binding OllamaEndpoint}"
+                     Watermark="http://localhost:11434"/>
+          </Grid>
+          
+          <!-- Model -->
+          <Grid ColumnDefinitions="*, 2*">
+            <TextBlock Text="Model" VerticalAlignment="Center"/>
+            <ComboBox Grid.Column="1" 
+                      ItemsSource="{Binding AvailableModels}" 
+                      SelectedItem="{Binding AiModel}"
+                      HorizontalAlignment="Stretch"/>
+          </Grid>
+          
+        </StackPanel>
+      </Border>
+      
+      <!-- Wishlist Section -->
+      <Border Background="#2D2D30" CornerRadius="8" Padding="16">
+        <StackPanel Spacing="16">
+          <TextBlock Text="WISHLIST (GOD ROLLS)" FontWeight="SemiBold" Foreground="Gray"/>
+          
+          <!-- Wishlist Path -->
+          <Grid ColumnDefinitions="*, Auto">
+            <TextBox Text="{Binding WishlistPath}"
+                     Watermark="Path to wishlist.json"
+                     IsReadOnly="True"/>
+            <Button Grid.Column="1" Content="Browse..." Margin="8,0,0,0"/>
+          </Grid>
+          
+          <TextBlock Text="Download a community wishlist from voltron.d2checklist.com" 
+                     FontSize="11" 
+                     Foreground="Gray"/>
+          
+        </StackPanel>
+      </Border>
+      
+      <!-- Save Button -->
+      <Button Content="Save Settings" 
+              Command="{Binding SaveCommand}"
+              HorizontalAlignment="Center"
+              Classes="accent"
+              Padding="24,12"
+              FontSize="14">
+        <Button.IsEnabled>
+          <Binding Path="IsSaving" Converter="{x:Static BoolConverters.Not}"/>
+        </Button.IsEnabled>
+      </Button>
+      
+      <!-- Version Info -->
+      <StackPanel HorizontalAlignment="Center" Margin="0,20,0,0">
+        <TextBlock Text="GuardianOS v1.0.0" FontSize="11" Foreground="Gray" HorizontalAlignment="Center"/>
+        <TextBlock Text="Powered by Bungie API, OR-Tools, Semantic Kernel" FontSize="10" Foreground="#555" HorizontalAlignment="Center"/>
+      </StackPanel>
+      
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>

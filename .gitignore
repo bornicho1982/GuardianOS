@@ -1,0 +1,21 @@
+# GuardianOS Root .gitignore
+
+# Google Drive Sync Temp Files
+.tmp.driveupload/
+
+# Build outputs
+bin/
+obj/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# NuGet
+packages/
+
+# OS
+Thumbs.db
+.DS_Store
