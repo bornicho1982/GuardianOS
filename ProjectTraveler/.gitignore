@@ -126,3 +126,5 @@ temp_manifest.zip
 appsettings.json
 appsettings.Development.json
 *.env
+
+.tmp.driveupload/

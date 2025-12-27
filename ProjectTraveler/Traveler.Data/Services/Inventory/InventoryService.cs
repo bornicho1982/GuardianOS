@@ -85,25 +85,25 @@ public class InventoryService : IInventoryService
     private async Task<InventoryItem> MapToInventoryItem(DestinyItemComponent item, DestinyItemInstanceComponent instance)
     {
         // Manifest Lookup
-        var jsonDef = await _manifestDatabase.GetItemName(item.ItemHash.Hash.GetValueOrDefault());
+        var jsonDef = await _manifestDatabase.GetItemName(item.Item.Hash.GetValueOrDefault());
         // Parse jsonDef to get Name, Icon, TierType, ItemType...
         
         // Stats
+        // Stats (Requires DestinyItemStatsComponent, temporarily disabled for build)
         var stats = new Dictionary<uint, int>();
+        /*
         if (instance?.Stats != null)
         {
             foreach (var kvp in instance.Stats)
             {
-                // Armor 3.0: 0-100 is standard, but user said 0-200.
-                // If the API returns 0-100, we use it as is.
-                // If user implies Scaled stats, we might need logic here.
                 stats[kvp.Key] = kvp.Value.Value;
             }
         }
+        */
 
         return new InventoryItem
         {
-            ItemHash = item.ItemHash.Hash.GetValueOrDefault(),
+            ItemHash = item.Item.Hash.GetValueOrDefault(),
             InstanceId = item.ItemInstanceId ?? 0,
             Name = "Pending Manifest Parse", // Would come from jsonDef
             Stats = stats,
