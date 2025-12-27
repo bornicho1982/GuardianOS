@@ -46,6 +46,9 @@ public partial class App : Application
             
             // ===== VIEW MODELS =====
             
+            // Dashboard Home (Landing Page)
+            var dashboardHomeVm = new DashboardHomeViewModel(inventoryService);
+            
             // Main Views
             var inventoryVm = new InventoryViewModel(inventoryService, smartMoveService);
             var organizerVm = new OrganizerViewModel(inventoryService);
@@ -64,6 +67,7 @@ public partial class App : Application
 
             // Dashboard (Navigation Shell)
             var dashboardVm = new DashboardViewModel(
+                dashboardHomeVm,
                 inventoryVm, 
                 loadoutsVm, 
                 buildVm, 

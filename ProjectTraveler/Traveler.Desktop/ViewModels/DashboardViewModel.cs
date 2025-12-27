@@ -44,6 +44,7 @@ public class DashboardViewModel : ViewModelBase
     }
     
     // Services retained for DI
+    private readonly DashboardHomeViewModel _dashboardHomeVm;
     private readonly InventoryViewModel _inventoryVm;
     private readonly LoadoutsViewModel _loadoutsVm;
     private readonly BuildArchitectViewModel _buildVm;
@@ -53,6 +54,7 @@ public class DashboardViewModel : ViewModelBase
     private readonly SettingsViewModel _settingsVm;
 
     public DashboardViewModel(
+        DashboardHomeViewModel dashboardHomeVm,
         InventoryViewModel inventoryVm,
         LoadoutsViewModel loadoutsVm,
         BuildArchitectViewModel buildVm,
@@ -61,6 +63,7 @@ public class DashboardViewModel : ViewModelBase
         OrganizerViewModel organizerVm,
         SettingsViewModel settingsVm)
     {
+        _dashboardHomeVm = dashboardHomeVm;
         _inventoryVm = inventoryVm;
         _loadoutsVm = loadoutsVm;
         _buildVm = buildVm;
@@ -71,6 +74,7 @@ public class DashboardViewModel : ViewModelBase
 
         NavigationItems = new ObservableCollection<NavigationItem>
         {
+            new("Dashboard", "Home", typeof(DashboardHomeViewModel)),
             new("Inventory", "Backpack", typeof(InventoryViewModel)),
             new("Loadouts", "TshirtCrew", typeof(LoadoutsViewModel)),
             new("Build Architect", "BrainCircuit", typeof(BuildArchitectViewModel)),
@@ -80,13 +84,14 @@ public class DashboardViewModel : ViewModelBase
             new("Settings", "Settings", typeof(SettingsViewModel))
         };
 
-        // Default selection
+        // Default selection - Dashboard
         SelectedItem = NavigationItems.First();
     }
 
     private void NavigateTo(NavigationItem item)
     {
-        if (item.ViewModelType == typeof(InventoryViewModel)) CurrentView = _inventoryVm;
+        if (item.ViewModelType == typeof(DashboardHomeViewModel)) CurrentView = _dashboardHomeVm;
+        else if (item.ViewModelType == typeof(InventoryViewModel)) CurrentView = _inventoryVm;
         else if (item.ViewModelType == typeof(LoadoutsViewModel)) CurrentView = _loadoutsVm;
         else if (item.ViewModelType == typeof(BuildArchitectViewModel)) CurrentView = _buildVm;
         else if (item.ViewModelType == typeof(VendorsViewModel)) CurrentView = _vendorsVm;
@@ -95,3 +100,4 @@ public class DashboardViewModel : ViewModelBase
         else if (item.ViewModelType == typeof(SettingsViewModel)) CurrentView = _settingsVm;
     }
 }
+

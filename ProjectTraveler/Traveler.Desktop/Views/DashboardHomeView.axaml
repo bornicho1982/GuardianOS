@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Traveler.Desktop.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Traveler.Desktop.Views.DashboardHomeView"
+             x:DataType="vm:DashboardHomeViewModel">
+  
+  <ScrollViewer>
+    <StackPanel Margin="24" Spacing="24">
+      
+      <!-- Welcome Header -->
+      <StackPanel Spacing="4">
+        <TextBlock Text="{Binding WelcomeMessage}" FontSize="32" FontWeight="Bold"/>
+        <TextBlock Text="Here's your Guardian overview" FontSize="14" Foreground="Gray"/>
+      </StackPanel>
+      
+      <!-- Stats Cards Row -->
+      <WrapPanel Orientation="Horizontal">
+        
+        <!-- Power Level Card -->
+        <Border Background="#2D2D30" CornerRadius="12" Padding="24" Margin="0,0,16,16" Width="200">
+          <StackPanel Spacing="8">
+            <TextBlock Text="POWER LEVEL" FontSize="11" FontWeight="SemiBold" Foreground="Gray"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="{Binding TotalPower}" FontSize="48" FontWeight="Bold" Foreground="#FFD54F"/>
+              <StackPanel VerticalAlignment="Bottom" Margin="0,0,0,8">
+                <TextBlock Text="{Binding MaxPowerLevel, StringFormat=Base: {0}}" FontSize="11" Foreground="Gray"/>
+                <TextBlock Text="{Binding ArtifactBonus, StringFormat=+{0} Artifact}" FontSize="11" Foreground="#81C784"/>
+              </StackPanel>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        
+        <!-- Vault Card -->
+        <Border Background="#2D2D30" CornerRadius="12" Padding="24" Margin="0,0,16,16" Width="160">
+          <StackPanel Spacing="8">
+            <TextBlock Text="VAULT" FontSize="11" FontWeight="SemiBold" Foreground="Gray"/>
+            <StackPanel Orientation="Horizontal" Spacing="4">
+              <TextBlock Text="{Binding VaultCount}" FontSize="36" FontWeight="Bold"/>
+              <TextBlock Text="/ 600" FontSize="14" Foreground="Gray" VerticalAlignment="Bottom" Margin="0,0,0,6"/>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        
+        <!-- Postmaster Card -->
+        <Border Background="#2D2D30" CornerRadius="12" Padding="24" Margin="0,0,16,16" Width="160">
+          <StackPanel Spacing="8">
+            <TextBlock Text="POSTMASTER" FontSize="11" FontWeight="SemiBold" Foreground="Gray"/>
+            <StackPanel Orientation="Horizontal" Spacing="4">
+              <TextBlock Text="{Binding PostmasterCount}" FontSize="36" FontWeight="Bold"/>
+              <TextBlock Text="/ 21" FontSize="14" Foreground="Gray" VerticalAlignment="Bottom" Margin="0,0,0,6"/>
+            </StackPanel>
+            <TextBlock Text="⚠️ Almost full!" 
+                       IsVisible="{Binding PostmasterWarning}" 
+                       FontSize="11" 
+                       Foreground="#FF8A65"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Exotics Card -->
+        <Border Background="#2D2D30" CornerRadius="12" Padding="24" Margin="0,0,16,16" Width="160">
+          <StackPanel Spacing="8">
+            <TextBlock Text="EXOTICS" FontSize="11" FontWeight="SemiBold" Foreground="Gray"/>
+            <TextBlock Text="{Binding ExoticCount}" FontSize="36" FontWeight="Bold" Foreground="#FFD54F"/>
+          </StackPanel>
+        </Border>
+        
+      </WrapPanel>
+      
+      <!-- Quick Actions -->
+      <Border Background="#252526" CornerRadius="12" Padding="20">
+        <StackPanel Spacing="16">
+          <TextBlock Text="QUICK ACTIONS" FontSize="11" FontWeight="SemiBold" Foreground="Gray"/>
+          <WrapPanel Orientation="Horizontal">
+            <Button Content="⚡ Equip Max Power" Margin="0,0,12,12" Classes="accent"/>
+            <Button Content="📦 Pull from Vault" Margin="0,0,12,12"/>
+            <Button Content="🧹 Clean Postmaster" Margin="0,0,12,12"/>
+            <Button Content="🔄 Refresh Inventory" Command="{Binding RefreshCommand}" Margin="0,0,12,12"/>
+          </WrapPanel>
+        </StackPanel>
+      </Border>
+      
+      <!-- Loading Overlay -->
+      <Border IsVisible="{Binding IsLoading}" 
+              Background="#80000000" 
+              HorizontalAlignment="Center"
+              CornerRadius="8" 
+              Padding="16,8">
+        <TextBlock Text="Loading..." Foreground="White"/>
+      </Border>
+      
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>
