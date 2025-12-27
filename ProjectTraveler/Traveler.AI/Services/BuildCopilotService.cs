@@ -24,13 +24,24 @@ public class BuildCopilotService : IBuildCopilotService
         _inventoryService = inventoryService;
         _manifestDatabase = manifestDatabase;
 
-        // Initialize Kernel
-        // In a real app, this would be injected via DI with configuration
+        // Initialize Kernel with Local Ollama (OpenAI Compatible)
         var builder = Kernel.CreateBuilder();
         
-        // PLACEHOLDER: User needs to provide Key
-        // builder.AddOpenAIChatCompletion("gpt-4", "YOUR_OPENAI_KEY");
-        // For pure code validity without a key, we'll assume it's set up or mock it if running tests
+        // Configuration for Ollama
+        // Endpoint: http://localhost:11434/v1 (The /v1 is important for SK OpenAI connector compatibility)
+        // Model: phi3 (Must match what was pulled in setup_ai.ps1)
+        // ApiKey: "ollama" (Dummy)
+        try 
+        {
+            builder.AddOpenAIChatCompletion(
+                modelId: "phi3",
+                apiKey: "ollama",
+                endpoint: new Uri("http://localhost:11434/v1"));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to configure Local AI: {ex.Message}");
+        }
         
         _kernel = builder.Build();
     }
@@ -90,9 +101,7 @@ public class BuildCopilotService : IBuildCopilotService
             // Fallback for Phase 5 demo
             return new BuildRecommendation 
             { 
-                BuildName = "Simulation (No API Key)",
-                RecommendedExoticArmor = userExotics.FirstOrDefault() ?? "None",
-                Reasoning = $"LLM Call failed (Missing Key?). Logic trace: Found {searchResults.Count()} database matches for '{keywords.FirstOrDefault()}'. {ex.Message}"
+                Reasoning = $"AI Request failed. Ensure 'setup_ai.ps1' has been run and Ollama is running. Trace: {ex.Message}"
             };
         }
     }

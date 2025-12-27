@@ -13,9 +13,12 @@ namespace Traveler.Data.Auth;
 public class BungieAuthService
 {
     // TODO: Move to configuration/secrets
-    private const string ClientId = "YOUR_CLIENT_ID"; 
-    // private const string ClientSecret = "YOUR_CLIENT_SECRET"; // Logic differs for public/confidential clients
-    private const string RedirectUrl = "https://localhost:55555/callback"; 
+    // TODO: Move to configuration/secrets checks in production
+    private const string ClientId = "50831"; 
+    private const string ClientSecret = "E7ijog02U.jWK8oRz-rf5wkT.6e4NNrAfoj-eIhVXj8";
+    private const string ApiKey = "e1a73d9d631a46a8b7e2b6e37ae30492";
+
+    private const string RedirectUrl = "https://localhost:55555/callback/"; // Note trailing slash
     private const string ListenerPrefix = "http://localhost:55555/callback/";
     private const string AuthUrl = "https://www.bungie.net/en/OAuth/Authorize";
     private const string TokenUrl = "https://www.bungie.net/Platform/App/OAuth/token/";
@@ -25,6 +28,7 @@ public class BungieAuthService
     public BungieAuthService()
     {
         _httpClient = new HttpClient();
+        _httpClient.DefaultRequestHeaders.Add("X-API-Key", ApiKey);
     }
 
     public async Task<string> AuthorizeAsync()
@@ -82,6 +86,7 @@ public class BungieAuthService
             new KeyValuePair<string, string>("grant_type", "authorization_code"),
             new KeyValuePair<string, string>("code", code),
             new KeyValuePair<string, string>("client_id", ClientId),
+            new KeyValuePair<string, string>("client_secret", ClientSecret),
             new KeyValuePair<string, string>("code_verifier", codeVerifier)
             // Client Secret might be needed depending on app type registered in Bungie
         });
