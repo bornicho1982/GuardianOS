@@ -20,8 +20,10 @@ public partial class ItemControl : UserControl
             var dragData = new DataObject();
             dragData.Set("InventoryItem", item);
 
-            // Initiate Drag
+            // Initiate Drag (Obsolete but Async replacement requires IDataTransfer refactor)
+#pragma warning disable CS0618
             await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
+#pragma warning restore CS0618
         }
     }
 }

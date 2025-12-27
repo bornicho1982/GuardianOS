@@ -30,6 +30,9 @@ public class InventoryViewModel : ViewModelBase
     // Design-time constructor
     public InventoryViewModel() 
     {
+        _inventoryService = null!;
+        _smartMoveService = null!;
+        RefreshCommand = null!;
     }
 
     private async Task RefreshInventory()

@@ -25,9 +25,24 @@ public partial class App : Application
             var manifestService = new ManifestDatabase();
             var inventoryService = new InventoryService(authService, manifestService);
             var smartMoveService = new SmartMoveService(inventoryService);
+            var buildCopilotService = new Traveler.AI.Services.BuildCopilotService(inventoryService, manifestService);
             
             var inventoryVm = new InventoryViewModel(inventoryService, smartMoveService);
-            var dashboardVm = new DashboardViewModel(inventoryVm);
+            var loadoutsVm = new LoadoutsViewModel();
+            var buildVm = new BuildArchitectViewModel(buildCopilotService);
+            var vendorsVm = new VendorsViewModel();
+            var triumphsVm = new TriumphsViewModel();
+            var organizerVm = new OrganizerViewModel();
+            var settingsVm = new SettingsViewModel();
+
+            var dashboardVm = new DashboardViewModel(
+                inventoryVm, 
+                loadoutsVm, 
+                buildVm, 
+                vendorsVm, 
+                triumphsVm, 
+                organizerVm, 
+                settingsVm);
 
             desktop.MainWindow = new MainWindow
             {

@@ -55,7 +55,7 @@ public class BuildCopilotService : IBuildCopilotService
         var keywords = userQuery.Split(' ').Where(w => w.Length > 4).Take(2).ToList();
         
         // 2. RAG: Search Manifest
-        var searchResults = System.Collections.Generic.Enumerable.Empty<string>();
+        var searchResults = Enumerable.Empty<string>();
         if (keywords.Any())
         {
              // Taking first keyword for simplicity of the SQL LIKE

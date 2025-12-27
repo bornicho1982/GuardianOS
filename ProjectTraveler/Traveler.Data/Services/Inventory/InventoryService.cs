@@ -78,8 +78,23 @@ public class InventoryService : IInventoryService
         // MAPPING LOGIC EXAMPLE
         // MapToInventoryItem(destinyItem, itemInstance);
         
-        await Task.Delay(100); // Simulate network
-        Console.WriteLine("RefreshInventoryAsync called - logic pending real API connection setup.");
+        Console.WriteLine("RefreshInventoryAsync called - generating MOCK DATA for verification.");
+        
+        // Mock Data for UI Verification
+        AllItems.Clear();
+        var mockItems = new List<InventoryItem>
+        {
+            new InventoryItem { Name = "Gjallarhorn", PowerLevel = 1810, ItemType = "Rocket Launcher", IsExotic = true, ItemHash = 12345, InstanceId = 1 },
+            new InventoryItem { Name = "Fatebringer", PowerLevel = 1800, ItemType = "Hand Cannon", IsExotic = false, ItemHash = 67890, InstanceId = 2 },
+            new InventoryItem { Name = "Celestial Nighthawk", PowerLevel = 1805, ItemType = "Helmet", IsExotic = true, ItemHash = 11111, InstanceId = 3 },
+            new InventoryItem { Name = "Ikelos_SMG_v1.0.3", PowerLevel = 1800, ItemType = "Submachine Gun", IsExotic = false, ItemHash = 22222, InstanceId = 4 },
+            new InventoryItem { Name = "Apex Predator", PowerLevel = 1810, ItemType = "Rocket Launcher", IsExotic = false, ItemHash = 33333, InstanceId = 5 }
+        };
+
+        // Duplicate for volume
+        foreach(var item in mockItems) AllItems.Add(item);
+        foreach(var item in mockItems) AllItems.Add(item with { InstanceId = item.InstanceId + 100 }); 
+        foreach(var item in mockItems) AllItems.Add(item with { InstanceId = item.InstanceId + 200 });
     }
 
     private async Task<InventoryItem> MapToInventoryItem(DestinyItemComponent item, DestinyItemInstanceComponent instance)
