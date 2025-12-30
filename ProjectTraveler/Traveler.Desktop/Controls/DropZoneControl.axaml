@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Traveler.Desktop.Controls.DropZoneControl"
+             DragDrop.AllowDrop="True"
+             Background="Transparent">
+    
+    <Border x:Name="DropBorder" 
+            Background="Transparent" 
+            BorderThickness="2" 
+            BorderBrush="Transparent"
+            CornerRadius="4"
+            MinHeight="50"
+            MinWidth="100">
+        <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+    </Border>
+</UserControl>

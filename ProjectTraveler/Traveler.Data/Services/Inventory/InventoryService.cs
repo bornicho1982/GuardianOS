@@ -36,6 +36,16 @@ public class InventoryService : IInventoryService
 
     public ObservableCollection<InventoryItem> AllItems { get; } = new();
     
+    /// <summary>
+    /// List of all characters for the current account.
+    /// </summary>
+    public ObservableCollection<CharacterInfo> Characters { get; } = new();
+    
+    /// <summary>
+    /// Event fired when inventory refresh is complete.
+    /// </summary>
+    public event Action? InventoryRefreshed;
+    
     public int MembershipType { get; private set; }
     public long DestinyMembershipId { get; private set; }
     public List<long> CharacterIds { get; private set; } = new();
@@ -61,12 +71,16 @@ public class InventoryService : IInventoryService
     public async Task RefreshInventoryAsync()
     {
         Console.WriteLine("[InventoryService] RefreshInventoryAsync called");
+        Console.WriteLine($"[InventoryService] Auth state: IsAuthenticated={_authService.IsAuthenticated}, MembershipId={_authService.DestinyMembershipId}");
         
-        if (DestinyMembershipId == 0 || !_authService.IsAuthenticated)
+        if (_authService.DestinyMembershipId == 0 || !_authService.IsAuthenticated)
         {
-            Console.WriteLine("[InventoryService] Not authenticated - using MOCK DATA");
-            LoadMockData();
-            return;
+            Console.WriteLine("[InventoryService] Not authenticated - cannot refresh inventory");
+            AllItems.Clear();
+            Characters.Clear();
+            CharacterIds.Clear();
+            InventoryRefreshed?.Invoke(); // Notify UI of the empty state
+            return; // Graceful return instead of throw
         }
 
         try
@@ -75,8 +89,10 @@ public class InventoryService : IInventoryService
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
 
             // Fetch profile with required components
+            var membershipType = (int)_authService.DestinyMembershipType;
+            var membershipId = _authService.DestinyMembershipId;
             var components = "100,102,200,201,205,300,304,305"; // Profiles, Inventories, Characters, Equipment, Instances, Stats, Sockets
-            var url = $"{BaseUrl}/Destiny2/{MembershipType}/Profile/{DestinyMembershipId}/?components={components}";
+            var url = $"{BaseUrl}/Destiny2/{membershipType}/Profile/{membershipId}/?components={components}";
             
             Console.WriteLine($"[InventoryService] Fetching: {url}");
             var response = await _httpClient.GetAsync(url);
@@ -84,8 +100,9 @@ public class InventoryService : IInventoryService
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine($"[InventoryService] API Error: {response.StatusCode}");
-                LoadMockData();
-                return;
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"[InventoryService] Error response: {errorContent}");
+                throw new HttpRequestException($"API Error: {response.StatusCode}");
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -95,14 +112,21 @@ public class InventoryService : IInventoryService
             if (!root.TryGetProperty("Response", out var profileResponse))
             {
                 Console.WriteLine("[InventoryService] No Response in API data");
-                LoadMockData();
-                return;
+                throw new InvalidOperationException("Invalid API response: No 'Response' property found");
             }
 
             AllItems.Clear();
             CharacterIds.Clear();
+            Characters.Clear();
+            
+            // Parse characters (class, race, stats, power level)
+            if (profileResponse.TryGetProperty("characters", out var characters) &&
+                characters.TryGetProperty("data", out var charData))
+            {
+                ParseCharacters(charData);
+            }
 
-            // Parse item instances (for power level)
+            // Parse item instances (for power level and damage type)
             var instances = new Dictionary<long, JsonElement>();
             if (profileResponse.TryGetProperty("itemComponents", out var itemComp) &&
                 itemComp.TryGetProperty("instances", out var inst) &&
@@ -115,13 +139,66 @@ public class InventoryService : IInventoryService
                 }
             }
 
+            // Parse item stats (Component 304)
+            var itemStats = new Dictionary<long, Dictionary<uint, int>>();
+            if (itemComp.ValueKind != JsonValueKind.Undefined && 
+                itemComp.TryGetProperty("stats", out var statsComp) &&
+                statsComp.TryGetProperty("data", out var statsData))
+            {
+                foreach (var prop in statsData.EnumerateObject())
+                {
+                    if (long.TryParse(prop.Name, out var id))
+                    {
+                        var statsDict = new Dictionary<uint, int>();
+                        if (prop.Value.TryGetProperty("stats", out var statsObj))
+                        {
+                            foreach (var statProp in statsObj.EnumerateObject())
+                            {
+                                if (uint.TryParse(statProp.Name, out var statHash) && 
+                                    statProp.Value.TryGetProperty("value", out var statVal))
+                                {
+                                    statsDict[statHash] = statVal.GetInt32();
+                                }
+                            }
+                        }
+                        itemStats[id] = statsDict;
+                    }
+                }
+            }
+
+            // Parse item sockets (Component 305)
+            var itemSockets = new Dictionary<long, List<uint>>();
+            if (itemComp.ValueKind != JsonValueKind.Undefined && 
+                itemComp.TryGetProperty("sockets", out var socketsComp) &&
+                socketsComp.TryGetProperty("data", out var socketsData))
+            {
+                foreach (var prop in socketsData.EnumerateObject())
+                {
+                    if (long.TryParse(prop.Name, out var id))
+                    {
+                        var plugs = new List<uint>();
+                        if (prop.Value.TryGetProperty("sockets", out var socketList))
+                        {
+                            foreach (var socket in socketList.EnumerateArray())
+                            {
+                                if (socket.TryGetProperty("plugHash", out var plugHash))
+                                {
+                                    plugs.Add(plugHash.GetUInt32());
+                                }
+                            }
+                        }
+                        itemSockets[id] = plugs;
+                    }
+                }
+            }
+
             // Parse vault items (profileInventory)
             if (profileResponse.TryGetProperty("profileInventory", out var vault) &&
                 vault.TryGetProperty("data", out var vaultData) &&
                 vaultData.TryGetProperty("items", out var vaultItems))
             {
                 Console.WriteLine($"[InventoryService] Processing vault items");
-                await ProcessItemsAsync(vaultItems, instances, "vault");
+                await ProcessItemsAsync(vaultItems, instances, itemStats, itemSockets, "vault");
             }
 
             // Parse character inventories
@@ -137,7 +214,7 @@ public class InventoryService : IInventoryService
                     if (charProp.Value.TryGetProperty("items", out var items))
                     {
                         Console.WriteLine($"[InventoryService] Processing character {charId} inventory");
-                        await ProcessItemsAsync(items, instances, charId);
+                        await ProcessItemsAsync(items, instances, itemStats, itemSockets, charId);
                     }
                 }
             }
@@ -152,21 +229,95 @@ public class InventoryService : IInventoryService
                     if (charProp.Value.TryGetProperty("items", out var items))
                     {
                         Console.WriteLine($"[InventoryService] Processing character {charId} equipment");
-                        await ProcessItemsAsync(items, instances, charId, isEquipped: true);
+                        await ProcessItemsAsync(items, instances, itemStats, itemSockets, charId, isEquipped: true);
                     }
                 }
             }
 
             Console.WriteLine($"[InventoryService] Total items loaded: {AllItems.Count}");
+            InventoryRefreshed?.Invoke();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[InventoryService] Exception: {ex.Message}");
-            LoadMockData();
+            Console.WriteLine($"[InventoryService] Stack: {ex.StackTrace}");
+            throw; // Re-throw to let caller handle
         }
     }
 
-    private async Task ProcessItemsAsync(JsonElement items, Dictionary<long, JsonElement> instances, string location, bool isEquipped = false)
+    private void ParseCharacters(JsonElement charData)
+    {
+        foreach (var prop in charData.EnumerateObject())
+        {
+            var character = prop.Value;
+            var charIdStr = prop.Name;
+            
+            if (!long.TryParse(charIdStr, out var charId)) continue;
+
+            // Class Type (0: Titan, 1: Hunter, 2: Warlock)
+            var classType = character.TryGetProperty("classType", out var ct) ? ct.GetInt32() : 0;
+            var className = classType switch { 0 => "Titan", 1 => "Hunter", 2 => "Warlock", _ => "Guardian" };
+
+            // Race (0: Human, 1: Awoken, 2: Exo)
+            var raceType = character.TryGetProperty("raceType", out var rt) ? rt.GetInt32() : 0;
+            var raceName = raceType switch { 0 => "Human", 1 => "Awoken", 2 => "Exo", _ => "Unknown" };
+
+            // Gender (0: Male, 1: Female)
+            var genderType = character.TryGetProperty("genderType", out var gt) ? gt.GetInt32() : 0;
+            // var genderName = genderType == 0 ? "Male" : "Female";
+
+            // Light Level
+            var light = character.TryGetProperty("light", out var l) ? l.GetInt32() : 0;
+
+            // Stats
+            var mobility = 0;
+            var resilience = 0;
+            var recovery = 0;
+            var discipline = 0;
+            var intellect = 0;
+            var strength = 0;
+
+            if (character.TryGetProperty("stats", out var stats))
+            {
+                mobility = stats.TryGetProperty(StatHashes.Mobility.ToString(), out var s1) ? s1.GetInt32() : 0;
+                resilience = stats.TryGetProperty(StatHashes.Resilience.ToString(), out var s2) ? s2.GetInt32() : 0;
+                recovery = stats.TryGetProperty(StatHashes.Recovery.ToString(), out var s3) ? s3.GetInt32() : 0;
+                discipline = stats.TryGetProperty(StatHashes.Discipline.ToString(), out var s4) ? s4.GetInt32() : 0;
+                intellect = stats.TryGetProperty(StatHashes.Intellect.ToString(), out var s5) ? s5.GetInt32() : 0;
+                strength = stats.TryGetProperty(StatHashes.Strength.ToString(), out var s6) ? s6.GetInt32() : 0;
+            }
+
+            // Emblem
+            var emblemPath = character.TryGetProperty("emblemPath", out var ep) ? ep.GetString() : "";
+            var emblemBackgroundPath = character.TryGetProperty("emblemBackgroundPath", out var ebp) ? ebp.GetString() : "";
+
+            var charInfo = new CharacterInfo
+            {
+                CharacterId = charId,
+                ClassName = className,
+                RaceName = raceName,
+                LightLevel = light,
+                EmblemPath = emblemPath ?? "",
+                EmblemBackgroundPath = emblemBackgroundPath ?? "",
+                Mobility = mobility,
+                Resilience = resilience,
+                Recovery = recovery,
+                Discipline = discipline,
+                Intellect = intellect,
+                Strength = strength
+            };
+
+            Characters.Add(charInfo);
+        }
+    }
+
+    private async Task ProcessItemsAsync(
+        JsonElement items, 
+        Dictionary<long, JsonElement> instances, 
+        Dictionary<long, Dictionary<uint, int>> itemStats,
+        Dictionary<long, List<uint>> itemSockets,
+        string location, 
+        bool isEquipped = false)
     {
         foreach (var item in items.EnumerateArray())
         {
@@ -178,9 +329,16 @@ public class InventoryService : IInventoryService
                 var instanceId = item.TryGetProperty("itemInstanceId", out var instIdProp) 
                     ? long.Parse(instIdProp.GetString() ?? "0") 
                     : 0;
+                
+                var bucketHash = item.TryGetProperty("bucketHash", out var bucketProp) 
+                    ? bucketProp.GetUInt32() 
+                    : 0;
 
-                // Get power level from instances
                 var powerLevel = 0;
+                uint damageTypeHash = 0;
+                int damageType = 0;
+                int energyCapacity = 0;
+                
                 if (instanceId > 0 && instances.TryGetValue(instanceId, out var instData))
                 {
                     if (instData.TryGetProperty("primaryStat", out var ps) && 
@@ -188,31 +346,130 @@ public class InventoryService : IInventoryService
                     {
                         powerLevel = psVal.GetInt32();
                     }
+                    if (instData.TryGetProperty("damageTypeHash", out var dmgHashProp))
+                    {
+                        damageTypeHash = dmgHashProp.GetUInt32();
+                    }
+                    if (instData.TryGetProperty("damageType", out var dmgTypeProp))
+                    {
+                        damageType = dmgTypeProp.GetInt32();
+                    }
+                    if (instData.TryGetProperty("energy", out var energyComp) && 
+                        energyComp.TryGetProperty("energyCapacity", out var ec))
+                    {
+                        energyCapacity = ec.GetInt32();
+                    }
+                }
+                
+                if (damageTypeHash == 0 && item.TryGetProperty("damageTypeHash", out var itemDmgHash))
+                {
+                     damageTypeHash = itemDmgHash.GetUInt32();
                 }
 
-                // Get locked state
+                var stats = new Dictionary<uint, int>();
+                if (instanceId > 0 && itemStats.TryGetValue(instanceId, out var s))
+                {
+                    stats = s;
+                }
+
+                // Sockets parsing (Mods, Archetypes, Masterwork)
+                var socketIcons = new List<string>();
+                var abilityIcons = new List<string>();
+                string archetype = "", archetypeIcon = "";
+                int masterworkLevel = 0;
+
+                if (isEquipped && instanceId > 0 && itemSockets.TryGetValue(instanceId, out var plugs))
+                {
+                    foreach (var plugHash in plugs)
+                    {
+                        var plugDef = await GetItemDefinitionFromManifestAsync(plugHash);
+                        if (plugDef != null)
+                        {
+                            // Masterwork Tier Detection - multiple patterns
+                            if (!string.IsNullOrEmpty(plugDef.Name))
+                            {
+                                // Pattern 1: "Tier X" (old style)
+                                if (plugDef.Name.StartsWith("Tier ") && int.TryParse(plugDef.Name.Replace("Tier ", ""), out var tier))
+                                {
+                                    masterworkLevel = tier;
+                                    Console.WriteLine($"[MW] Found masterwork Tier {tier}: {plugDef.Name}");
+                                }
+                                // Pattern 2: Check if it's a masterwork plug by type
+                                else if (plugDef.ItemType?.Contains("Masterwork") == true)
+                                {
+                                    masterworkLevel = 10; // Assume max masterwork
+                                    Console.WriteLine($"[MW] Found masterwork by type: {plugDef.Name} ({plugDef.ItemType})");
+                                }
+                            }
+                            
+                            // Pattern 3: uiPlugLabel = "masterwork" (modern detection)
+                            if (plugDef.UiPlugLabel?.ToLower() == "masterwork")
+                            {
+                                masterworkLevel = 10; // Masterwork detected via label
+                                Console.WriteLine($"[MW] Found masterwork via uiPlugLabel: {plugDef.Name}");
+                            }
+
+                            if (!string.IsNullOrEmpty(plugDef.Icon))
+                            {
+                                // Archetype (Intrinsic)
+                                if (plugDef.ItemType == "Intrinsic Trait" || plugDef.ItemType == "Archetype")
+                                {
+                                    archetype = plugDef.Name ?? "";
+                                    archetypeIcon = plugDef.Icon;
+                                }
+                                // Abilities (Subclass)
+                                else if (location != "vault" && bucketHash == 3284755031) // Subclass
+                                {
+                                    abilityIcons.Add(plugDef.Icon);
+                                }
+                                // Mods (Armor)
+                                else if (!string.IsNullOrEmpty(plugDef.ItemType) && plugDef.ItemType.Contains("Mod"))
+                                {
+                                    socketIcons.Add(plugDef.Icon);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 var state = item.TryGetProperty("state", out var stateProp) ? stateProp.GetInt32() : 0;
-                var isLocked = (state & 1) != 0; // ItemState.Locked = 1
+                var isLocked = (state & 1) != 0;
 
-                // Get definition from manifest
-                var definition = await GetItemDefinitionAsync(itemHash);
-                if (definition == null) continue;
-
+                var definition = await GetItemDefinitionFromManifestAsync(itemHash);
+                
                 AllItems.Add(new InventoryItem
                 {
                     ItemHash = itemHash,
                     InstanceId = instanceId,
-                    Name = definition.Name ?? "Unknown",
-                    Icon = definition.Icon ?? "",
-                    ItemType = definition.ItemType ?? "",
-                    TierType = definition.TierType ?? "",
+                    Name = definition?.Name ?? $"Item #{itemHash}",
+                    Icon = definition?.Icon ?? "",
+                    ItemType = definition?.ItemType ?? "Unknown",
+                    TierType = definition?.TierType ?? "Unknown",
                     PowerLevel = powerLevel,
-                    IsExotic = definition.IsExotic,
-                    IsArtifice = definition.IsArtifice,
-                    IsTier5 = definition.IsTier5,
+                    PrimaryStatValue = powerLevel,
+                    IsExotic = definition?.IsExotic ?? false,
+                    IsArtifice = definition?.IsArtifice ?? false,
+                    IsTier5 = definition?.IsTier5 ?? false,
                     IsLocked = isLocked,
                     Location = location,
-                    IsEquipped = isEquipped
+                    IsEquipped = isEquipped,
+                    BucketHash = bucketHash,
+                    DamageTypeHash = damageTypeHash,
+                    Stats = stats,
+                    Archetype = archetype,
+                    ArchetypeIcon = archetypeIcon,
+                    SocketIcons = socketIcons,
+                    AbilityIcons = abilityIcons,
+                    // Phase 5: New Properties
+                    WatermarkIconUrl = definition?.IconWatermark ?? "",
+                    AmmoType = definition?.AmmoType ?? 0,
+                    MasterworkLevel = masterworkLevel,
+                    
+                    // Phase 6
+                    EnergyCapacity = energyCapacity,
+                    DamageType = damageType,
+                    DamageTypeIcon = GetDamageTypeIcon(damageType, definition)
+
                 });
             }
             catch (Exception ex)
@@ -222,39 +479,27 @@ public class InventoryService : IInventoryService
         }
     }
 
-    private async Task<ItemDefinition?> GetItemDefinitionAsync(uint hash)
+    private async Task<ItemDefinition?> GetItemDefinitionFromManifestAsync(uint hash)
     {
         try
         {
-            var json = await _manifestDatabase.GetItemName(hash);
-            if (string.IsNullOrEmpty(json)) return null;
-
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            var name = "";
-            var icon = "";
-            if (root.TryGetProperty("displayProperties", out var dp))
-            {
-                name = dp.TryGetProperty("name", out var n) ? n.GetString() ?? "" : "";
-                icon = dp.TryGetProperty("icon", out var i) ? i.GetString() ?? "" : "";
-            }
-
-            var itemType = root.TryGetProperty("itemTypeDisplayName", out var itd) ? itd.GetString() ?? "" : "";
-            
-            var tierType = 0;
-            if (root.TryGetProperty("inventory", out var inv) && inv.TryGetProperty("tierType", out var tt))
-                tierType = tt.GetInt32();
+            // Use the new ManifestDatabase API
+            var def = await _manifestDatabase.GetItemDefinitionAsync(hash);
+            if (def == null) return null;
 
             return new ItemDefinition
             {
-                Name = name,
-                Icon = icon,
-                ItemType = itemType,
-                TierType = tierType == 6 ? "Exotic" : tierType == 5 ? "Legendary" : "Other",
-                IsExotic = tierType == 6,
+                Name = def.Name,
+                Icon = def.Icon ?? "",
+                ItemType = def.ItemType,
+                TierType = def.TierType == 6 ? "Exotic" : def.TierType == 5 ? "Legendary" : "Other",
+                IsExotic = def.IsExotic,
                 IsArtifice = false,
-                IsTier5 = false
+                IsTier5 = false,
+                // Phase 5 mapping
+                IconWatermark = def.IconWatermark,
+                AmmoType = def.AmmoType,
+                UiPlugLabel = def.UiPlugLabel // For masterwork detection
             };
         }
         catch
@@ -263,29 +508,21 @@ public class InventoryService : IInventoryService
         }
     }
 
-    private void LoadMockData()
+    // LoadMockData has been removed - using real API only
+
+     private string GetDamageTypeIcon(int type, ItemDefinition? def)
     {
-        Console.WriteLine("[InventoryService] Loading MOCK DATA");
-        AllItems.Clear();
-
-        var mockItems = new List<InventoryItem>
+        // 1: Kinetic, 2: Arc, 3: Solar, 4: Void, 5: Raid, 6: Stasis, 7: Strand
+        return type switch
         {
-            new() { Name = "Gjallarhorn", PowerLevel = 1810, ItemType = "Rocket Launcher", IsExotic = true, ItemHash = 12345, InstanceId = 1, Location = "vault" },
-            new() { Name = "Fatebringer", PowerLevel = 1800, ItemType = "Hand Cannon", IsExotic = false, ItemHash = 67890, InstanceId = 2, Location = "vault" },
-            new() { Name = "Celestial Nighthawk", PowerLevel = 1805, ItemType = "Helmet", IsExotic = true, ItemHash = 11111, InstanceId = 3, Location = "vault",
-                Stats = new Dictionary<uint, int> { { StatHashes.Mobility, 24 }, { StatHashes.Resilience, 16 }, { StatHashes.Recovery, 18 },
-                    { StatHashes.Discipline, 20 }, { StatHashes.Intellect, 22 }, { StatHashes.Strength, 10 } } },
-            new() { Name = "Ikelos_SMG_v1.0.3", PowerLevel = 1800, ItemType = "Submachine Gun", IsExotic = false, ItemHash = 22222, InstanceId = 4, Location = "vault" },
-            new() { Name = "Apex Predator", PowerLevel = 1810, ItemType = "Rocket Launcher", IsExotic = false, ItemHash = 33333, InstanceId = 5, Location = "vault" },
-            new() { Name = "Lorely Splendor", PowerLevel = 1805, ItemType = "Helmet", IsExotic = true, ItemHash = 44444, InstanceId = 6, Location = "char1",
-                Stats = new Dictionary<uint, int> { { StatHashes.Mobility, 10 }, { StatHashes.Resilience, 30 }, { StatHashes.Recovery, 6 },
-                    { StatHashes.Discipline, 16 }, { StatHashes.Intellect, 6 }, { StatHashes.Strength, 20 } } },
-            new() { Name = "Cuirass of the Falling Star", PowerLevel = 1808, ItemType = "Chest Armor", IsExotic = true, ItemHash = 55555, InstanceId = 7, Location = "char1", IsArtifice = true },
-            new() { Name = "Artifice Gauntlets", PowerLevel = 1800, ItemType = "Gauntlets", IsExotic = false, ItemHash = 66666, InstanceId = 8, Location = "vault", IsArtifice = true, IsTier5 = true },
+            1 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_kinetic.png", 
+            2 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_arc.png",
+            3 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_thermal.png", // Solar is often 'thermal' in filenames
+            4 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_void.png",
+            6 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_stasis.png",
+            7 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_strand.png",
+            _ => ""
         };
-
-        foreach (var item in mockItems)
-            AllItems.Add(item);
     }
 
     private record ItemDefinition
@@ -297,5 +534,8 @@ public class InventoryService : IInventoryService
         public bool IsExotic { get; init; }
         public bool IsArtifice { get; init; }
         public bool IsTier5 { get; init; }
+        public string? IconWatermark { get; init; }
+        public int AmmoType { get; init; }
+        public string? UiPlugLabel { get; init; } // For masterwork detection
     }
 }

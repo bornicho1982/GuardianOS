@@ -12,6 +12,41 @@
       
       <TextBlock Text="Settings" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
       
+      <!-- Bungie Account Section -->
+      <Border Background="#2D2D30" CornerRadius="8" Padding="16">
+        <StackPanel Spacing="16">
+          <TextBlock Text="BUNGIE ACCOUNT" FontWeight="SemiBold" Foreground="Gray"/>
+          
+          <!-- Not Logged In State -->
+          <StackPanel IsVisible="{Binding !IsLoggedIn}" Spacing="12">
+            <TextBlock Text="Connect your Bungie.net account to access your real inventory." 
+                       TextWrapping="Wrap" FontSize="13" Foreground="#AAA"/>
+            <Button Content="Login with Bungie" 
+                    Command="{Binding LoginCommand}"
+                    IsEnabled="{Binding !IsLoggingIn}"
+                    HorizontalAlignment="Left"
+                    FontWeight="SemiBold"
+                    Background="#1A73E8"
+                    Padding="16,10"/>
+            <TextBlock Text="Logging in..." 
+                       IsVisible="{Binding IsLoggingIn}" 
+                       Foreground="Orange"/>
+          </StackPanel>
+          
+          <!-- Logged In State -->
+          <StackPanel IsVisible="{Binding IsLoggedIn}" Spacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="✓" Foreground="LightGreen" FontSize="16"/>
+              <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+            </StackPanel>
+            <Button Content="Logout" 
+                    Command="{Binding LogoutCommand}"
+                    HorizontalAlignment="Left"/>
+          </StackPanel>
+          
+        </StackPanel>
+      </Border>
+      
       <!-- Appearance Section -->
       <Border Background="#2D2D30" CornerRadius="8" Padding="16">
         <StackPanel Spacing="16">

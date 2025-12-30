@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="using:Traveler.Core.Models"
+             xmlns:asyncImageLoader="using:AsyncImageLoader"
+             x:Class="Traveler.Desktop.Controls.CharacterHeader"
+             x:DataType="models:CharacterInfo"
+             Width="200" Height="85">
+    
+    <!-- DIM-style Character Header Tile -->
+    <Border CornerRadius="4" ClipToBounds="True" Background="#1E1E20">
+        <Grid>
+            <!-- Emblem Background -->
+            <asyncImageLoader:AdvancedImage Source="{Binding EmblemBackgroundUrl}" Stretch="UniformToFill" Opacity="0.8"/>
+            
+            <!-- Dark Overlay for Readability -->
+            <Border Background="#50000000"/>
+            
+            <!-- Content -->
+            <Grid Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Top: Class Name with Icon -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6">
+                    <TextBlock Text="{Binding ClassIcon}" FontSize="14"/>
+                    <TextBlock Text="{Binding ClassName}" FontSize="14" FontWeight="Bold" Foreground="White"/>
+                </StackPanel>
+                
+                <!-- Middle: Power Level -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
+                    <TextBlock Text="⚡" FontSize="18" Foreground="#EBC805"/>
+                    <TextBlock Text="{Binding LightLevel}" FontSize="28" FontWeight="Bold" Foreground="#EBC805"/>
+                </StackPanel>
+                
+                <!-- Bottom: Race/Gender -->
+                <TextBlock Grid.Row="2" Text="{Binding RaceName}" FontSize="10" Foreground="#888" VerticalAlignment="Bottom"/>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

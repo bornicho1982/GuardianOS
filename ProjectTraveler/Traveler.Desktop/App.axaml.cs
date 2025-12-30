@@ -30,7 +30,39 @@ public partial class App : Application
             var authService = new BungieAuthService();
             var manifestService = new ManifestDatabase();
             var settingsService = new SettingsService();
-            _ = settingsService.LoadAsync(); // Fire and forget load
+            
+            // Initialize async services (fire-and-forget with console logging)
+            _ = Task.Run(async () => 
+            {
+                try 
+                {
+                    await manifestService.InitializeAsync();
+                    Console.WriteLine("[App] Manifest initialized successfully");
+                    
+                    // Debug: Print stat icons from manifest
+                    var statHashes = new Dictionary<string, uint>
+                    {
+                        { "Mobility/Weapons", 2996146975 },
+                        { "Resilience/Health", 392767087 },
+                        { "Recovery/Class", 1943323491 },
+                        { "Discipline/Grenade", 1735777505 },
+                        { "Intellect/Super", 144602215 },
+                        { "Strength/Melee", 4244567218 }
+                    };
+                    
+                    Console.WriteLine("[DEBUG] Stat Icons from Manifest:");
+                    foreach (var stat in statHashes)
+                    {
+                        var icon = await manifestService.GetStatIconAsync(stat.Value);
+                        Console.WriteLine($"  {stat.Key} ({stat.Value}): {icon ?? "null"}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[App] Manifest initialization failed: {ex.Message}");
+                }
+            });
+            _ = settingsService.LoadAsync();
             
             // Inventory Layer
             var inventoryService = new InventoryService(authService, manifestService);
@@ -47,7 +79,7 @@ public partial class App : Application
             // ===== VIEW MODELS =====
             
             // Dashboard Home (Landing Page)
-            var dashboardHomeVm = new DashboardHomeViewModel(inventoryService);
+            var dashboardHomeVm = new DashboardHomeViewModel(inventoryService, authService);
             
             // Main Views
             var inventoryVm = new InventoryViewModel(inventoryService, smartMoveService);
@@ -63,7 +95,7 @@ public partial class App : Application
             var triumphsVm = new TriumphsViewModel(triumphsService);
             
             // Settings
-            var settingsVm = new SettingsViewModel(settingsService);
+            var settingsVm = new SettingsViewModel(settingsService, authService, inventoryService);
 
             // Dashboard (Navigation Shell)
             var dashboardVm = new DashboardViewModel(

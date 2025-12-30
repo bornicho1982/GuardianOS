@@ -12,6 +12,7 @@ using DotNetBungieAPI;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Service.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Traveler.Data.Auth;
 
@@ -26,7 +27,7 @@ public class BungieAuthService
     public const string ApiKey = "e1a73d9d631a46a8b7e2b6e37ae30492";
 
     private const string RedirectUrl = "https://localhost:55555/callback/";
-    private const string ListenerPrefix = "http://localhost:55555/callback/";
+    private const string ListenerPrefix = "https://localhost:55555/callback/";
     private const string AuthUrl = "https://www.bungie.net/en/OAuth/Authorize";
     private const string TokenUrl = "https://www.bungie.net/Platform/App/OAuth/token/";
     private const string MembershipsUrl = "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/";
@@ -85,7 +86,8 @@ public class BungieAuthService
 
             AccessToken = tokenData.access_token;
             RefreshToken = tokenData.refresh_token;
-            BungieMembershipId = tokenData.membership_id;
+            _ = long.TryParse(tokenData.membership_id, out var membershipId);
+            BungieMembershipId = membershipId;
             TokenExpiry = DateTime.UtcNow.AddSeconds(tokenData.expires_in);
 
             Console.WriteLine($"[BungieAuth] Token obtained. Expires: {TokenExpiry}");
@@ -107,23 +109,34 @@ public class BungieAuthService
 
     private async Task InitializeBungieClientAsync()
     {
-        // Build service collection for DotNetBungieAPI
-        var services = new ServiceCollection();
-        
-        services.UseBungieApiClient(config =>
+        // Note: DotNetBungieAPI client initialization is optional
+        // We use direct HttpClient calls for most operations
+        // This is here for future use if needed
+        try
         {
-            config.ClientConfiguration.ApiKey = ApiKey;
-            config.ClientConfiguration.ClientId = int.Parse(ClientId);
-            config.ClientConfiguration.ClientSecret = ClientSecret;
-        });
+            var services = new ServiceCollection();
+            
+            // Add required logging
+            services.AddLogging();
+            
+            services.UseBungieApiClient(config =>
+            {
+                config.ClientConfiguration.ApiKey = ApiKey;
+                config.ClientConfiguration.ClientId = int.Parse(ClientId);
+                config.ClientConfiguration.ClientSecret = ClientSecret;
+            });
 
-        var provider = services.BuildServiceProvider();
-        _bungieClient = provider.GetRequiredService<IBungieClient>();
-        
-        // Set the access token for authenticated requests
-        // Note: DotNetBungieAPI handles token internally, but we need to set it
-        // This might require custom token provider implementation
-        Console.WriteLine("[BungieAuth] BungieClient initialized");
+            var provider = services.BuildServiceProvider();
+            _bungieClient = provider.GetRequiredService<IBungieClient>();
+            
+            Console.WriteLine("[BungieAuth] BungieClient initialized (optional)");
+        }
+        catch (Exception ex)
+        {
+            // Non-fatal: we can still use HttpClient directly
+            Console.WriteLine($"[BungieAuth] BungieClient init skipped (using HttpClient): {ex.Message}");
+            _bungieClient = null;
+        }
     }
 
     private async Task ResolveMembershipAsync()
@@ -173,32 +186,65 @@ public class BungieAuthService
         var codeChallenge = GenerateCodeChallenge(codeVerifier);
         var state = Guid.NewGuid().ToString();
 
-        var authorizationRequest = $"{AuthUrl}?client_id={ClientId}&response_type=code&state={state}&code_challenge={codeChallenge}&code_challenge_method=S256";
+        // Include redirect_uri in the authorization request
+        var encodedRedirect = Uri.EscapeDataString(RedirectUrl);
+        var authorizationRequest = $"{AuthUrl}?client_id={ClientId}&response_type=code&state={state}&code_challenge={codeChallenge}&code_challenge_method=S256&redirect_uri={encodedRedirect}";
 
-        using var listener = new HttpListener();
-        listener.Prefixes.Add(ListenerPrefix);
+        // Get the development certificate
+        var cert = GetDevelopmentCertificate();
+        if (cert == null)
+        {
+            throw new Exception("No se encontró el certificado de desarrollo HTTPS. Ejecuta: dotnet dev-certs https --trust");
+        }
+
+        // Start HTTPS server
+        var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 55555);
         listener.Start();
 
         try
         {
+            Console.WriteLine("[BungieAuth] Servidor HTTPS iniciado en puerto 55555");
+            
+            // Open browser
             Process.Start(new ProcessStartInfo
             {
                 FileName = authorizationRequest,
                 UseShellExecute = true
             });
 
-            var context = await listener.GetContextAsync();
-            var request = context.Request;
-            var response = context.Response;
+            // Accept connection
+            using var client = await listener.AcceptTcpClientAsync();
+            using var sslStream = new System.Net.Security.SslStream(client.GetStream(), false);
+            
+            // Authenticate as server with certificate
+            await sslStream.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13, false);
+            
+            Console.WriteLine("[BungieAuth] Conexión SSL establecida");
 
-            var code = request.QueryString["code"];
-            var incomingState = request.QueryString["state"];
+            // Read the HTTP request
+            var buffer = new byte[4096];
+            var bytesRead = await sslStream.ReadAsync(buffer, 0, buffer.Length);
+            var requestText = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            
+            Console.WriteLine($"[BungieAuth] Request recibido: {requestText.Split('\n')[0]}");
 
-            var responseString = "<html><body style='background:#111;color:#eee;font-family:sans-serif;'><h1>Traveler Connected</h1><p>You may close this window and return to the application.</p></body></html>";
-            var buffer = Encoding.UTF8.GetBytes(responseString);
-            response.ContentLength64 = buffer.Length;
-            response.OutputStream.Write(buffer, 0, buffer.Length);
-            response.OutputStream.Close();
+            // Parse query string from GET request
+            // Format: GET /callback/?code=xxx&state=yyy HTTP/1.1
+            var firstLine = requestText.Split('\n')[0];
+            var urlPart = firstLine.Split(' ')[1]; // /callback/?code=xxx&state=yyy
+            var queryString = urlPart.Contains('?') ? urlPart.Split('?')[1] : "";
+            var queryParams = System.Web.HttpUtility.ParseQueryString(queryString);
+            
+            var code = queryParams["code"];
+            var incomingState = queryParams["state"];
+
+            // Send HTTP response
+            var responseHtml = "<html><body style='background:#111;color:#eee;font-family:sans-serif;text-align:center;padding-top:100px;'><h1>✓ GuardianOS Conectado</h1><p>Puedes cerrar esta ventana y volver a la aplicación.</p></body></html>";
+            var responseBytes = Encoding.UTF8.GetBytes(
+                $"HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: {Encoding.UTF8.GetByteCount(responseHtml)}\r\nConnection: close\r\n\r\n{responseHtml}");
+            
+            await sslStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+            await sslStream.FlushAsync();
 
             if (incomingState != state)
                 throw new Exception("State mismatch - possible CSRF");
@@ -206,12 +252,46 @@ public class BungieAuthService
             if (string.IsNullOrEmpty(code))
                 throw new Exception("No code received from Bungie.");
 
+            Console.WriteLine("[BungieAuth] Código de autorización recibido, intercambiando por token...");
             return await ExchangeCodeForTokenAsync(code, codeVerifier);
         }
         finally
         {
             listener.Stop();
+            Console.WriteLine("[BungieAuth] Servidor HTTPS detenido");
         }
+    }
+
+    private System.Security.Cryptography.X509Certificates.X509Certificate2? GetDevelopmentCertificate()
+    {
+        // Look for the .NET development certificate in the current user's certificate store
+        using var store = new System.Security.Cryptography.X509Certificates.X509Store(
+            System.Security.Cryptography.X509Certificates.StoreName.My, 
+            System.Security.Cryptography.X509Certificates.StoreLocation.CurrentUser);
+        
+        store.Open(System.Security.Cryptography.X509Certificates.OpenFlags.ReadOnly);
+        
+        // Find certificates with the ASP.NET Core HTTPS development certificate OID
+        var certs = store.Certificates
+            .Find(System.Security.Cryptography.X509Certificates.X509FindType.FindByExtension, "1.3.6.1.4.1.311.84.1.1", false);
+        
+        if (certs.Count > 0)
+        {
+            Console.WriteLine($"[BungieAuth] Certificado de desarrollo encontrado: {certs[0].Subject}");
+            return certs[0];
+        }
+        
+        // Fallback: look for any localhost certificate
+        var localCerts = store.Certificates
+            .Find(System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectName, "localhost", false);
+        
+        if (localCerts.Count > 0)
+        {
+            Console.WriteLine($"[BungieAuth] Certificado localhost encontrado: {localCerts[0].Subject}");
+            return localCerts[0];
+        }
+        
+        return null;
     }
 
     private async Task<string> ExchangeCodeForTokenAsync(string code, string codeVerifier)
@@ -253,13 +333,92 @@ public class BungieAuthService
             .Replace("=", "");
     }
 
+    /// <summary>
+    /// Refreshes the access token using the stored refresh token.
+    /// </summary>
+    public async Task<bool> RefreshTokenAsync()
+    {
+        if (string.IsNullOrEmpty(RefreshToken))
+        {
+            Console.WriteLine("[BungieAuth] No refresh token available");
+            return false;
+        }
+
+        try
+        {
+            var requestBody = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("grant_type", "refresh_token"),
+                new KeyValuePair<string, string>("refresh_token", RefreshToken),
+                new KeyValuePair<string, string>("client_id", ClientId),
+                new KeyValuePair<string, string>("client_secret", ClientSecret)
+            });
+
+            var response = await _httpClient.PostAsync(TokenUrl, requestBody);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[BungieAuth] Token refresh failed: {response.StatusCode}");
+                return false;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var tokenData = JsonSerializer.Deserialize<TokenResponse>(json);
+            
+            if (tokenData == null)
+                return false;
+
+            AccessToken = tokenData.access_token;
+            RefreshToken = tokenData.refresh_token;
+            TokenExpiry = DateTime.UtcNow.AddSeconds(tokenData.expires_in);
+
+            // Update HTTP client header
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AccessToken);
+
+            Console.WriteLine($"[BungieAuth] Token refreshed. New expiry: {TokenExpiry}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[BungieAuth] Token refresh error: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Ensures we have a valid token, refreshing if necessary.
+    /// </summary>
+    public async Task<bool> EnsureValidTokenAsync()
+    {
+        if (string.IsNullOrEmpty(AccessToken))
+            return false;
+
+        // Refresh if token expires within 5 minutes
+        if (TokenExpiry <= DateTime.UtcNow.AddMinutes(5))
+        {
+            return await RefreshTokenAsync();
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the access token, refreshing if needed.
+    /// </summary>
+    public async Task<string?> GetAccessTokenAsync()
+    {
+        if (!await EnsureValidTokenAsync())
+            return null;
+        return AccessToken;
+    }
+
     // Token response DTO
     private class TokenResponse
     {
         public string access_token { get; set; } = "";
         public string refresh_token { get; set; } = "";
         public int expires_in { get; set; }
-        public long membership_id { get; set; }
+        public string membership_id { get; set; } = "";  // Bungie sends this as a string
     }
 }
 

@@ -1,0 +1,83 @@
+[InventoryService] RefreshInventoryAsync called
+[InventoryService] Auth state: IsAuthenticated=False, MembershipId=0
+[InventoryService] Not authenticated - using MOCK DATA
+[InventoryService] Loading MOCK DATA
+Error building triumph node 1024788583: SQLite Error 1: 'no such table: DestinyPresentationNodeDefinition'.
+Error building triumph node 1652422747: SQLite Error 1: 'no such table: DestinyPresentationNodeDefinition'.
+[Manifest] Downloading version 239845.25.12.11.1930-2-bnet.63145...
+[Manifest] Downloading from https://www.bungie.net/common/destiny2_content/sqlite/en/world_sql_content_237cb7b10acb995ee600376decdc38e1.content
+Settings loaded from C:\Users\borni\AppData\Local\GuardianOS\settings.json
+[App] Manifest initialization failed: Access to the path is denied.
+[BungieAuth] Certificado de desarrollo encontrado: CN=localhost
+[BungieAuth] Servidor HTTPS iniciado en puerto 55555
+[BungieAuth] Conexi├│n SSL establecida
+[BungieAuth] Request recibido: GET /callback/?code=12aa7ce287ae32d0fb747c175bc794bc&state=c2bb0a55-eb37-4122-a181-ae6e2e432893 HTTP/1.1
+
+[BungieAuth] C├│digo de autorizaci├│n recibido, intercambiando por token...
+[BungieAuth] Servidor HTTPS detenido
+[BungieAuth] Token obtained. Expires: 27/12/2025 12:44:29
+[BungieAuth] BungieClient initialized (optional)
+[BungieAuth] Resolved membership: TigerPsn / 4611686018460613299 (bornicho1982)
+[Dashboard] Connected to Bungie
+[InventoryService] RefreshInventoryAsync called
+[InventoryService] Auth state: IsAuthenticated=True, MembershipId=4611686018460613299
+[InventoryService] Fetching: https://www.bungie.net/Platform/Destiny2/2/Profile/4611686018460613299/?components=100,102,200,201,205,300,304,305
+[InventoryService] Processing vault items
+[InventoryService] Processing character 2305843009264215566 inventory
+[InventoryService] Processing character 2305843009264215567 inventory
+[InventoryService] Processing character 2305843009264215568 inventory
+[InventoryService] Processing character 2305843009264215566 equipment
+[InventoryService] Processing character 2305843009264215567 equipment
+[InventoryService] Processing character 2305843009264215568 equipment
+[InventoryService] Total items loaded: 1117
+[Dashboard] Inventory refresh complete (1117 items)
+[Dashboard] Stats: Power=0+15, Vault=631, Exotics=0
+Unhandled exception. System.ArgumentException: Unable to resolve type vm:DashboardHomeViewModel from any of the following locations: 
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.XamlTypeResolver.Resolve(String qualifiedTypeName)
+   at Avalonia.Markup.Xaml.Extensions.ResolveType(IServiceProvider ctx, String namespacePrefix, String type)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.LookupType(Func`3 typeResolver, String namespace, String name)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.CreateFromAst(List`1 astNodes, Func`3 typeResolver, INameScope nameScope, Boolean& isRooted)
+   at Avalonia.Data.Binding.InstanceCore(AvaloniaProperty targetProperty, AvaloniaObject target, Object anchor, Boolean enableDataValidation)
+   at Avalonia.Data.Binding.Instance(AvaloniaObject target, AvaloniaProperty targetProperty, Object anchor)
+   at Avalonia.Data.BindingBase.Avalonia.Data.Core.IBinding2.Instance(AvaloniaObject target, AvaloniaProperty property, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding)
+   at Avalonia.AvaloniaObjectExtensions.Bind(AvaloniaObject target, AvaloniaProperty property, IBinding binding, Object anchor)
+   at Traveler.Desktop.Views.DashboardHomeView.XamlClosure_1.Build_1(IServiceProvider) in E:\GuardianOS\ProjectTraveler\Traveler.Desktop\Views/DashboardHomeView.axaml:line 153
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.PointerDeferredContent`1.InvokeBuilder(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.DeferredContent`1.Build(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load[T](Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load(Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.DataTemplate.Build(Object data, Control existing)
+   at Avalonia.Controls.Presenters.ContentPresenter.CreateChild(Object content, Control oldChild, IDataTemplate template)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild(Object content)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild()
+   at Avalonia.Controls.Presenters.ContentPresenter.ApplyTemplate()
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Controls.StackPanel.MeasureOverride(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Layout.LayoutManager.Measure(Layoutable control)
+   at Avalonia.Layout.LayoutManager.ExecuteMeasurePass()
+   at Avalonia.Layout.LayoutManager.InnerLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteQueuedLayoutPass()
+   at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+   at Avalonia.Media.MediaContext.RenderCore()
+   at Avalonia.Media.MediaContext.Render()
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at Traveler.Desktop.Program.Main(String[] args) in E:\GuardianOS\ProjectTraveler\Traveler.Desktop\Program.cs:line 10

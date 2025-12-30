@@ -64,31 +64,44 @@ public class TriumphsService : ITriumphsService
 
         try
         {
-            // Get node definition from manifest
-            var nodeJson = await _manifestDatabase.GetItemName(hash);
-            if (string.IsNullOrEmpty(nodeJson))
+            // Get presentation node definition from manifest
+            var nodeDef = await _manifestDatabase.GetPresentationNodeAsync(hash);
+            if (nodeDef == null)
                 return null;
 
-            // Parse JSON to extract node info
-            // In a real implementation, we'd use System.Text.Json to parse
-            // For now, return a placeholder structure
             var node = new Triumph
             {
                 Hash = hash,
-                Name = $"Node {hash}", // Would come from parsed JSON
-                Description = "Description from manifest",
+                Name = nodeDef.Name,
+                Description = "", // Could be expanded
                 State = 0, // Would come from live API
                 Children = new List<Triumph>()
             };
 
-            // TODO: Parse child node hashes from definition
-            // and recursively build each child
-            // var childHashes = ParseChildHashes(nodeJson);
-            // foreach (var childHash in childHashes)
-            // {
-            //     var child = await BuildNodeAsync(childHash, depth + 1);
-            //     if (child != null) node.Children.Add(child);
-            // }
+            // Build child nodes recursively
+            foreach (var childHash in nodeDef.ChildNodes)
+            {
+                var child = await BuildNodeAsync(childHash, depth + 1);
+                if (child != null) 
+                    node.Children.Add(child);
+            }
+
+            // Build child records (leaf triumphs)
+            foreach (var recordHash in nodeDef.ChildRecords)
+            {
+                var recordDef = await _manifestDatabase.GetRecordDefinitionAsync(recordHash);
+                if (recordDef != null)
+                {
+                    node.Children.Add(new Triumph
+                    {
+                        Hash = recordHash,
+                        Name = recordDef.Name,
+                        Description = recordDef.Description,
+                        State = 0, // Would come from live API
+                        Children = new List<Triumph>()
+                    });
+                }
+            }
 
             return node;
         }

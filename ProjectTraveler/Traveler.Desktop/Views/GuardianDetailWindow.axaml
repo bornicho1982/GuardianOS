@@ -1,0 +1,498 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Traveler.Desktop.ViewModels"
+        xmlns:converters="using:Traveler.Desktop.Converters"
+        xmlns:asyncImageLoader="using:AsyncImageLoader"
+        x:Class="Traveler.Desktop.Views.GuardianDetailWindow"
+        Title="Guardian Detail"
+        Width="1024" Height="700"
+        WindowStartupLocation="CenterOwner"
+        Background="#1A1A1A"
+        ExtendClientAreaToDecorationsHint="True">
+
+    <Window.Resources>
+        <converters:BungieUrlConverter x:Key="BungieUrlConverter"/>
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
+        <converters:MasterworkBorderConverter x:Key="MasterworkBorderConverter"/>
+        <converters:BoolToThicknessConverter x:Key="BoolToThicknessConverter"/>
+        <converters:TierBackgroundConverter x:Key="TierBackgroundConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Dynamic Element Glow Background -->
+        <Border x:Name="ElementGlow" Opacity="0.4">
+            <Border.Background>
+                <RadialGradientBrush Center="0.5,0.6" GradientOrigin="0.5,1" RadiusX="0.8" RadiusY="0.8">
+                    <GradientStop Color="{Binding ElementGlowColor}" Offset="0"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+                </RadialGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <Grid RowDefinitions="Auto,*">
+            <!-- Top: Emblem Banner -->
+            <Border Grid.Row="0" Height="120" ClipToBounds="True">
+                <asyncImageLoader:AdvancedImage Source="{Binding Character.EmblemBackgroundUrl}" Stretch="UniformToFill" Opacity="0.9"/>
+            </Border>
+            <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0">
+                <TextBlock Text="{Binding Character.ClassName}" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="{Binding Character.LightLevel}" FontSize="20" Foreground="#EBC805" FontWeight="Bold"/>
+                    <TextBlock Text="POWER" FontSize="12" Foreground="#AAA" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Main Content: 3 Columns -->
+            <Grid Grid.Row="1" ColumnDefinitions="220,*,280" Margin="16">
+
+                <!-- LEFT: Weapons + Subclass -->
+                <StackPanel Grid.Column="0" Spacing="12">
+                    <TextBlock Text="WEAPONS" FontSize="14" FontWeight="Bold" Foreground="#AAA" Margin="0,0,0,8"/>
+
+                    <!-- Kinetic -->
+                    <Border CornerRadius="4" Padding="8"
+                            BorderThickness="{Binding EquippedKinetic.IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                            BorderBrush="{Binding EquippedKinetic.IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}">
+                        <Border.Background>
+                            <SolidColorBrush Color="#2D2D30"/>
+                        </Border.Background>
+                        <Grid ColumnDefinitions="60,*">
+                            <!-- Icon with tier background -->
+                            <Grid>
+                                <Border Width="56" Height="56" CornerRadius="4" ClipToBounds="True"
+                                        Background="{Binding EquippedKinetic.TierType, Converter={StaticResource TierBackgroundConverter}}">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedKinetic.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedKinetic.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="56" Height="56" Stretch="Uniform" Opacity="0.7"/>
+                                <!-- Masterwork diamond on icon -->
+                                <TextBlock Text="◆" FontSize="14" Foreground="#eade8b" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                           Margin="0,2,4,0"
+                                           IsVisible="{Binding EquippedKinetic.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding EquippedKinetic.Name}" FontSize="13" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedKinetic.DamageTypeIcon, Converter={StaticResource BungieUrlConverter}}" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding EquippedKinetic.PowerLevel}" FontSize="16" Foreground="#EBC805" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Masterwork Tier Diamonds -->
+                                <StackPanel Orientation="Horizontal" Spacing="2" Margin="0,3,0,0" IsVisible="{Binding EquippedKinetic.HasMasterwork}">
+                                    <TextBlock Text="{Binding EquippedKinetic.MasterworkTierDisplay}" FontSize="10" Foreground="#eade8b"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Energy -->
+                    <Border CornerRadius="4" Padding="8"
+                            BorderThickness="{Binding EquippedEnergy.IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                            BorderBrush="{Binding EquippedEnergy.IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}">
+                        <Border.Background>
+                            <SolidColorBrush Color="#2D2D30"/>
+                        </Border.Background>
+                        <Grid ColumnDefinitions="60,*">
+                            <!-- Icon with tier background -->
+                            <Grid>
+                                <Border Width="56" Height="56" CornerRadius="4" ClipToBounds="True"
+                                        Background="{Binding EquippedEnergy.TierType, Converter={StaticResource TierBackgroundConverter}}">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedEnergy.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedEnergy.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="56" Height="56" Stretch="Uniform" Opacity="0.7"/>
+                                <!-- Masterwork diamond on icon -->
+                                <TextBlock Text="◆" FontSize="14" Foreground="#eade8b" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                           Margin="0,2,4,0"
+                                           IsVisible="{Binding EquippedEnergy.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding EquippedEnergy.Name}" FontSize="13" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedEnergy.DamageTypeIcon, Converter={StaticResource BungieUrlConverter}}" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding EquippedEnergy.PowerLevel}" FontSize="16" Foreground="#EBC805" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Masterwork Tier Diamonds -->
+                                <StackPanel Orientation="Horizontal" Spacing="2" Margin="0,3,0,0" IsVisible="{Binding EquippedEnergy.HasMasterwork}">
+                                    <TextBlock Text="{Binding EquippedEnergy.MasterworkTierDisplay}" FontSize="10" Foreground="#eade8b"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Power -->
+                    <Border CornerRadius="4" Padding="8"
+                            BorderThickness="{Binding EquippedPower.IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                            BorderBrush="{Binding EquippedPower.IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}">
+                        <Border.Background>
+                            <SolidColorBrush Color="#2D2D30"/>
+                        </Border.Background>
+                        <Grid ColumnDefinitions="60,*">
+                            <!-- Icon with tier background -->
+                            <Grid>
+                                <Border Width="56" Height="56" CornerRadius="4" ClipToBounds="True"
+                                        Background="{Binding EquippedPower.TierType, Converter={StaticResource TierBackgroundConverter}}">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedPower.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedPower.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="56" Height="56" Stretch="Uniform" Opacity="0.7"/>
+                                <!-- Masterwork diamond on icon -->
+                                <TextBlock Text="◆" FontSize="14" Foreground="#eade8b" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                           Margin="0,2,4,0"
+                                           IsVisible="{Binding EquippedPower.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding EquippedPower.Name}" FontSize="13" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedPower.DamageTypeIcon, Converter={StaticResource BungieUrlConverter}}" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding EquippedPower.PowerLevel}" FontSize="16" Foreground="#EBC805" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Masterwork Tier Diamonds -->
+                                <StackPanel Orientation="Horizontal" Spacing="2" Margin="0,3,0,0" IsVisible="{Binding EquippedPower.HasMasterwork}">
+                                    <TextBlock Text="{Binding EquippedPower.MasterworkTierDisplay}" FontSize="10" Foreground="#eade8b"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Subclass -->
+                    <TextBlock Text="SUBCLASS" FontSize="14" FontWeight="Bold" Foreground="#AAA" Margin="0,16,0,8"/>
+                    <Border Background="#2D2D30" CornerRadius="8" Padding="12">
+                        <StackPanel Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Width="64" Height="64" CornerRadius="32" ClipToBounds="True" BorderBrush="{Binding ElementGlowColor}" BorderThickness="2">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedSubclass.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding EquippedSubclass.Name}" FontSize="16" Foreground="White" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding EquippedSubclass.Archetype}" FontSize="11" Foreground="#AAA"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <!-- Abilities - Wrap properly -->
+                            <ItemsControl ItemsSource="{Binding EquippedSubclass.AbilityIcons}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="32" Height="32" CornerRadius="4" Background="#222" Margin="2">
+                                            <asyncImageLoader:AdvancedImage Source="{Binding Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- CENTER: Paper Doll -->
+                <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Helmet -->
+                    <Border Grid.Row="0" Width="72" Height="72" CornerRadius="8" Background="#2D2D30" ClipToBounds="True" Margin="0,0,0,6">
+                        <Grid>
+                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.IconUrl}" Stretch="UniformToFill"/>
+                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
+                            <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#CC111111" CornerRadius="4,0,4,0" Padding="4,1">
+                                <TextBlock Text="{Binding EquippedHelmet.EnergyCapacity}" Foreground="#EBC805" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Arms - Chest - Arms -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                        <Border Width="60" Height="60" CornerRadius="8" Background="#2D2D30" Opacity="0.7" ClipToBounds="True">
+                            <Grid>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.IconUrl}" Stretch="UniformToFill"/>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
+                            </Grid>
+                        </Border>
+                        <Border Width="88" Height="88" CornerRadius="8" Background="#2D2D30" ClipToBounds="True">
+                            <Grid>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedChest.IconUrl}" Stretch="UniformToFill"/>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedChest.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
+                                <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#CC111111" CornerRadius="4,0,4,0" Padding="4,1">
+                                    <TextBlock Text="{Binding EquippedChest.EnergyCapacity}" Foreground="#EBC805" FontSize="11" FontWeight="Bold"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Width="60" Height="60" CornerRadius="8" Background="#2D2D30" Opacity="0.7" ClipToBounds="True">
+                            <Grid>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.IconUrl}" Stretch="UniformToFill"/>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Legs -->
+                    <Border Grid.Row="2" Width="72" Height="72" CornerRadius="8" Background="#2D2D30" ClipToBounds="True" Margin="0,6,0,6">
+                        <Grid>
+                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedLegs.IconUrl}" Stretch="UniformToFill"/>
+                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedLegs.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
+                            <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#CC111111" CornerRadius="4,0,4,0" Padding="4,1">
+                                <TextBlock Text="{Binding EquippedLegs.EnergyCapacity}" Foreground="#EBC805" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Class Item -->
+                    <Border Grid.Row="3" Width="56" Height="56" CornerRadius="8" Background="#2D2D30" ClipToBounds="True">
+                        <Grid>
+                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedClassItem.IconUrl}" Stretch="UniformToFill"/>
+                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedClassItem.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- RIGHT: Armor Stats List -->
+                <StackPanel Grid.Column="2" Spacing="8">
+                    <TextBlock Text="ARMOR" FontSize="14" FontWeight="Bold" Foreground="#AAA" Margin="0,0,0,8"/>
+
+                    <!-- Helmet Stats -->
+                    <Border Background="#2D2D30" CornerRadius="8" Padding="8" BorderBrush="{Binding EquippedHelmet.HasMasterwork, Converter={StaticResource BoolToBrushConverter}}" BorderThickness="1">
+                        <Grid ColumnDefinitions="44,*">
+                            <Grid>
+                                <Border Width="40" Height="40" CornerRadius="4" ClipToBounds="True">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="40" Height="40" Stretch="Uniform" Opacity="0.8"/>
+                                <!-- Masterwork diamond indicator on icon -->
+                                <TextBlock Text="◆" FontSize="12" Foreground="#FFD700" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-2,-2,0" IsVisible="{Binding EquippedHelmet.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding EquippedHelmet.EnergyCapacity}" FontSize="14" Foreground="#EBC805" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding EquippedHelmet.Name}" FontSize="11" Foreground="White" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="120"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding HelmetStatsText}" FontSize="9" Foreground="#888" Margin="0,2,0,0"/>
+                                <!-- Armor Perks/Mods -->
+                                <ItemsControl ItemsSource="{Binding EquippedHelmet.SocketIcons}" Margin="0,3,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="2"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="18" Height="18" CornerRadius="9" Background="#444" ClipToBounds="True">
+                                                <asyncImageLoader:AdvancedImage Source="{Binding Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Gauntlets Stats -->
+                    <Border CornerRadius="4" Padding="8"
+                            BorderThickness="{Binding EquippedGauntlets.IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                            BorderBrush="{Binding EquippedGauntlets.IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}">
+                        <Border.Background>
+                            <SolidColorBrush Color="#2D2D30"/>
+                        </Border.Background>
+                        <Grid ColumnDefinitions="44,*">
+                            <Grid>
+                                <Border Width="40" Height="40" CornerRadius="4" ClipToBounds="True"
+                                        Background="{Binding EquippedGauntlets.TierType, Converter={StaticResource TierBackgroundConverter}}">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="40" Height="40" Stretch="Uniform" Opacity="0.7"/>
+                                <!-- Masterwork diamond -->
+                                <TextBlock Text="◆" FontSize="12" Foreground="#eade8b" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                           Margin="0,1,2,0"
+                                           IsVisible="{Binding EquippedGauntlets.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding EquippedGauntlets.EnergyCapacity}" FontSize="14" Foreground="#EBC805" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding EquippedGauntlets.Name}" FontSize="11" Foreground="White" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="120"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding GauntletsStatsText}" FontSize="9" Foreground="#888" Margin="0,2,0,0"/>
+                                <ItemsControl ItemsSource="{Binding EquippedGauntlets.SocketIcons}" Margin="0,3,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="2"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="18" Height="18" CornerRadius="9" Background="#444" ClipToBounds="True">
+                                                <asyncImageLoader:AdvancedImage Source="{Binding Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Chest Stats -->
+                    <Border CornerRadius="4" Padding="8"
+                            BorderThickness="{Binding EquippedChest.IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                            BorderBrush="{Binding EquippedChest.IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}">
+                        <Border.Background>
+                            <SolidColorBrush Color="#2D2D30"/>
+                        </Border.Background>
+                        <Grid ColumnDefinitions="44,*">
+                            <Grid>
+                                <Border Width="40" Height="40" CornerRadius="4" ClipToBounds="True"
+                                        Background="{Binding EquippedChest.TierType, Converter={StaticResource TierBackgroundConverter}}">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedChest.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedChest.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="40" Height="40" Stretch="Uniform" Opacity="0.7"/>
+                                <!-- Masterwork diamond -->
+                                <TextBlock Text="◆" FontSize="12" Foreground="#eade8b" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                           Margin="0,1,2,0"
+                                           IsVisible="{Binding EquippedChest.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding EquippedChest.EnergyCapacity}" FontSize="14" Foreground="#EBC805" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding EquippedChest.Name}" FontSize="11" Foreground="White" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="120"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding ChestStatsText}" FontSize="9" Foreground="#888" Margin="0,2,0,0"/>
+                                <ItemsControl ItemsSource="{Binding EquippedChest.SocketIcons}" Margin="0,3,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="2"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="18" Height="18" CornerRadius="9" Background="#444" ClipToBounds="True">
+                                                <asyncImageLoader:AdvancedImage Source="{Binding Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Legs Stats -->
+                    <Border CornerRadius="4" Padding="8"
+                            BorderThickness="{Binding EquippedLegs.IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                            BorderBrush="{Binding EquippedLegs.IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}">
+                        <Border.Background>
+                            <SolidColorBrush Color="#2D2D30"/>
+                        </Border.Background>
+                        <Grid ColumnDefinitions="44,*">
+                            <Grid>
+                                <Border Width="40" Height="40" CornerRadius="4" ClipToBounds="True"
+                                        Background="{Binding EquippedLegs.TierType, Converter={StaticResource TierBackgroundConverter}}">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedLegs.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedLegs.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="40" Height="40" Stretch="Uniform" Opacity="0.7"/>
+                                <!-- Masterwork diamond -->
+                                <TextBlock Text="◆" FontSize="12" Foreground="#eade8b" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                           Margin="0,1,2,0"
+                                           IsVisible="{Binding EquippedLegs.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding EquippedLegs.EnergyCapacity}" FontSize="14" Foreground="#EBC805" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding EquippedLegs.Name}" FontSize="11" Foreground="White" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="120"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding LegsStatsText}" FontSize="9" Foreground="#888" Margin="0,2,0,0"/>
+                                <ItemsControl ItemsSource="{Binding EquippedLegs.SocketIcons}" Margin="0,3,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="2"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="18" Height="18" CornerRadius="9" Background="#444" ClipToBounds="True">
+                                                <asyncImageLoader:AdvancedImage Source="{Binding Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Class Item Stats -->
+                    <Border CornerRadius="4" Padding="10"
+                            BorderThickness="{Binding EquippedClassItem.IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                            BorderBrush="{Binding EquippedClassItem.IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}">
+                        <Border.Background>
+                            <SolidColorBrush Color="#2D2D30"/>
+                        </Border.Background>
+                        <Grid ColumnDefinitions="50,*">
+                            <Grid>
+                                <Border Width="44" Height="44" CornerRadius="4" ClipToBounds="True"
+                                        Background="{Binding EquippedClassItem.TierType, Converter={StaticResource TierBackgroundConverter}}">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedClassItem.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedClassItem.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Width="44" Height="44" Stretch="Uniform" Opacity="0.7"/>
+                                <!-- Masterwork diamond -->
+                                <TextBlock Text="◆" FontSize="12" Foreground="#eade8b" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                           Margin="0,1,2,0"
+                                           IsVisible="{Binding EquippedClassItem.IsMasterwork}"/>
+                            </Grid>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{Binding EquippedClassItem.EnergyCapacity}" FontSize="18" Foreground="#EBC805" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding EquippedClassItem.Name}" FontSize="12" Foreground="White" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding ClassItemStatsText}" FontSize="10" Foreground="#AAA" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Total Stats with Icons -->
+                    <Border Background="#3D3D40" CornerRadius="8" Padding="12" Margin="0,8,0,0">
+                        <StackPanel>
+                            <TextBlock Text="TOTAL STATS" FontSize="12" FontWeight="Bold" Foreground="#EBC805" Margin="0,0,0,8"/>
+                            <WrapPanel Orientation="Horizontal">
+                                <!-- Mobility/Weapons -->
+                                <StackPanel Orientation="Horizontal" Spacing="3" Margin="0,0,12,4">
+                                    <asyncImageLoader:AdvancedImage Source="https://www.bungie.net/common/destiny2_content/icons/bc69675acdae9e6b9a68a02fb4d62e07.png" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding TotalMobility}" FontSize="12" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Resilience/Health -->
+                                <StackPanel Orientation="Horizontal" Spacing="3" Margin="0,0,12,4">
+                                    <asyncImageLoader:AdvancedImage Source="https://www.bungie.net/common/destiny2_content/icons/717b8b218cc14325a54869bef21d2964.png" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding TotalResilience}" FontSize="12" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Recovery/Class -->
+                                <StackPanel Orientation="Horizontal" Spacing="3" Margin="0,0,12,4">
+                                    <asyncImageLoader:AdvancedImage Source="https://www.bungie.net/common/destiny2_content/icons/7eb845acb5b3a4a9b7e0b2f05f5c43f1.png" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding TotalRecovery}" FontSize="12" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Discipline/Grenade -->
+                                <StackPanel Orientation="Horizontal" Spacing="3" Margin="0,0,12,4">
+                                    <asyncImageLoader:AdvancedImage Source="https://www.bungie.net/common/destiny2_content/icons/065cdaabef560e5808e821cefaeaa22c.png" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding TotalDiscipline}" FontSize="12" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Intellect/Super -->
+                                <StackPanel Orientation="Horizontal" Spacing="3" Margin="0,0,12,4">
+                                    <asyncImageLoader:AdvancedImage Source="https://www.bungie.net/common/destiny2_content/icons/585ae4ede9c3da96b34086fccccdc8cd.png" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding TotalIntellect}" FontSize="12" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                                <!-- Strength/Melee -->
+                                <StackPanel Orientation="Horizontal" Spacing="3" Margin="0,0,12,4">
+                                    <asyncImageLoader:AdvancedImage Source="https://www.bungie.net/common/destiny2_content/icons/fa534aca76d7f2d7e7b4ba4df4271b42.png" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding TotalStrength}" FontSize="12" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

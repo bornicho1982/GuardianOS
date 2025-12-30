@@ -1,37 +1,119 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:Traveler.Core.Models"
-             mc:Ignorable="d" d:DesignWidth="96" d:DesignHeight="96"
+             xmlns:asyncImageLoader="using:AsyncImageLoader"
+             xmlns:converters="using:Traveler.Desktop.Converters"
              x:Class="Traveler.Desktop.Controls.ItemControl"
-             x:DataType="models:InventoryItem">
+             x:DataType="models:InventoryItem"
+             Width="54" Height="68">
 
-  <Border BorderThickness="2" 
-          BorderBrush="Goldenrod" 
-          CornerRadius="0"
-          Width="64" Height="64" Margin="4">
-    <Panel>
-        <!-- Icon would go here (AsyncImage) -->
-        <Image Stretch="UniformToFill" Opacity="0.5"/>
-        <Panel Background="Gray" Opacity="0.2" />
+    <UserControl.Resources>
+        <converters:BungieUrlConverter x:Key="BungieUrlConverter"/>
+        <converters:MasterworkBorderConverter x:Key="MasterworkBorderConverter"/>
+        <converters:TierBackgroundConverter x:Key="TierBackgroundConverter"/>
+        <converters:BoolToThicknessConverter x:Key="BoolToThicknessConverter"/>
+        <converters:ElementColorConverter x:Key="ElementColorConverter"/>
+    </UserControl.Resources>
+
+    <!-- DIM-Style Item Tile (ItemIcon + BadgeInfo) -->
+    <Grid RowDefinitions="Auto,Auto">
         
-        <!-- Power Level Overlay -->
-        <Border Background="#CC000000" VerticalAlignment="Bottom" Height="16">
-            <TextBlock Text="{Binding PowerLevel}" 
-                       Foreground="White" 
-                       FontSize="10" 
-                       HorizontalAlignment="Right" 
-                       Margin="0,0,2,0"/>
+        <!-- ROW 0: Item Icon Container -->
+        <Border Grid.Row="0"
+                Width="52" Height="52"
+                BorderThickness="{Binding IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
+                BorderBrush="{Binding IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}"
+                CornerRadius="2"
+                ClipToBounds="True"
+                Background="{Binding TierType, Converter={StaticResource TierBackgroundConverter}}">
+            
+            <Grid>
+                <!-- Layer 1: Base Item Icon -->
+                <asyncImageLoader:AdvancedImage 
+                    Source="{Binding IconUrl}" 
+                    Stretch="UniformToFill"/>
+                
+                <!-- Layer 2: Masterwork Glow Overlay (50% opacity like DIM) -->
+                <Border Background="#80eade8b" 
+                        Opacity="0.3"
+                        IsVisible="{Binding IsMasterwork}"/>
+                
+                <!-- Layer 3: Season Watermark -->
+                <asyncImageLoader:AdvancedImage 
+                    Source="{Binding WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" 
+                    Stretch="Uniform" 
+                    Opacity="0.6"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"/>
+                
+                <!-- Layer 4: Equipped Indicator (top-left green dot) -->
+                <Ellipse Width="6" Height="6" 
+                         Fill="#51a351"
+                         HorizontalAlignment="Left" 
+                         VerticalAlignment="Top"
+                         Margin="3,3,0,0"
+                         IsVisible="{Binding IsEquipped}"/>
+                
+                <!-- Layer 5: Masterwork Diamond (top-right) -->
+                <TextBlock Text="◆" 
+                           FontSize="10" 
+                           Foreground="#eade8b"
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Top"
+                           Margin="0,2,3,0"
+                           IsVisible="{Binding IsMasterwork}">
+                    <TextBlock.Effect>
+                        <DropShadowEffect BlurRadius="2" Color="Black" OffsetX="0" OffsetY="0"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+                
+                <!-- Layer 6: Icon Tray (bottom-right for tags) -->
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,2,2"
+                            Spacing="1">
+                    <!-- Lock Icon -->
+                    <TextBlock Text="🔒" 
+                               FontSize="8"
+                               IsVisible="{Binding IsLocked}">
+                        <TextBlock.Effect>
+                            <DropShadowEffect BlurRadius="2" Color="Black" OffsetX="0" OffsetY="0"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Border>
         
-        <!-- Name Tooltip -->
-        <ToolTip.Tip>
-            <StackPanel>
-                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                <TextBlock Text="{Binding ItemType}"/>
-            </StackPanel>
-        </ToolTip.Tip>
-    </Panel>
-  </Border>
+        <!-- ROW 1: Badge Info (DIM polaroid style) -->
+        <Border Grid.Row="1" 
+                Width="52" Height="14" 
+                CornerRadius="0,0,2,2" 
+                Margin="0,-1,0,0"
+                Background="{Binding TierType, Converter={StaticResource TierBackgroundConverter}}">
+            <Grid ColumnDefinitions="Auto,*">
+                <!-- Element Icon -->
+                <asyncImageLoader:AdvancedImage 
+                    Grid.Column="0"
+                    Source="{Binding DamageTypeIcon, Converter={StaticResource BungieUrlConverter}}" 
+                    Width="10" Height="10"
+                    Margin="3,0,0,0"
+                    VerticalAlignment="Center"/>
+                
+                <!-- Power Level -->
+                <TextBlock Grid.Column="1"
+                           Text="{Binding PowerLevel}" 
+                           FontSize="9" 
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Margin="0,0,3,0">
+                    <TextBlock.Effect>
+                        <DropShadowEffect BlurRadius="1" Color="Black" OffsetX="0" OffsetY="0" Opacity="0.8"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

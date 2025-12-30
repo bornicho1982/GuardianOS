@@ -5,6 +5,7 @@ using Avalonia.Styling;
 using ReactiveUI;
 using Traveler.Core.Interfaces;
 using Traveler.Core.Models;
+using Traveler.Data.Auth;
 
 namespace Traveler.Desktop.ViewModels;
 
@@ -14,6 +15,8 @@ namespace Traveler.Desktop.ViewModels;
 public class SettingsViewModel : ViewModelBase
 {
     private readonly ISettingsService _settingsService;
+    private readonly BungieAuthService? _authService;
+    private readonly IInventoryService? _inventoryService;
     
     private string _language = "en";
     private string _theme = "Dark";
@@ -21,6 +24,9 @@ public class SettingsViewModel : ViewModelBase
     private string _aiModel = "phi3";
     private string? _wishlistPath;
     private bool _isSaving;
+    private bool _isLoggingIn;
+    private string? _displayName;
+    private bool _isLoggedIn;
 
     public string Title => "Settings";
 
@@ -64,20 +70,44 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _isSaving, value);
     }
 
+    public bool IsLoggingIn
+    {
+        get => _isLoggingIn;
+        set => this.RaiseAndSetIfChanged(ref _isLoggingIn, value);
+    }
+
+    public string? DisplayName
+    {
+        get => _displayName;
+        set => this.RaiseAndSetIfChanged(ref _displayName, value);
+    }
+
+    public bool IsLoggedIn
+    {
+        get => _isLoggedIn;
+        set => this.RaiseAndSetIfChanged(ref _isLoggedIn, value);
+    }
+
     public ReactiveCommand<Unit, Unit> SaveCommand { get; }
     public ReactiveCommand<Unit, Unit> ReloadManifestCommand { get; }
+    public ReactiveCommand<Unit, Unit> LoginCommand { get; }
+    public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
 
     // Design-time constructor
     public SettingsViewModel()
     {
         _settingsService = null!;
-        SaveCommand = null!;
-        ReloadManifestCommand = null!;
+        SaveCommand = ReactiveCommand.Create(() => { });
+        ReloadManifestCommand = ReactiveCommand.Create(() => { });
+        LoginCommand = ReactiveCommand.Create(() => { });
+        LogoutCommand = ReactiveCommand.Create(() => { });
     }
 
-    public SettingsViewModel(ISettingsService settingsService)
+    public SettingsViewModel(ISettingsService settingsService, BungieAuthService? authService = null, IInventoryService? inventoryService = null)
     {
         _settingsService = settingsService;
+        _authService = authService;
+        _inventoryService = inventoryService;
         
         // Load current settings
         var current = _settingsService.CurrentSettings;
@@ -87,8 +117,57 @@ public class SettingsViewModel : ViewModelBase
         _aiModel = current.AiModel;
         _wishlistPath = current.WishlistPath;
 
+        // Check if already logged in
+        if (_authService != null)
+        {
+            _isLoggedIn = _authService.IsAuthenticated;
+            _displayName = _authService.DisplayName;
+        }
+
         SaveCommand = ReactiveCommand.CreateFromTask(SaveSettingsAsync);
         ReloadManifestCommand = ReactiveCommand.CreateFromTask(ReloadManifestAsync);
+        LoginCommand = ReactiveCommand.CreateFromTask(LoginAsync);
+        LogoutCommand = ReactiveCommand.Create(Logout);
+    }
+
+    private async Task LoginAsync()
+    {
+        if (_authService == null) return;
+        
+        IsLoggingIn = true;
+        try
+        {
+            var success = await _authService.LoginAsync();
+            if (success)
+            {
+                IsLoggedIn = true;
+                DisplayName = _authService.DisplayName;
+                System.Console.WriteLine($"[Settings] Logged in as: {DisplayName}");
+                
+                // Refresh inventory with real data
+                if (_inventoryService != null)
+                {
+                    System.Console.WriteLine("[Settings] Triggering inventory refresh...");
+                    await _inventoryService.RefreshInventoryAsync();
+                }
+            }
+            else
+            {
+                System.Console.WriteLine("[Settings] Login failed");
+            }
+        }
+        finally
+        {
+            IsLoggingIn = false;
+        }
+    }
+
+    private void Logout()
+    {
+        IsLoggedIn = false;
+        DisplayName = null;
+        // Note: Full logout would require clearing tokens in auth service
+        System.Console.WriteLine("[Settings] Logged out");
     }
 
     private async Task SaveSettingsAsync()

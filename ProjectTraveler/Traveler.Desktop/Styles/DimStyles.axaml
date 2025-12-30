@@ -1,0 +1,64 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- ================================== -->
+    <!-- DIM DESIGN TOKENS (from _variables.scss) -->
+    <!-- ================================== -->
+    
+    <!-- Item Tier Background Colors -->
+    <SolidColorBrush x:Key="DimLegendaryBackground" Color="#513065"/>
+    <SolidColorBrush x:Key="DimExoticBackground" Color="#c3a019"/>
+    <SolidColorBrush x:Key="DimRareBackground" Color="#5076a3"/>
+    <SolidColorBrush x:Key="DimUncommonBackground" Color="#366e42"/>
+    <SolidColorBrush x:Key="DimCommonBackground" Color="#dcdcdc"/>
+    
+    <!-- Masterwork & Special Borders -->
+    <SolidColorBrush x:Key="DimMasterworkBorder" Color="#eade8b"/>
+    <SolidColorBrush x:Key="DimDeepsightBorder" Color="#d25336"/>
+    <SolidColorBrush x:Key="DimGildedTriumphBorder" Color="#a78355"/>
+    
+    <!-- Element Colors -->
+    <SolidColorBrush x:Key="DimArcColor" Color="#79bbe8"/>
+    <SolidColorBrush x:Key="DimSolarColor" Color="#f0631e"/>
+    <SolidColorBrush x:Key="DimVoidColor" Color="#8e749e"/>
+    <SolidColorBrush x:Key="DimStasisColor" Color="#4d88ff"/>
+    <SolidColorBrush x:Key="DimStrandColor" Color="#35e366"/>
+    <SolidColorBrush x:Key="DimPrismaticColor" Color="#e3619b"/>
+    <SolidColorBrush x:Key="DimKineticColor" Color="#d0d0d0"/>
+    
+    <!-- UI Colors -->
+    <SolidColorBrush x:Key="DimBrandColor" Color="#e8a534"/>
+    <SolidColorBrush x:Key="DimPowerLevelColor" Color="#f5dc56"/>
+    <SolidColorBrush x:Key="DimGoldColor" Color="#f5dc56"/>
+    <SolidColorBrush x:Key="DimXpBarColor" Color="#5ea16a"/>
+    <SolidColorBrush x:Key="DimRedWarning" Color="#ff3232"/>
+    <SolidColorBrush x:Key="DimGreenSuccess" Color="#51a351"/>
+    <SolidColorBrush x:Key="DimStatModded" Color="#68a0b7"/>
+    <SolidColorBrush x:Key="DimEnhancedYellow" Color="#f3cf55"/>
+    
+    <!-- Background Colors -->
+    <SolidColorBrush x:Key="DimDarkBackground" Color="#1a1a1a"/>
+    <SolidColorBrush x:Key="DimCardBackground" Color="#252528"/>
+    <SolidColorBrush x:Key="DimHeaderBackground" Color="#2D2D30"/>
+    <SolidColorBrush x:Key="DimVaultBackground" Color="#1E1E20"/>
+    
+    <!-- Badge Colors -->
+    <SolidColorBrush x:Key="DimBadgeBackground" Color="#000000" Opacity="0.7"/>
+    
+    <!-- Sizing (as doubles for binding) -->
+    <x:Double x:Key="DimItemSize">50</x:Double>
+    <x:Double x:Key="DimItemSizeLarge">52</x:Double>
+    <x:Double x:Key="DimItemSizeSmall">48</x:Double>
+    <x:Double x:Key="DimBadgeHeight">14</x:Double>
+    <x:Double x:Key="DimItemBorderWidth">1</x:Double>
+    
+    <!-- Thickness values -->
+    <Thickness x:Key="DimItemBorder">1</Thickness>
+    <Thickness x:Key="DimMasterworkBorderThickness">2</Thickness>
+    <Thickness x:Key="DimItemMargin">2</Thickness>
+    
+    <!-- Corner Radius -->
+    <CornerRadius x:Key="DimItemCornerRadius">2</CornerRadius>
+    <CornerRadius x:Key="DimCardCornerRadius">4</CornerRadius>
+    
+</ResourceDictionary>

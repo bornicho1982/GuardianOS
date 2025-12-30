@@ -55,11 +55,12 @@ public class BuildCopilotService : IBuildCopilotService
         var keywords = userQuery.Split(' ').Where(w => w.Length > 4).Take(2).ToList();
         
         // 2. RAG: Search Manifest
-        var searchResults = Enumerable.Empty<string>();
+        var searchResultNames = Enumerable.Empty<string>();
         if (keywords.Any())
         {
              // Taking first keyword for simplicity of the SQL LIKE
-             searchResults = await _manifestDatabase.SearchItemsAsync(keywords.First(), 5);
+             var items = await _manifestDatabase.SearchItemsAsync(keywords.First(), 5);
+             searchResultNames = items.Select(i => $"{i.Name} ({i.ItemType})");
         }
 
         // 3. Filter Inventory (Context Reduction)
@@ -71,7 +72,7 @@ public class BuildCopilotService : IBuildCopilotService
                        The user wants: {{userQuery}}
 
                        Here are some relevant items from the Destiny Database that match criteria:
-                       {{string.Join("\n", searchResults)}}
+                       {{string.Join("\n", searchResultNames)}}
 
                        Here is the user's available Exotic Armor:
                        {{string.Join(", ", userExotics)}}
