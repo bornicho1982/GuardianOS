@@ -85,45 +85,112 @@
       </Grid>
     </Grid>
     
-    <!-- Right Panel: Account Stats -->
-    <Border Grid.Column="1" Background="#1E1E20" Padding="16">
-      <StackPanel Spacing="16">
-        
-        <!-- Connection Status -->
-        <Border Background="#2D2D30" CornerRadius="8" Padding="12">
-          <Grid ColumnDefinitions="Auto,*,Auto">
-            <Ellipse Grid.Column="0" Width="10" Height="10" 
-                     Fill="{Binding ConnectionStatusColor}"/>
-            <TextBlock Grid.Column="1" Text="{Binding ConnectionStatus}" 
-                       Margin="8,0" VerticalAlignment="Center" FontSize="12"/>
-            <Button Grid.Column="2" Content="{Binding ConnectionButtonText}" 
-                    Command="{Binding ToggleConnectionCommand}"
-                    FontSize="11" Padding="12,6"/>
+    <!-- Right Panel: ESTADO DEL GUARDIÁN -->
+    <Border Grid.Column="1" Background="#151517" Padding="0">
+      <Grid RowDefinitions="Auto,*">
+      
+        <!-- Guardian Emblem Header (Large) -->
+        <Border Grid.Row="0" Height="180" ClipToBounds="True">
+          <Grid>
+            <asyncImageLoader:AdvancedImage 
+                Source="{Binding SelectedCharacter.EmblemBackgroundUrl, Converter={StaticResource BungieUrlConverter}}" 
+                Stretch="UniformToFill" Opacity="0.7"/>
+            <Border Background="#80000000"/>
+            <StackPanel VerticalAlignment="Bottom" Margin="16">
+              <TextBlock Text="{Binding SelectedCharacter.ClassName, FallbackValue='Guardián'}" 
+                         FontSize="28" FontWeight="Black" Foreground="White"/>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="{Binding SelectedCharacter.RaceName}" FontSize="13" Foreground="#AAA"/>
+                <TextBlock Text="•" FontSize="13" Foreground="#666"/>
+                <TextBlock Text="{Binding SelectedCharacter.GenderName}" FontSize="13" Foreground="#AAA"/>
+              </StackPanel>
+            </StackPanel>
           </Grid>
         </Border>
         
-        <!-- Account Stats -->
-        <StackPanel Spacing="8" IsVisible="{Binding IsConnected}">
-          <TextBlock Text="ACCOUNT STATS" FontSize="11" FontWeight="SemiBold" Foreground="Gray"/>
+        <ScrollViewer Grid.Row="1">
+          <StackPanel Margin="16" Spacing="16">
           
-          <Border Background="#2D2D30" CornerRadius="8" Padding="12">
-            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
-              <TextBlock Grid.Row="0" Grid.Column="0" Text="Vault Items" Foreground="#AAA" FontSize="12"/>
-              <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding VaultItemCount}" Foreground="White" FontWeight="Bold"/>
-              
-              <TextBlock Grid.Row="1" Grid.Column="0" Text="Postmaster" Foreground="#AAA" FontSize="12" Margin="0,4,0,0"/>
-              <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PostmasterCount}" Foreground="White" FontWeight="Bold" Margin="0,4,0,0"/>
-              
-              <TextBlock Grid.Row="2" Grid.Column="0" Text="Exotic Items" Foreground="#AAA" FontSize="12" Margin="0,4,0,0"/>
-              <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ExoticCount}" Foreground="#F5A623" FontWeight="Bold" Margin="0,4,0,0"/>
-            </Grid>
-          </Border>
-          
-          <Button Content="🔄 Refresh All" Command="{Binding RefreshInventoryCommand}"
-                  HorizontalAlignment="Stretch" Padding="12,8" FontSize="12"/>
-        </StackPanel>
+            <!-- Power Level Card -->
+            <Border Background="#1E1E20" CornerRadius="10" Padding="16">
+              <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                  <TextBlock Text="NIVEL DE PODER" FontSize="10" FontWeight="Bold" Foreground="#666"/>
+                  <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,4,0,0">
+                    <TextBlock Text="⚡" FontSize="24" Foreground="#EBC805"/>
+                    <TextBlock Text="{Binding SelectedCharacter.LightLevel, FallbackValue='0'}" 
+                               FontSize="36" FontWeight="Black" Foreground="#EBC805"/>
+                  </StackPanel>
+                  <TextBlock Text="+15 Artefacto" FontSize="11" Foreground="#888"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                  <TextBlock Text="MÁX ALCANZABLE" FontSize="9" Foreground="#555"/>
+                  <TextBlock Text="{Binding MaxAchievablePower, FallbackValue='2010'}" 
+                             FontSize="18" FontWeight="Bold" Foreground="#4CAF50" HorizontalAlignment="Right"/>
+                </StackPanel>
+              </Grid>
+            </Border>
+            
+            <!-- Currencies -->
+            <Border Background="#1E1E20" CornerRadius="10" Padding="16">
+              <StackPanel Spacing="12">
+                <TextBlock Text="DIVISAS" FontSize="10" FontWeight="Bold" Foreground="#666"/>
+                
+                <!-- Glimmer -->
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <Border Width="28" Height="28" CornerRadius="6" Background="#2D2D30">
+                    <TextBlock Text="✦" FontSize="14" Foreground="#72C6EF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <TextBlock Grid.Column="1" Text="Luminosidad" FontSize="13" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                  <TextBlock Grid.Column="2" Text="{Binding Glimmer, FallbackValue='250,000'}" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                </Grid>
+                
+                <!-- Legendary Shards -->
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <Border Width="28" Height="28" CornerRadius="6" Background="#2D2D30">
+                    <TextBlock Text="◆" FontSize="14" Foreground="#522F65" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <TextBlock Grid.Column="1" Text="Fragmentos Legendarios" FontSize="13" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                  <TextBlock Grid.Column="2" Text="{Binding LegendaryShards, FallbackValue='5,000'}" FontSize="13" FontWeight="Bold" Foreground="#9C27B0"/>
+                </Grid>
+                
+                <!-- Bright Dust -->
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <Border Width="28" Height="28" CornerRadius="6" Background="#2D2D30">
+                    <TextBlock Text="✧" FontSize="14" Foreground="#00BCD4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <TextBlock Grid.Column="1" Text="Polvo Brillante" FontSize="13" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                  <TextBlock Grid.Column="2" Text="{Binding BrightDust, FallbackValue='12,500'}" FontSize="13" FontWeight="Bold" Foreground="#00BCD4"/>
+                </Grid>
+              </StackPanel>
+            </Border>
+            
+            <!-- Account Stats -->
+            <Border Background="#1E1E20" CornerRadius="10" Padding="16" IsVisible="{Binding IsConnected}">
+              <StackPanel Spacing="8">
+                <TextBlock Text="ESTADÍSTICAS" FontSize="10" FontWeight="Bold" Foreground="#666"/>
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                  <TextBlock Grid.Row="0" Grid.Column="0" Text="Ítems en Depósito" Foreground="#AAA" FontSize="12"/>
+                  <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding VaultItemCount}" Foreground="White" FontWeight="Bold"/>
+                  
+                  <TextBlock Grid.Row="1" Grid.Column="0" Text="Administrador Postal" Foreground="#AAA" FontSize="12" Margin="0,6,0,0"/>
+                  <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PostmasterCount}" Foreground="White" FontWeight="Bold" Margin="0,6,0,0"/>
+                  
+                  <TextBlock Grid.Row="2" Grid.Column="0" Text="Exóticos" Foreground="#AAA" FontSize="12" Margin="0,6,0,0"/>
+                  <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ExoticCount}" Foreground="#F5A623" FontWeight="Bold" Margin="0,6,0,0"/>
+                </Grid>
+              </StackPanel>
+            </Border>
+            
+            <!-- Refresh Button -->
+            <Button Content="🔄 Actualizar Todo" Command="{Binding RefreshInventoryCommand}"
+                    HorizontalAlignment="Stretch" Padding="16,12" 
+                    Background="#EBC805" Foreground="#1E1E1E" FontWeight="Bold" FontSize="13"/>
+                    
+          </StackPanel>
+        </ScrollViewer>
         
-      </StackPanel>
+      </Grid>
     </Border>
     
   </Grid>

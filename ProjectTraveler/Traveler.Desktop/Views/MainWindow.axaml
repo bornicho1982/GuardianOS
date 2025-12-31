@@ -10,41 +10,62 @@
 
     <Grid ColumnDefinitions="220, *" Background="#1E1E1E">
         
-        <!-- SIDEBAR -->
-        <Border Grid.Column="0" Background="#252526" BorderBrush="#3E3E42" BorderThickness="0,0,1,0">
-            <Grid RowDefinitions="Auto, *">
+        <!-- SIDEBAR: Fluent Design Style -->
+        <Border Grid.Column="0" Background="#1F1F1F" BorderBrush="#2D2D2D" BorderThickness="0,0,1,0">
+            <Grid RowDefinitions="Auto, *, Auto">
                 <!-- App Header -->
-                <StackPanel Grid.Row="0" Margin="16,20" Orientation="Horizontal" Spacing="10">
-                    <PathIcon Data="{DynamicResource FluentIconGlobe}" Foreground="White"/> 
-                    <!-- Note: We'll need to define icons or use text if icons fail. Using Text for safety first. -->
-                    <TextBlock Text="TRAVELER" FontWeight="Black" FontSize="20" Foreground="White" LetterSpacing="2"/>
-                </StackPanel>
+                <Border Grid.Row="0" Background="#252528" Padding="16,20" Margin="0,0,0,8">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Width="36" Height="36" CornerRadius="8" Background="#EBC805">
+                            <TextBlock Text="G" FontWeight="Black" FontSize="18" Foreground="#1F1F1F" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="GUARDIAN" FontWeight="Black" FontSize="16" Foreground="White" LetterSpacing="1"/>
+                            <TextBlock Text="OS" FontWeight="Bold" FontSize="10" Foreground="#EBC805"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
 
                 <!-- Navigation List -->
                 <ListBox Grid.Row="1" 
                          ItemsSource="{Binding NavigationItems}" 
                          SelectedItem="{Binding SelectedItem}"
                          Background="Transparent"
-                         Margin="0,10">
+                         Margin="8,0">
                     <ListBox.Styles>
-                        <!-- Style for ListBoxItem to look like nav buttons -->
                         <Style Selector="ListBoxItem">
-                            <Setter Property="Padding" Value="12,10"/>
-                            <Setter Property="Margin" Value="8,2"/>
-                            <Setter Property="CornerRadius" Value="4"/>
+                            <Setter Property="Padding" Value="14,12"/>
+                            <Setter Property="Margin" Value="0,2"/>
+                            <Setter Property="CornerRadius" Value="6"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:selected">
+                            <Setter Property="Background" Value="#2D2D30"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover">
+                            <Setter Property="Background" Value="#252528"/>
                         </Style>
                     </ListBox.Styles>
                     
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                <!-- Using simple text icon placeholder or Binding Icon if using a Font/Symbol lib -->
-                                <!--<TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets"/>-->
-                                <TextBlock Text="{Binding Label}" VerticalAlignment="Center" FontSize="14"/>
+                            <StackPanel Orientation="Horizontal" Spacing="14">
+                                <TextBlock Text="{Binding Icon}" FontSize="18" VerticalAlignment="Center" Width="24"/>
+                                <TextBlock Text="{Binding Label}" VerticalAlignment="Center" FontSize="14" Foreground="White"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                
+                <!-- Footer: Settings & Language -->
+                <StackPanel Grid.Row="2" Margin="8,8,8,16" Spacing="4">
+                    <Border Height="1" Background="#2D2D2D" Margin="0,0,0,8"/>
+                    <Button Content="⚙️ Configuración" Background="Transparent" Foreground="#888" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="14,10"/>
+                    <Button Content="🌐 Español" Background="Transparent" Foreground="#666" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="14,10" FontSize="12"/>
+                </StackPanel>
             </Grid>
         </Border>
 
