@@ -58,15 +58,120 @@ public class InventoryService : IInventoryService
         _httpClient.DefaultRequestHeaders.Add("X-API-Key", BungieAuthService.ApiKey);
     }
 
-    // Area 3: Drag & Drop Logic
+    // ===== TRANSFER LOGIC (Bungie API) =====
+    
+    /// <summary>
+    /// Transfers an item to Vault or to a specific character.
+    /// Note: Bungie API only supports Character ↔ Vault transfers.
+    /// Character A → Character B requires: A → Vault → B (two API calls).
+    /// </summary>
     public async Task TransferItemAsync(InventoryItem item, string targetCharacterId, bool toVault, int stackSize = 1)
     {
-        Console.WriteLine($"[Transfer] Request to move {item.Name} ({item.InstanceId}) to {(toVault ? "Vault" : targetCharacterId)}");
+        Console.WriteLine($"[Transfer] Request: {item.Name} ({item.InstanceId}) → {(toVault ? "Vault" : $"Char:{targetCharacterId}")}");
         
-        // TODO: Validate ownership & call API
-        // Mock success for UI testing
-        await Task.Delay(200);
-        Console.WriteLine("[Transfer] Simulated success");
+        if (!_authService.IsAuthenticated)
+        {
+            Console.WriteLine("[Transfer] Error: Not authenticated");
+            return;
+        }
+
+        try
+        {
+            var currentLocation = item.Location;
+            
+            // CASE 1: Item is on a character, moving TO Vault
+            if (toVault && currentLocation != "vault")
+            {
+                await ExecuteTransferToVault(item, currentLocation, stackSize);
+                item.Location = "vault";
+                Console.WriteLine("[Transfer] Success: Item moved to Vault");
+            }
+            // CASE 2: Item is in Vault, moving TO a character
+            else if (!toVault && currentLocation == "vault")
+            {
+                await ExecuteTransferFromVault(item, targetCharacterId, stackSize);
+                item.Location = targetCharacterId;
+                Console.WriteLine($"[Transfer] Success: Item moved to Character {targetCharacterId}");
+            }
+            // CASE 3: Character A → Character B (requires routing through Vault)
+            else if (!toVault && currentLocation != "vault" && currentLocation != targetCharacterId)
+            {
+                Console.WriteLine($"[Transfer] Routing: Char {currentLocation} → Vault → Char {targetCharacterId}");
+                
+                // Step 1: Move to Vault
+                await ExecuteTransferToVault(item, currentLocation, stackSize);
+                item.Location = "vault";
+                
+                // Small delay to avoid rate limiting
+                await Task.Delay(100);
+                
+                // Step 2: Move from Vault to target character
+                await ExecuteTransferFromVault(item, targetCharacterId, stackSize);
+                item.Location = targetCharacterId;
+                
+                Console.WriteLine("[Transfer] Success: Routed through Vault");
+            }
+            else
+            {
+                Console.WriteLine("[Transfer] No action needed (item already at destination)");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Transfer] Error: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task ExecuteTransferToVault(InventoryItem item, string sourceCharacterId, int stackSize)
+    {
+        var requestBody = new
+        {
+            itemReferenceHash = item.ItemHash,
+            stackSize = stackSize,
+            transferToVault = true,
+            itemId = item.InstanceId.ToString(),
+            characterId = sourceCharacterId,
+            membershipType = MembershipType
+        };
+
+        await CallTransferItemEndpoint(requestBody);
+    }
+
+    private async Task ExecuteTransferFromVault(InventoryItem item, string targetCharacterId, int stackSize)
+    {
+        var requestBody = new
+        {
+            itemReferenceHash = item.ItemHash,
+            stackSize = stackSize,
+            transferToVault = false,
+            itemId = item.InstanceId.ToString(),
+            characterId = targetCharacterId,
+            membershipType = MembershipType
+        };
+
+        await CallTransferItemEndpoint(requestBody);
+    }
+
+    private async Task CallTransferItemEndpoint(object requestBody)
+    {
+        var json = System.Text.Json.JsonSerializer.Serialize(requestBody);
+        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        
+        // Add OAuth token
+        _httpClient.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
+        
+        var response = await _httpClient.PostAsync($"{BaseUrl}/Destiny2/Actions/Items/TransferItem/", content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"[Transfer] API Error: {response.StatusCode} - {responseBody}");
+            throw new Exception($"Transfer failed: {response.StatusCode}");
+        }
+        
+        Console.WriteLine($"[Transfer] API Response: {response.StatusCode}");
     }
 
     /// <summary>

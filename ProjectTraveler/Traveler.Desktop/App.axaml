@@ -1,8 +1,17 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:Traveler.Desktop"
+             xmlns:converters="using:Traveler.Desktop.Converters"
              x:Class="Traveler.Desktop.App"
              RequestedThemeVariant="Dark">
+             
+    <Application.Resources>
+        <!-- Global Converters -->
+        <converters:BungieUrlConverter x:Key="BungieUrlConverter"/>
+        <converters:TierBackgroundConverter x:Key="TierBackgroundConverter"/>
+        <converters:MasterworkBorderConverter x:Key="MasterworkBorderConverter"/>
+        <converters:BoolToThicknessConverter x:Key="BoolToThicknessConverter"/>
+    </Application.Resources>
 
     <Application.DataTemplates>
         <local:ViewLocator/>

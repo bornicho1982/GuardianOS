@@ -388,20 +388,55 @@
                         </StackPanel>
                     </Border>
                     
-                    <!-- Vault Items Grid -->
+                    <!-- Vault Items Grid: Separated Weapons and Armor -->
                     <ScrollViewer Grid.Row="1">
-                        <ItemsControl ItemsSource="{Binding FilteredVaultItems}" Margin="8">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:ItemControl Margin="0,0,2,2"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <StackPanel Margin="8" Spacing="12">
+                            
+                            <!-- WEAPONS SECTION -->
+                            <Border Background="#252528" CornerRadius="4" Padding="8">
+                                <StackPanel>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="⚔ ARMAS" FontSize="12" FontWeight="Bold" Foreground="#EBC805"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding VaultWeaponsCount, StringFormat='{}{0}'}" FontSize="10" Foreground="#888"/>
+                                    </Grid>
+                                    <ItemsControl ItemsSource="{Binding VaultWeapons}" Margin="0,8,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- ARMOR SECTION -->
+                            <Border Background="#252528" CornerRadius="4" Padding="8">
+                                <StackPanel>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="⛊ ARMADURA" FontSize="12" FontWeight="Bold" Foreground="#EBC805"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding VaultArmorCount, StringFormat='{}{0}'}" FontSize="10" Foreground="#888"/>
+                                    </Grid>
+                                    <ItemsControl ItemsSource="{Binding VaultArmor}" Margin="0,8,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                            
+                        </StackPanel>
                     </ScrollViewer>
                 </Grid>
             </Border>

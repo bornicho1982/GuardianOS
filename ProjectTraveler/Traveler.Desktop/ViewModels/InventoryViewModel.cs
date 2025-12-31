@@ -166,6 +166,48 @@ public class InventoryViewModel : ViewModelBase
     // === VAULT ITEM COUNT ===
     public int VaultItemCount => FilteredVaultItems.Count();
     
+    // === CLEAN VAULT COLLECTIONS (Strict Bucket Filtering) ===
+    // Weapon bucket hashes: Kinetic, Energy, Power
+    private static readonly uint[] WeaponBuckets = { 1498876634, 2465295065, 953998645 };
+    // Armor bucket hashes: Helmet, Gauntlets, Chest, Legs, Class Item
+    private static readonly uint[] ArmorBuckets = { 3448274439, 3551918588, 14239492, 20886954, 1585787867 };
+    
+    /// <summary>
+    /// Vault items filtered to only WEAPONS (Kinetic, Energy, Power).
+    /// Excludes ships, sparrows, ghosts, emblems, etc.
+    /// </summary>
+    public IEnumerable<InventoryItem> VaultWeapons
+    {
+        get
+        {
+            var vaultItems = Items.Where(i => i.Location == "vault");
+            return FilterItems(vaultItems.Where(i => WeaponBuckets.Contains(i.BucketHash)));
+        }
+    }
+    
+    /// <summary>
+    /// Vault items filtered to only ARMOR (Helmet, Gauntlets, Chest, Legs, Class Item).
+    /// Also filters by current character class.
+    /// </summary>
+    public IEnumerable<InventoryItem> VaultArmor
+    {
+        get
+        {
+            if (SelectedCharacter == null) return Enumerable.Empty<InventoryItem>();
+            
+            var charClass = SelectedCharacter.ClassName;
+            var vaultItems = Items.Where(i => i.Location == "vault");
+            
+            return FilterItems(vaultItems.Where(i => 
+                ArmorBuckets.Contains(i.BucketHash) &&
+                (string.IsNullOrEmpty(i.ClassType) || i.ClassType == "Any" || i.ClassType == charClass)
+            ));
+        }
+    }
+    
+    public int VaultWeaponsCount => VaultWeapons.Count();
+    public int VaultArmorCount => VaultArmor.Count();
+    
     // === CHARACTER SELECTION HELPER ===
     public bool IsCharacterSelected(CharacterInfo? character)
     {
@@ -239,6 +281,10 @@ public class InventoryViewModel : ViewModelBase
         
         // Notify vault
         this.RaisePropertyChanged(nameof(FilteredVaultItems));
+        this.RaisePropertyChanged(nameof(VaultWeapons));
+        this.RaisePropertyChanged(nameof(VaultArmor));
+        this.RaisePropertyChanged(nameof(VaultWeaponsCount));
+        this.RaisePropertyChanged(nameof(VaultArmorCount));
     }
 
     private void OnInventoryRefreshed()
