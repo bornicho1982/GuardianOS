@@ -20,7 +20,7 @@
     <Border Classes="MainContainer" CornerRadius="0"
             BorderThickness="{Binding IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
             BorderBrush="{Binding IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}"
-            Background="#252525"
+            Background="{Binding TierType, Converter={StaticResource TierBackgroundConverter}}"
             ClipToBounds="False">
             
         <ToolTip.Tip>
