@@ -378,6 +378,8 @@ public class InventoryService : IInventoryService
                 string archetype = "", archetypeIcon = "";
                 int masterworkLevel = 0;
 
+                var definition = await GetItemDefinitionFromManifestAsync(itemHash);
+
                 if (isEquipped && instanceId > 0 && itemSockets.TryGetValue(instanceId, out var plugs))
                 {
                     // 1. First Pass: Archetype & Masterwork (Inspect all sockets)
@@ -400,10 +402,9 @@ public class InventoryService : IInventoryService
 
                     // 2. Second Pass: Weapon Perks via SocketCategories (DIM Logic)
                     // Weapon Perks Category Hash = 4241087561
-                    var defForSockets = await GetItemDefinitionFromManifestAsync(itemHash);
-                    if (defForSockets != null && defForSockets.SocketCategories.Any())
+                    if (definition != null && definition.SocketCategories.Any())
                     {
-                        var perkCategory = defForSockets.SocketCategories.FirstOrDefault(c => c.Hash == 4241087561);
+                        var perkCategory = definition.SocketCategories.FirstOrDefault(c => c.Hash == 4241087561);
                         if (perkCategory != null)
                         {
                             foreach (var index in perkCategory.Indexes)
@@ -424,8 +425,6 @@ public class InventoryService : IInventoryService
 
                 var state = item.TryGetProperty("state", out var stateProp) ? stateProp.GetInt32() : 0;
                 var isLocked = (state & 1) != 0;
-
-                var definition = await GetItemDefinitionFromManifestAsync(itemHash);
                 
                 // Phase 6 & 7: DIM Visual Properties & Damage Type (From Manifest)
                 var damageTypeIcon = "";
