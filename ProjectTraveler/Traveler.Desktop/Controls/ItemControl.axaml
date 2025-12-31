@@ -118,7 +118,7 @@
         </Border>
         
         <!-- ROW 1: Footer Bar -->
-        <Grid Grid.Row="1" Background="#E6000000"> <!-- Dark semi-transparent background -->
+        <Grid Grid.Row="1" Background="#CC000000"> <!-- Dark semi-transparent background -->
              <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" /> <!-- Element -->
                 <ColumnDefinition Width="*" />    <!-- Power -->
