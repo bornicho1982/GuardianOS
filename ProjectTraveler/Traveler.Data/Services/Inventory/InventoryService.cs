@@ -402,20 +402,24 @@ public class InventoryService : IInventoryService
 
                     // 2. Second Pass: Weapon Perks via SocketCategories (DIM Logic)
                     // Weapon Perks Category Hash = 4241087561
-                    if (definition != null && definition.SocketCategories.Any())
+                    // User Request Logic implementation
+                    if (definition?.SocketCategories != null)
                     {
-                        var perkCategory = definition.SocketCategories.FirstOrDefault(c => c.Hash == 4241087561);
-                        if (perkCategory != null)
+                        var perksCategory = definition.SocketCategories.FirstOrDefault(c => c.SocketCategoryHash == 4241087561);
+                        
+                        if (perksCategory != null)
                         {
-                            foreach (var index in perkCategory.Indexes)
+                            foreach (var index in perksCategory.SocketIndexes)
                             {
                                 if (index >= 0 && index < plugs.Count)
                                 {
-                                    var perkHash = plugs[index];
-                                    var perkDef = await GetItemDefinitionFromManifestAsync(perkHash);
-                                    if (perkDef != null && !string.IsNullOrEmpty(perkDef.Icon))
+                                    var plugHash = plugs[index];
+                                    var plugDef = await GetItemDefinitionFromManifestAsync(plugHash);
+                                    
+                                    if (!string.IsNullOrEmpty(plugDef?.Icon))
                                     {
-                                        socketIcons.Add(perkDef.Icon);
+                                        var iconUrl = plugDef.Icon.StartsWith("/") ? $"https://www.bungie.net{plugDef.Icon}" : plugDef.Icon;
+                                        socketIcons.Add(iconUrl);
                                     }
                                 }
                             }
@@ -435,6 +439,11 @@ public class InventoryService : IInventoryService
                 else if (definition?.DefaultDamageTypeHash > 0)
                 {
                      damageTypeIcon = await _manifestDatabase.GetDamageTypeIconAsync((uint)definition.DefaultDamageTypeHash);
+                }
+                
+                if (!string.IsNullOrEmpty(damageTypeIcon) && damageTypeIcon.StartsWith("/"))
+                {
+                    damageTypeIcon = $"https://www.bungie.net{damageTypeIcon}";
                 }
 
                 // DIM Tier Pips Logic (Approximate based on Rarity)
@@ -563,6 +572,6 @@ public class InventoryService : IInventoryService
         public string? SeasonIconUrl { get; init; }
         public string? IconWatermarkShelved { get; init; }
         public int DefaultDamageTypeHash { get; init; }
-        public List<SocketCategory> SocketCategories { get; init; } = new();
+        public List<SocketCategoryDefinition> SocketCategories { get; init; } = new();
     }
 }

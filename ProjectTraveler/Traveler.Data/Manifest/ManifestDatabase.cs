@@ -243,9 +243,9 @@ public class ManifestDatabase
         }
     }
 
-    private List<SocketCategory> ParseSocketCategories(JsonElement root)
+    private List<SocketCategoryDefinition> ParseSocketCategories(JsonElement root)
     {
-        var list = new List<SocketCategory>();
+        var list = new List<SocketCategoryDefinition>();
         if (root.TryGetProperty("sockets", out var sockets) && 
             sockets.TryGetProperty("socketCategories", out var categories))
         {
@@ -259,7 +259,7 @@ public class ManifestDatabase
                     {
                         indexes.Add(idx.GetInt32());
                     }
-                    list.Add(new SocketCategory(hashProp.GetUInt32(), indexes));
+                    list.Add(new SocketCategoryDefinition(hashProp.GetUInt32(), indexes));
                 }
             }
         }
@@ -490,10 +490,10 @@ public record ItemDefinition
     public int DefaultDamageTypeHash { get; init; }
     
     // Phase 8: Socket Categories (for Perks)
-    public List<SocketCategory> SocketCategories { get; init; } = new();
+    public List<SocketCategoryDefinition> SocketCategories { get; init; } = new();
 }
 
-public record SocketCategory(uint Hash, List<int> Indexes);
+public record SocketCategoryDefinition(uint SocketCategoryHash, List<int> SocketIndexes);
 
 /// <summary>
 /// Parsed record/triumph definition.
