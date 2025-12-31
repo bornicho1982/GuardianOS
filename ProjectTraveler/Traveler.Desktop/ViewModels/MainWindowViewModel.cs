@@ -1,5 +1,6 @@
 using ReactiveUI;
 using System.Reactive.Linq;
+using Traveler.Core.Services;
 
 namespace Traveler.Desktop.ViewModels;
 
@@ -52,6 +53,9 @@ public class MainWindowViewModel : ViewModelBase
         _triumphsVm = triumphsVm;
         _organizerVm = organizerVm;
         _settingsVm = settingsVm;
+
+        // Ensure Localization Service is initialized
+        var loc = LocalizationService.Instance;
 
         // Default selection
         SelectedIndex = 0;

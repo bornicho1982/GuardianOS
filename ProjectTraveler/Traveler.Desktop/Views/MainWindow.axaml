@@ -3,6 +3,7 @@
         xmlns:vm="using:Traveler.Desktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:services="using:Traveler.Core.Services"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         x:Class="Traveler.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -12,28 +13,50 @@
                IsPaneOpen="True"
                CompactPaneLength="50"
                OpenPaneLength="220"
-               PaneBackground="#1E1E1E">
+               PaneBackground="#181818">
         <SplitView.Pane>
             <StackPanel Spacing="5" Margin="0,10">
                 <ListBox Background="Transparent" SelectedIndex="{Binding SelectedIndex}">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="15,10"/>
+                            <Setter Property="CornerRadius" Value="8"/>
+                            <Setter Property="Margin" Value="4,2"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                        
+                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#33FFFFFF"/>
+                        </Style>
+
+                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#44FFFFFF"/>
+                        </Style>
+                        
+                        <!-- Selected Indicator Border (Pseudo-element approach via Template or simple visual cue) -->
+                        <!-- For simplicity in basic ListBoxItem, we rely on Background. 
+                             To add a left border specifically, we'd need a ControlTemplate. 
+                             For now, adhering to the requested background changes which maintain the Fluent feel. -->
+                    </ListBox.Styles>
+
                     <ListBoxItem>
                         <StackPanel Orientation="Horizontal" Spacing="15">
                             <PathIcon Data="{StaticResource DashboardIcon}" Width="20"/>
-                            <TextBlock Text="Dashboard" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding [nav.home], Source={x:Static services:LocalizationService.Instance}}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ListBoxItem>
 
                     <ListBoxItem>
                         <StackPanel Orientation="Horizontal" Spacing="15">
                             <PathIcon Data="{StaticResource InventoryIcon}" Width="20"/>
-                            <TextBlock Text="Inventory" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding [nav.inventory], Source={x:Static services:LocalizationService.Instance}}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ListBoxItem>
 
                     <ListBoxItem>
                         <StackPanel Orientation="Horizontal" Spacing="15">
                             <PathIcon Data="{StaticResource LoadoutIcon}" Width="20"/>
-                            <TextBlock Text="Loadouts" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding [nav.loadouts], Source={x:Static services:LocalizationService.Instance}}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ListBoxItem>
                 </ListBox>
@@ -43,13 +66,13 @@
                 <Button Background="Transparent" HorizontalAlignment="Stretch" Margin="4,0">
                         <StackPanel Orientation="Horizontal" Spacing="15">
                         <PathIcon Data="{StaticResource SettingsIcon}" Width="20"/>
-                        <TextBlock Text="Settings" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding [nav.settings], Source={x:Static services:LocalizationService.Instance}}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
         </SplitView.Pane>
         <SplitView.Content>
-            <TextBlock Text="Content" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <ContentControl Content="{Binding CurrentPage}" Padding="20" />
         </SplitView.Content>
     </SplitView>
 </Window>

@@ -169,6 +169,42 @@ public class DashboardHomeViewModel : ViewModelBase
                 }
             });
         }
+        else
+        {
+            // MOCK DATA FOR UI VERIFICATION (User Request)
+            Dispatcher.UIThread.Post(() =>
+            {
+                Console.WriteLine("[Dashboard] Loading MOCK DATA for verification...");
+                
+                // 1. Mock Character
+                var mockChar = new CharacterInfo 
+                { 
+                    ClassName = "Warlock", 
+                    RaceName = "Exo",
+                    GenderName = "Male",
+                    LightLevel = 1810, 
+                    CharacterId = 123456,
+                    EmblemBackgroundPath = "/common/destiny2_content/icons/8c1c5a9b7529fa410886a8775df5005b.jpg" // Valid emblem Path
+                };
+                Characters.Add(mockChar);
+                SelectedCharacter = mockChar;
+
+                // 2. Mock Currencies
+                Currencies.Clear();
+                Currencies.Add(new CurrencyModel { Name = "Glimmer", Icon = "/common/destiny2_content/icons/6a27bf1490a02b1f8fb86e24db5cb604.png", Quantity = "250,000" });
+                Currencies.Add(new CurrencyModel { Name = "Legendary Shards", Icon = "/common/destiny2_content/icons/39092eb39178ad3813c05421d017cd36.png", Quantity = "1,500" });
+                Currencies.Add(new CurrencyModel { Name = "Bright Dust", Icon = "/common/destiny2_content/icons/80e30dce021c5f356d2bb6409600a12e.png", Quantity = "4,200" });
+
+                // 3. Mock Vault Stats
+                VaultCount = 450;
+                
+                // Force Property Updates
+                this.RaisePropertyChanged(nameof(CurrentCharacter));
+                this.RaisePropertyChanged(nameof(VaultSpaceUsed));
+                this.RaisePropertyChanged(nameof(VaultSpaceText));
+                this.RaisePropertyChanged(nameof(VaultSpaceColor));
+            });
+        }
     }
 
     private void OnInventoryRefreshed()
@@ -177,8 +213,13 @@ public class DashboardHomeViewModel : ViewModelBase
         Dispatcher.UIThread.Post(() =>
         {
             Console.WriteLine($"[Dashboard] Inventory refresh complete ({_inventoryService?.AllItems.Count ?? 0} items)");
-            CalculateStats();
-            LoadCharacters();
+            
+            // Only calculate real stats if we have items, otherwise keep mock data for now
+            if (_inventoryService?.AllItems.Count > 0)
+            {
+                CalculateStats();
+                LoadCharacters();
+            }
         });
     }
 

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:vm="using:Traveler.Desktop.ViewModels"
+             xmlns:services="using:Traveler.Core.Services"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Traveler.Desktop.Views.DashboardHomeView"
              x:DataType="vm:DashboardHomeViewModel">
@@ -32,7 +33,7 @@
                 <!-- Currencies -->
                 <Border Grid.Column="0" Background="#252525" CornerRadius="8" Padding="15" Margin="0,0,10,0">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="CURRENCIES" FontWeight="Bold" Foreground="#888" FontSize="12"/>
+                        <TextBlock Text="{Binding [status.currencies], Source={x:Static services:LocalizationService.Instance}}" FontWeight="Bold" Foreground="#888" FontSize="12"/>
                         <ItemsControl ItemsSource="{Binding Currencies}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -50,7 +51,7 @@
                 <!-- Vault Status -->
                 <Border Grid.Column="1" Background="#252525" CornerRadius="8" Padding="15" Margin="5,0,5,0">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="VAULT STATUS" FontWeight="Bold" Foreground="#888" FontSize="12"/>
+                        <TextBlock Text="{Binding [status.vaultItems], Source={x:Static services:LocalizationService.Instance}}" FontWeight="Bold" Foreground="#888" FontSize="12"/>
                         <ProgressBar Value="{Binding VaultSpaceUsed}" Maximum="{Binding VaultSpaceTotal}" Height="10" Foreground="{Binding VaultSpaceColor}" Background="#444"/>
                         <TextBlock Text="{Binding VaultSpaceText}" HorizontalAlignment="Right" FontSize="12" Foreground="{Binding VaultSpaceColor}"/>
                     </StackPanel>
