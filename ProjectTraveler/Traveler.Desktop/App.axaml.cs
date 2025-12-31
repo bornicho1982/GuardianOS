@@ -98,7 +98,8 @@ public partial class App : Application
             var settingsVm = new SettingsViewModel(settingsService, authService, inventoryService);
 
             // Dashboard (Navigation Shell)
-            var dashboardVm = new DashboardViewModel(
+            // Dashboard (Navigation Shell)
+            var mainWindowVm = new MainWindowViewModel(
                 dashboardHomeVm,
                 inventoryVm, 
                 loadoutsVm, 
@@ -110,7 +111,7 @@ public partial class App : Application
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = dashboardVm
+                DataContext = mainWindowVm
             };
         }
 

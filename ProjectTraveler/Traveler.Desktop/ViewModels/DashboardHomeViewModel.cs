@@ -55,6 +55,7 @@ public class DashboardHomeViewModel : ViewModelBase
             this.RaiseAndSetIfChanged(ref _selectedCharacter, value);
             this.RaisePropertyChanged(nameof(HasSelectedCharacter));
             this.RaisePropertyChanged(nameof(SelectedClassName));
+            this.RaisePropertyChanged(nameof(CurrentCharacter));
         }
     }
     public bool HasSelectedCharacter => SelectedCharacter != null;
@@ -80,9 +81,28 @@ public class DashboardHomeViewModel : ViewModelBase
     // UI Helper Properties
     public string ConnectionButtonText => IsConnected ? "Disconnect" : "Connect";
     public string ConnectionStatusColor => IsConnected ? "#4CAF50" : "#AAA";
-    public string VaultItemCount => $"{VaultCount} / 600";
+    
+    // Alias for View binding compatibility
+    public CharacterInfo? CurrentCharacter => SelectedCharacter;
+
+    // Vault Stats
+    public double VaultSpaceUsed => VaultCount;
+    public double VaultSpaceTotal => 600;
+    public string VaultSpaceText => $"{VaultCount} / 600";
+    public string VaultSpaceColor => VaultCount > 550 ? "#FF5252" : (VaultCount > 400 ? "#FFC107" : "#4CAF50");
+
+    // Currencies
+    public ObservableCollection<CurrencyModel> Currencies { get; } = new();
+
     public ReactiveCommand<Unit, Unit> ToggleConnectionCommand { get; }
     public ReactiveCommand<Unit, Unit> RefreshInventoryCommand { get; }
+
+    public class CurrencyModel
+    {
+        public string Name { get; set; } = "";
+        public string Icon { get; set; } = "";
+        public string Quantity { get; set; } = "";
+    }
 
     // Design-time constructor
     public DashboardHomeViewModel()
@@ -439,6 +459,16 @@ public class DashboardHomeViewModel : ViewModelBase
         this.RaisePropertyChanged(nameof(TotalPower));
         this.RaisePropertyChanged(nameof(PostmasterWarning));
         
+        // Populate Currencies (Mock for now, needs real API data)
+        Currencies.Clear();
+        Currencies.Add(new CurrencyModel { Name = "Glimmer", Icon = "/common/destiny2_content/icons/6a27bf1490a02b1f8fb86e24db5cb604.png", Quantity = "250,000" });
+        Currencies.Add(new CurrencyModel { Name = "Legendary Shards", Icon = "/common/destiny2_content/icons/39092eb39178ad3813c05421d017cd36.png", Quantity = "10,500" });
+        Currencies.Add(new CurrencyModel { Name = "Bright Dust", Icon = "/common/destiny2_content/icons/80e30dce021c5f356d2bb6409600a12e.png", Quantity = "4,200" });
+
+        this.RaisePropertyChanged(nameof(VaultSpaceUsed));
+        this.RaisePropertyChanged(nameof(VaultSpaceText));
+        this.RaisePropertyChanged(nameof(VaultSpaceColor));
+
         Console.WriteLine($"[Dashboard] Stats: Power={MaxPowerLevel}+{ArtifactBonus}, Vault={VaultCount}, Exotics={ExoticCount}");
     }
 
