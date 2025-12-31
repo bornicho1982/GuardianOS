@@ -15,23 +15,20 @@ public class BungieUrlConverter : IValueConverter
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is string path && !string.IsNullOrEmpty(path))
+        // Si el valor es nulo o vacío, devuelve null
+        if (value is not string path || string.IsNullOrEmpty(path))
         {
-            // Already absolute URL
-            if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                return path;
-            }
-            // Relative path from Bungie API
-            if (path.StartsWith("/"))
-            {
-                return $"{BaseUrl}{path}";
-            }
+            return null;
+        }
+        
+        // Si ya es una URL absoluta, devuélvela tal cual
+        if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+        {
             return path;
         }
         
-        // Return placeholder for null/empty
-        return Placeholder;
+        // Si es una ruta relativa, añade el dominio de Bungie
+        return $"{BaseUrl}{path}";
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

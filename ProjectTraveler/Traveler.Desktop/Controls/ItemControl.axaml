@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="using:Traveler.Core.Models"
-             xmlns:asyncImageLoader="using:AsyncImageLoader"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:converters="using:Traveler.Desktop.Converters"
              xmlns:controls="using:Traveler.Desktop.Controls"
              x:Class="Traveler.Desktop.Controls.ItemControl"
@@ -23,15 +23,14 @@
             ClipToBounds="False">
             
         <ToolTip.Tip>
-            <controls:ItemTooltip/>
+            <controls:ItemTooltip DataContext="{Binding}" />
         </ToolTip.Tip>
             
         <Grid>
-            <asyncImageLoader:AdvancedImage 
-                Source="{Binding IconUrl}" 
-                Stretch="UniformToFill"
-                VerticalAlignment="Top"
-                Height="66"/>
+            <Image asyncImageLoader:ImageLoader.Source="{Binding Icon, Converter={StaticResource BungieUrlConverter}}" 
+                   Stretch="UniformToFill"
+                   VerticalAlignment="Top"
+                   Height="66"/>
 
             <Border Background="#90000000" CornerRadius="0,0,4,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <asyncImageLoader:AdvancedImage 

@@ -1,40 +1,31 @@
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using System;
 using System.Globalization;
-using System.IO;
 
 namespace Traveler.Desktop.Converters;
 
 /// <summary>
-/// Converts damage type name to local icon path for element display.
+/// Converts damage type name to local Avalonia resource icon.
 /// </summary>
 public class DamageTypeIconConverter : IValueConverter
 {
-    private static readonly string IconsPath = Path.Combine(
-        AppDomain.CurrentDomain.BaseDirectory, 
-        "Assets", "Icons", "Elements");
-
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not string damageTypeName || string.IsNullOrEmpty(damageTypeName))
             return null;
 
-        var iconPath = Path.Combine(IconsPath, $"{damageTypeName}.png");
-        
-        if (File.Exists(iconPath))
+        try
         {
-            try
-            {
-                return new Bitmap(iconPath);
-            }
-            catch
-            {
-                return null;
-            }
+            var uri = new Uri($"avares://Traveler.Desktop/Assets/Icons/Elements/{damageTypeName}.png");
+            using var stream = AssetLoader.Open(uri);
+            return new Bitmap(stream);
         }
-        
-        return null;
+        catch
+        {
+            return null;
+        }
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
