@@ -169,6 +169,12 @@ public record InventoryItem
 
     // New Detailed Properties (Phase 5)
     public string WatermarkIconUrl { get; set; } = "";
+    
+    /// <summary>
+    /// Featured flag URL for items that are featured/new.
+    /// </summary>
+    public string FeaturedFlagUrl { get; set; } = "";
+    
     public int AmmoType { get; set; } = 0; // 0:None, 1:Primary, 2:Special, 3:Heavy
     public int MasterworkLevel { get; set; } = 0;
     
@@ -176,6 +182,89 @@ public record InventoryItem
     public int EnergyCapacity { get; set; } = 0; // For Armor (1-10)
     public int DamageType { get; set; } = 0; // 0:None, 1:Kinetic, 2:Arc, 3:Solar, 4:Void, 5:Raid, 6:Stasis, 7:Strand
     public string DamageTypeIcon { get; set; } = ""; // Icon for the damage type
+    
+    // ========== DIM Visual Properties (Phase 7) ==========
+    
+    /// <summary>
+    /// Gear tier level (1-5) from Edge of Fate system. Shows as pips on left side.
+    /// </summary>
+    public int GearTier { get; set; } = 0;
+    
+    /// <summary>
+    /// URL for tier pips overlay (from manifest gearTierOverlayImagePaths).
+    /// </summary>
+    public string TierPipsUrl { get; set; } = "";
+    
+    /// <summary>
+    /// URL for masterwork glow overlay (masterworkOverlayPath or masterworkExoticOverlayPath).
+    /// </summary>
+    public string MasterworkGlowUrl { get; set; } = "";
+    
+    /// <summary>
+    /// Season icon from iconDef.secondaryBackground.
+    /// </summary>
+    public string SeasonIconUrl { get; set; } = "";
+    
+    /// <summary>
+    /// Whether this item is featured (new seasonal items).
+    /// </summary>
+    public bool IsFeatured { get; set; } = false;
+    
+    /// <summary>
+    /// Whether this item is crafted.
+    /// </summary>
+    public bool IsCrafted { get; set; } = false;
+    
+    /// <summary>
+    /// Whether this item is enhanced (all perks enhanced).
+    /// </summary>
+    public bool IsEnhanced { get; set; } = false;
+    
+    /// <summary>
+    /// Has deepsight resonance (pattern can be extracted).
+    /// </summary>
+    public bool HasDeepsight { get; set; } = false;
+    
+    /// <summary>
+    /// Whether to hide element icon (true for kinetic weapons only).
+    /// DIM hides element icon when: bucket is weapon AND element is Kinetic.
+    /// </summary>
+    public bool HideElementIcon => DamageTypeName == "kinetic" && (BucketType == "Kinetic" || BucketType == "Energy" || BucketType == "Heavy");
+    
+    /// <summary>
+    /// URL for crafted overlay icon.
+    /// </summary>
+    public string CraftedOverlayUrl { get; set; } = "";
+    
+    /// <summary>
+    /// URL for enhanced overlay icon.
+    /// </summary>
+    public string EnhancedOverlayUrl { get; set; } = "";
+    
+    /// <summary>
+    /// URL for the generic watermark shadow layer.
+    /// </summary>
+    public string WatermarkLayerUrl => "https://www.bungie.net/img/destiny_content/items/watermark-layer.png";
+    
+    /// <summary>
+    /// URL for masterwork overlay image.
+    /// </summary>
+    public string MasterworkOverlayUrl => "https://www.bungie.net/img/destiny_content/items/masterwork-overlay.png";
+    
+    /// <summary>
+    /// Name of the damage type for mapping to local icon files (arc, void, solar, stasis, strand, kinetic).
+    /// </summary>
+    public string DamageTypeName => DamageTypeHash switch
+    {
+        3373582085 => "kinetic",
+        2303181850 => "arc",
+        1847026933 => "solar",
+        3454344768 => "void",
+        151347233 => "stasis",
+        1513470552 => "stasis", // Alternative hash
+        3949783978 => "strand",
+        _ => ""
+    };
 
     public bool IsMasterwork => MasterworkLevel >= 10;
     

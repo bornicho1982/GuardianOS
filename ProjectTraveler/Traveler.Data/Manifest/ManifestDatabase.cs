@@ -226,7 +226,14 @@ public class ManifestDatabase
                 IconWatermark = root.TryGetProperty("iconWatermark", out var iwm) ? iwm.GetString() : root.TryGetProperty("iconWatermarkShelved", out var iwms) ? iwms.GetString() : null,
                 AmmoType = root.TryGetProperty("equippingBlock", out var eq) && eq.TryGetProperty("ammoType", out var at) ? at.GetInt32() : 0,
                 // For masterwork detection - get plug.uiPlugLabel
-                UiPlugLabel = root.TryGetProperty("plug", out var plug) && plug.TryGetProperty("uiPlugLabel", out var label) ? label.GetString() : null
+                UiPlugLabel = root.TryGetProperty("plug", out var plug) && plug.TryGetProperty("uiPlugLabel", out var label) ? label.GetString() : null,
+                // Phase 7: DIM Visual Properties
+                IsFeaturedItem = root.TryGetProperty("isFeaturedItem", out var featured) && featured.GetBoolean(),
+                SeasonIconUrl = displayProps.TryGetProperty("iconHash", out var iconHash) ? 
+                    // We'd need a secondary lookup to get the secondaryBackground from Icon table
+                    // For now, use iconWatermark as a fallback
+                    (root.TryGetProperty("iconWatermark", out var seasonIwm) ? seasonIwm.GetString() : null) : null,
+                DefaultDamageTypeHash = root.TryGetProperty("defaultDamageTypeHash", out var dmgHash) ? (int)dmgHash.GetUInt32() : 0
             };
         }
         catch
@@ -405,6 +412,35 @@ public class ManifestDatabase
         }
         return items;
     }
+    /// <summary>
+    /// Gets damage type definition by hash.
+    /// </summary>
+    public async Task<string?> GetDamageTypeIconAsync(uint hash)
+    {
+        int signedHash = unchecked((int)hash);
+        
+        using var conn = GetConnection();
+        var json = await conn.QueryFirstOrDefaultAsync<string>(
+            "SELECT json FROM DestinyDamageTypeDefinition WHERE id = @id", 
+            new { id = signedHash });
+
+        if (string.IsNullOrEmpty(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            var icon = doc.RootElement
+                .GetProperty("displayProperties")
+                .GetProperty("icon")
+                .GetString();
+            return icon;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }
 
 /// <summary>
@@ -423,6 +459,11 @@ public record ItemDefinition
     public string? IconWatermark { get; init; }
     public int AmmoType { get; init; }
     public string? UiPlugLabel { get; init; } // "masterwork" for masterwork plugs
+    
+    // DIM Visual Properties (Phase 7)
+    public bool IsFeaturedItem { get; init; }
+    public string? SeasonIconUrl { get; init; }
+    public int DefaultDamageTypeHash { get; init; }
 }
 
 /// <summary>

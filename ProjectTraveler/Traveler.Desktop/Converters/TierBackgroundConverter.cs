@@ -10,11 +10,12 @@ namespace Traveler.Desktop.Converters;
 /// </summary>
 public class TierBackgroundConverter : IValueConverter
 {
-    // DIM Color Scheme
-    private static readonly IBrush LegendaryBrush = new SolidColorBrush(Color.Parse("#513065"));
-    private static readonly IBrush ExoticBrush = new SolidColorBrush(Color.Parse("#c3a019"));
-    private static readonly IBrush RareBrush = new SolidColorBrush(Color.Parse("#5076a3"));
-    private static readonly IBrush CommonBrush = new SolidColorBrush(Color.Parse("#366e42"));
+    // DIM Exact Colors from _variables.scss
+    private static readonly IBrush LegendaryBrush = new SolidColorBrush(Color.Parse("#513065")); // $legendary
+    private static readonly IBrush ExoticBrush = new SolidColorBrush(Color.Parse("#ceae33"));    // $exoticBg
+    private static readonly IBrush RareBrush = new SolidColorBrush(Color.Parse("#5076a3"));      // $rareBg
+    private static readonly IBrush UncommonBrush = new SolidColorBrush(Color.Parse("#366f42")); // $commonBg (green)
+    private static readonly IBrush CommonBrush = new SolidColorBrush(Color.Parse("#c3bcb4"));   // $basicBg (gray)
     private static readonly IBrush DefaultBrush = new SolidColorBrush(Color.Parse("#333333"));
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -26,7 +27,8 @@ public class TierBackgroundConverter : IValueConverter
                 "Exotic" => ExoticBrush,
                 "Legendary" => LegendaryBrush,
                 "Rare" => RareBrush,
-                "Common" or "Uncommon" => CommonBrush,
+                "Uncommon" => UncommonBrush,
+                "Common" => CommonBrush,
                 _ => DefaultBrush
             };
         }

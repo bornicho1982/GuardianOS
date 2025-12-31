@@ -437,6 +437,24 @@ public class InventoryService : IInventoryService
 
                 var definition = await GetItemDefinitionFromManifestAsync(itemHash);
                 
+                // Phase 6 & 7: DIM Visual Properties & Damage Type (From Manifest)
+                var damageTypeIcon = "";
+                if (damageTypeHash > 0)
+                {
+                    damageTypeIcon = await _manifestDatabase.GetDamageTypeIconAsync(damageTypeHash);
+                }
+                else if (definition?.DefaultDamageTypeHash > 0)
+                {
+                     damageTypeIcon = await _manifestDatabase.GetDamageTypeIconAsync((uint)definition.DefaultDamageTypeHash);
+                }
+
+                // DIM Tier Pips Logic (Approximate based on Rarity)
+                string tierPipsUrl = "";
+                if (definition?.TierType == 5) // Legendary
+                    tierPipsUrl = "/common/destiny2_content/icons/inventory-item-tier3.png"; 
+                else if (definition?.TierType == 6) // Exotic
+                    tierPipsUrl = "/common/destiny2_content/icons/inventory-item-tier3.png"; 
+
                 AllItems.Add(new InventoryItem
                 {
                     ItemHash = itemHash,
@@ -444,7 +462,7 @@ public class InventoryService : IInventoryService
                     Name = definition?.Name ?? $"Item #{itemHash}",
                     Icon = definition?.Icon ?? "",
                     ItemType = definition?.ItemType ?? "Unknown",
-                    TierType = definition?.TierType ?? "Unknown",
+                    TierType = GetTierName(definition?.TierType ?? 0),
                     PowerLevel = powerLevel,
                     PrimaryStatValue = powerLevel,
                     IsExotic = definition?.IsExotic ?? false,
@@ -468,8 +486,14 @@ public class InventoryService : IInventoryService
                     // Phase 6
                     EnergyCapacity = energyCapacity,
                     DamageType = damageType,
-                    DamageTypeIcon = GetDamageTypeIcon(damageType, definition)
-
+                    DamageTypeIcon = damageTypeIcon ?? "", 
+                    
+                    // Phase 7: DIM Visual Properties
+                    IsFeatured = definition?.IsFeaturedItem ?? false,
+                    FeaturedFlagUrl = (definition?.IsFeaturedItem == true) ? "/img/destiny_content/items/featured-flag.png" : "",
+                    SeasonIconUrl = definition?.SeasonIconUrl ?? "",
+                    MasterworkGlowUrl = masterworkLevel >= 10 ? "/img/destiny_content/items/masterwork-overlay.png" : "",
+                    TierPipsUrl = tierPipsUrl
                 });
             }
             catch (Exception ex)
@@ -492,37 +516,43 @@ public class InventoryService : IInventoryService
                 Name = def.Name,
                 Icon = def.Icon ?? "",
                 ItemType = def.ItemType,
-                TierType = def.TierType == 6 ? "Exotic" : def.TierType == 5 ? "Legendary" : "Other",
+                TierType = def.TierType,
                 IsExotic = def.IsExotic,
-                IsArtifice = false,
+                IsArtifice = def.UiPlugLabel == "artifice",
                 IsTier5 = false,
-                // Phase 5 mapping
                 IconWatermark = def.IconWatermark,
                 AmmoType = def.AmmoType,
-                UiPlugLabel = def.UiPlugLabel // For masterwork detection
+                UiPlugLabel = def.UiPlugLabel, 
+                // Phase 7: DIM Visual Properties
+                IsFeaturedItem = def.IsFeaturedItem,
+                SeasonIconUrl = def.SeasonIconUrl,
+                DefaultDamageTypeHash = def.DefaultDamageTypeHash
             };
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine($"[InventoryService] Error getting definition: {ex.Message}");
             return null;
         }
     }
+
+    private string GetTierName(int tierType) => tierType switch
+    {
+        6 => "Exotic",
+        5 => "Legendary",
+        4 => "Rare",
+        3 => "Uncommon",
+        2 => "Common",
+        _ => "Common"
+    };
+
 
     // LoadMockData has been removed - using real API only
 
      private string GetDamageTypeIcon(int type, ItemDefinition? def)
     {
-        // 1: Kinetic, 2: Arc, 3: Solar, 4: Void, 5: Raid, 6: Stasis, 7: Strand
-        return type switch
-        {
-            1 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_kinetic.png", 
-            2 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_arc.png",
-            3 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_thermal.png", // Solar is often 'thermal' in filenames
-            4 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_void.png",
-            6 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_stasis.png",
-            7 => "/common/destiny2_content/icons/DestinyDamageTypeDefinition_strand.png",
-            _ => ""
-        };
+        // Deprecated, logic moved to ProcessItemsAsync (using ManifestDatabase)
+        return "";
     }
 
     private record ItemDefinition
@@ -530,12 +560,18 @@ public class InventoryService : IInventoryService
         public string? Name { get; init; }
         public string? Icon { get; init; }
         public string? ItemType { get; init; }
-        public string? TierType { get; init; }
+        public int TierType { get; init; } // int from Manifest
         public bool IsExotic { get; init; }
         public bool IsArtifice { get; init; }
         public bool IsTier5 { get; init; }
         public string? IconWatermark { get; init; }
         public int AmmoType { get; init; }
-        public string? UiPlugLabel { get; init; } // For masterwork detection
+        public string? UiPlugLabel { get; init; }
+        
+        // DIM Visual Properties
+        public bool IsFeaturedItem { get; init; } // Renamed from IsFeatured
+        public string? SeasonIconUrl { get; init; }
+        public string? IconWatermarkShelved { get; init; }
+        public int DefaultDamageTypeHash { get; init; }
     }
 }
