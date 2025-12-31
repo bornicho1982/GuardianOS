@@ -3,6 +3,7 @@
              xmlns:models="using:Traveler.Core.Models"
              xmlns:asyncImageLoader="using:AsyncImageLoader"
              xmlns:converters="using:Traveler.Desktop.Converters"
+             xmlns:controls="using:Traveler.Desktop.Controls"
              x:Class="Traveler.Desktop.Controls.ItemControl"
              x:DataType="models:InventoryItem"
              Width="66" Height="78"
@@ -15,11 +16,15 @@
         <converters:BoolToThicknessConverter x:Key="BoolToThicknessConverter"/>
     </UserControl.Resources>
 
-    <Border CornerRadius="0"
+    <Border Classes="MainContainer" CornerRadius="0"
             BorderThickness="{Binding IsMasterwork, Converter={StaticResource BoolToThicknessConverter}}"
             BorderBrush="{Binding IsMasterwork, Converter={StaticResource MasterworkBorderConverter}}"
             Background="#252525"
             ClipToBounds="False">
+            
+        <ToolTip.Tip>
+            <controls:ItemTooltip/>
+        </ToolTip.Tip>
             
         <Grid>
             <asyncImageLoader:AdvancedImage 

@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="using:Traveler.Core.Models"
+             xmlns:converters="using:Traveler.Desktop.Converters"
+             xmlns:asyncImageLoader="using:AsyncImageLoader"
+             x:Class="Traveler.Desktop.Controls.ItemTooltip"
+             x:DataType="models:InventoryItem"
+             Width="320">
+
+    <UserControl.Resources>
+        <converters:BungieUrlConverter x:Key="BungieUrlConverter"/>
+        <converters:TierBackgroundConverter x:Key="TierBackgroundConverter"/>
+    </UserControl.Resources>
+
+    <Border Background="#1a1a1d" BorderBrush="#555" BorderThickness="1" CornerRadius="4" Padding="0">
+        <StackPanel>
+            
+            <!-- HEADER: Tier Color Background -->
+            <Border Background="{Binding TierType, Converter={StaticResource TierBackgroundConverter}}" 
+                    Padding="8">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Border CornerRadius="2" ClipToBounds="True" Width="48" Height="48" Background="#000">
+                        <asyncImageLoader:AdvancedImage Source="{Binding IconUrl}" Stretch="Uniform"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Text="{Binding ItemType}" FontSize="12" Foreground="White" Opacity="0.8"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- POWER & ELEMENT -->
+            <Border Background="#2a2a2d" Padding="8,4">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="{Binding PowerLevel}" FontWeight="Bold" FontSize="20" Foreground="#EBC805"/>
+                        <TextBlock Text="PODER" FontSize="10" VerticalAlignment="Center" Foreground="#AAA" Margin="0,4,0,0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                         <asyncImageLoader:AdvancedImage 
+                            Source="{Binding DamageTypeIcon, Converter={StaticResource BungieUrlConverter}}" 
+                            Width="16" Height="16"/>
+                         <TextBlock Text="{Binding ElementColor}" FontSize="12" Foreground="White" IsVisible="False"/> <!-- Placeholder -->
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- STATS (Simple version for now) -->
+            <StackPanel Margin="8" Spacing="2">
+                 <!-- TODO: Proper Stats Bar Repeater -->
+                 <TextBlock Text="Estadísticas" FontSize="10" Foreground="#888" FontWeight="Bold"/>
+                 <ItemsControl ItemsSource="{Binding Stats}">
+                     <ItemsControl.ItemTemplate>
+                         <DataTemplate>
+                             <Grid ColumnDefinitions="30, 40, *">
+                                 <TextBlock Text="{Binding Key}" FontSize="10" Foreground="White"/> <!-- StatHash -->
+                                 <TextBlock Grid.Column="1" Text="{Binding Value}" FontSize="10" Foreground="#EBC805" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+                                 <ProgressBar Grid.Column="2" Value="{Binding Value}" Maximum="100" Height="6" Background="#333" Foreground="White"/>
+                             </Grid>
+                         </DataTemplate>
+                     </ItemsControl.ItemTemplate>
+                 </ItemsControl>
+            </StackPanel>
+
+            <!-- PERKS -->
+            <StackPanel Margin="8" IsVisible="{Binding SocketIcons.Count}">
+                <TextBlock Text="Perks" FontSize="10" Foreground="#888" FontWeight="Bold" Margin="0,0,0,4"/>
+                <ItemsControl ItemsSource="{Binding SocketIcons}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="32" Height="32" CornerRadius="16" ClipToBounds="True" Margin="0,0,4,4" Background="#111" BorderBrush="#444" BorderThickness="1">
+                                <asyncImageLoader:AdvancedImage Source="{Binding}" Stretch="Uniform"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- DESCRIPTION -->
+            <Border BorderBrush="#333" BorderThickness="0,1,0,0" Padding="8" Background="#202023" IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="12" Foreground="#CCC" FontStyle="Italic"/>
+            </Border>
+
+        </StackPanel>
+    </Border>
+</UserControl>

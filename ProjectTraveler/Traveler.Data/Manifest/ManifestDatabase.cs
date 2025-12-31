@@ -213,6 +213,7 @@ public class ManifestDatabase
             {
                 Hash = root.GetProperty("hash").GetUInt32(),
                 Name = displayProps.TryGetProperty("name", out var n) ? n.GetString() ?? "" : "",
+                Description = displayProps.TryGetProperty("description", out var d) ? d.GetString() ?? "" : "",
                 Icon = displayProps.TryGetProperty("icon", out var i) ? i.GetString() : null,
                 ItemType = root.TryGetProperty("itemTypeDisplayName", out var t) ? t.GetString() ?? "" : "",
                 TierType = root.TryGetProperty("inventory", out var inv) && 
@@ -474,6 +475,7 @@ public record ItemDefinition
 {
     public uint Hash { get; init; }
     public string Name { get; init; } = "";
+    public string Description { get; init; } = "";
     public string? Icon { get; init; }
     public string ItemType { get; init; } = "";
     public int TierType { get; init; }

@@ -8,6 +8,7 @@ public record InventoryItem
     public required uint ItemHash { get; init; }
     public required long InstanceId { get; init; }
     public required string Name { get; init; }
+    public string Description { get; init; } = string.Empty;
     public string Icon { get; init; } = string.Empty;
     
     /// <summary>
@@ -181,7 +182,13 @@ public record InventoryItem
     // Phase 6: Deep Dive
     public int EnergyCapacity { get; set; } = 0; // For Armor (1-10)
     public int DamageType { get; set; } = 0; // 0:None, 1:Kinetic, 2:Arc, 3:Solar, 4:Void, 5:Raid, 6:Stasis, 7:Strand
-    public string DamageTypeIcon { get; set; } = ""; // Icon for the damage type
+    
+    private string _damageTypeIcon = "";
+    public string DamageTypeIcon 
+    { 
+        get => _damageTypeIcon.StartsWith("/") ? $"https://www.bungie.net{_damageTypeIcon}" : _damageTypeIcon;
+        set => _damageTypeIcon = value;
+    }
     
     // ========== DIM Visual Properties (Phase 7) ==========
     
@@ -292,9 +299,9 @@ public record InventoryItem
         {
             return AmmoType switch
             {
-                1 => "/common/destiny2_content/icons/043addd07b34b172a3f019623e5904bc.png", // Primary
-                2 => "/common/destiny2_content/icons/e43c53982e54dd6d63d08502f6ae6403.png", // Special
-                3 => "/common/destiny2_content/icons/a2862e3c0428d002a24683058a96431e.png", // Heavy
+                1 => "https://www.bungie.net/common/destiny2_content/icons/043addd07b34b172a3f019623e5904bc.png", // Primary
+                2 => "https://www.bungie.net/common/destiny2_content/icons/e43c53982e54dd6d63d08502f6ae6403.png", // Special
+                3 => "https://www.bungie.net/common/destiny2_content/icons/a2862e3c0428d002a24683058a96431e.png", // Heavy
                 _ => ""
             };
         }

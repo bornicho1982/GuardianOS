@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ReactiveUI;
 using Traveler.Core.Interfaces;
 using Traveler.Core.Models;
@@ -176,6 +177,7 @@ public class InventoryViewModel : ViewModelBase
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> RefreshCommand { get; }
     public ReactiveCommand<CharacterInfo, System.Reactive.Unit> SelectCharacterCommand { get; }
     public ReactiveCommand<string, System.Reactive.Unit> SetBucketFilterCommand { get; }
+    public ICommand TransferItemCommand { get; }
 
     public InventoryViewModel(IInventoryService inventoryService, ISmartMoveService smartMoveService)
     {
@@ -185,6 +187,18 @@ public class InventoryViewModel : ViewModelBase
         RefreshCommand = ReactiveCommand.CreateFromTask(RefreshInventory);
         SelectCharacterCommand = ReactiveCommand.Create<CharacterInfo>(SelectCharacter);
         SetBucketFilterCommand = ReactiveCommand.Create<string>(SetBucketFilter);
+        
+        TransferItemCommand = ReactiveCommand.CreateFromTask<Tuple<InventoryItem, bool>>(async (args) =>
+        {
+            var (item, toVault) = args;
+            var targetId = SelectedCharacter?.CharacterId.ToString() ?? "";
+            
+            if (toVault && item.Location == "vault") return;
+            if (!toVault && item.Location == targetId) return;
+            
+            await _inventoryService.TransferItemAsync(item, targetId, toVault);
+            await RefreshInventory();
+        });
         
         _inventoryService.InventoryRefreshed += OnInventoryRefreshed;
         
@@ -245,6 +259,7 @@ public class InventoryViewModel : ViewModelBase
         RefreshCommand = null!;
         SelectCharacterCommand = null!;
         SetBucketFilterCommand = null!;
+        TransferItemCommand = null!;
     }
 
     private async Task RefreshInventory()

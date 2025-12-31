@@ -24,4 +24,6 @@ public interface IInventoryService
     /// and updates the AllItems collection.
     /// </summary>
     Task RefreshInventoryAsync();
+    
+    Task TransferItemAsync(InventoryItem item, string targetCharacterId, bool toVault, int stackSize = 1);
 }

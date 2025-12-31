@@ -26,13 +26,16 @@ public partial class InventoryView : UserControl
         var data = e.Data.Get("InventoryItem");
         if (data is InventoryItem item && DataContext is InventoryViewModel vm)
         {
-            // Logic: Determine Target from Drop location relative to columns?
-            // For now, assume "Vault" as generic target or just log it.
-            // In a real grid, we'd check which "Bucket" (Panel) the mouse is over.
+            var point = e.GetPosition(this);
+            var halfWidth = Bounds.Width / 2;
             
-            // Calling the command on ViewModel
-            // await vm.MoveItemCommand.Execute((item, "Vault")); 
-            // (Need to expose Command that takes params or simple method)
+            // Left Side = Current Character | Right Side = Vault
+            bool toVault = point.X > halfWidth;
+            
+            if (vm.TransferItemCommand.CanExecute((item, toVault)))
+            {
+                vm.TransferItemCommand.Execute(new Tuple<InventoryItem, bool>(item, toVault));
+            }
         }
     }
     

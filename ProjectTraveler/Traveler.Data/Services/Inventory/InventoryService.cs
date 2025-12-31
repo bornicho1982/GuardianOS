@@ -58,6 +58,17 @@ public class InventoryService : IInventoryService
         _httpClient.DefaultRequestHeaders.Add("X-API-Key", BungieAuthService.ApiKey);
     }
 
+    // Area 3: Drag & Drop Logic
+    public async Task TransferItemAsync(InventoryItem item, string targetCharacterId, bool toVault, int stackSize = 1)
+    {
+        Console.WriteLine($"[Transfer] Request to move {item.Name} ({item.InstanceId}) to {(toVault ? "Vault" : targetCharacterId)}");
+        
+        // TODO: Validate ownership & call API
+        // Mock success for UI testing
+        await Task.Delay(200);
+        Console.WriteLine("[Transfer] Simulated success");
+    }
+
     /// <summary>
     /// Sets membership info (call after OAuth login).
     /// </summary>
@@ -458,6 +469,7 @@ public class InventoryService : IInventoryService
                     ItemHash = itemHash,
                     InstanceId = instanceId,
                     Name = definition?.Name ?? $"Item #{itemHash}",
+                    Description = definition?.Description ?? "",
                     Icon = definition?.Icon ?? "",
                     ItemType = definition?.ItemType ?? "Unknown",
                     TierType = GetTierName(definition?.TierType ?? 0),
@@ -512,6 +524,7 @@ public class InventoryService : IInventoryService
             return new ItemDefinition
             {
                 Name = def.Name,
+                Description = def.Description,
                 Icon = def.Icon ?? "",
                 ItemType = def.ItemType,
                 TierType = def.TierType,
@@ -557,6 +570,7 @@ public class InventoryService : IInventoryService
     private record ItemDefinition
     {
         public string? Name { get; init; }
+        public string? Description { get; init; }
         public string? Icon { get; init; }
         public string? ItemType { get; init; }
         public int TierType { get; init; } // int from Manifest
