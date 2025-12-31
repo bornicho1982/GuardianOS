@@ -5,7 +5,7 @@
              xmlns:converters="using:Traveler.Desktop.Converters"
              x:Class="Traveler.Desktop.Controls.ItemControl"
              x:DataType="models:InventoryItem"
-             Width="50" Height="64">
+             Width="64" Height="76">
 
     <UserControl.Resources>
         <converters:BungieUrlConverter x:Key="BungieUrlConverter"/>
