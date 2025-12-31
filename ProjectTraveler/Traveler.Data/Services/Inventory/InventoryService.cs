@@ -380,52 +380,42 @@ public class InventoryService : IInventoryService
 
                 if (isEquipped && instanceId > 0 && itemSockets.TryGetValue(instanceId, out var plugs))
                 {
+                    // 1. First Pass: Archetype & Masterwork (Inspect all sockets)
                     foreach (var plugHash in plugs)
                     {
                         var plugDef = await GetItemDefinitionFromManifestAsync(plugHash);
-                        if (plugDef != null)
-                        {
-                            // Masterwork Tier Detection - multiple patterns
-                            if (!string.IsNullOrEmpty(plugDef.Name))
-                            {
-                                // Pattern 1: "Tier X" (old style)
-                                if (plugDef.Name.StartsWith("Tier ") && int.TryParse(plugDef.Name.Replace("Tier ", ""), out var tier))
-                                {
-                                    masterworkLevel = tier;
-                                    Console.WriteLine($"[MW] Found masterwork Tier {tier}: {plugDef.Name}");
-                                }
-                                // Pattern 2: Check if it's a masterwork plug by type
-                                else if (plugDef.ItemType?.Contains("Masterwork") == true)
-                                {
-                                    masterworkLevel = 10; // Assume max masterwork
-                                    Console.WriteLine($"[MW] Found masterwork by type: {plugDef.Name} ({plugDef.ItemType})");
-                                }
-                            }
-                            
-                            // Pattern 3: uiPlugLabel = "masterwork" (modern detection)
-                            if (plugDef.UiPlugLabel?.ToLower() == "masterwork")
-                            {
-                                masterworkLevel = 10; // Masterwork detected via label
-                                Console.WriteLine($"[MW] Found masterwork via uiPlugLabel: {plugDef.Name}");
-                            }
+                        if (plugDef == null) continue;
 
-                            if (!string.IsNullOrEmpty(plugDef.Icon))
+                        // Archetype
+                        if (plugDef.ItemType == "Intrinsic Trait" || plugDef.ItemType == "Archetype")
+                        {
+                            archetype = plugDef.Name ?? "";
+                            archetypeIcon = plugDef.Icon;
+                        }
+
+                        // Masterwork Detection
+                        if (plugDef.UiPlugLabel?.ToLower() == "masterwork") masterworkLevel = 10;
+                        else if (plugDef.Name?.StartsWith("Tier ") == true && int.TryParse(plugDef.Name.Replace("Tier ", ""), out var t)) masterworkLevel = t;
+                    }
+
+                    // 2. Second Pass: Weapon Perks via SocketCategories (DIM Logic)
+                    // Weapon Perks Category Hash = 4241087561
+                    var defForSockets = await GetItemDefinitionFromManifestAsync(itemHash);
+                    if (defForSockets != null && defForSockets.SocketCategories.Any())
+                    {
+                        var perkCategory = defForSockets.SocketCategories.FirstOrDefault(c => c.Hash == 4241087561);
+                        if (perkCategory != null)
+                        {
+                            foreach (var index in perkCategory.Indexes)
                             {
-                                // Archetype (Intrinsic)
-                                if (plugDef.ItemType == "Intrinsic Trait" || plugDef.ItemType == "Archetype")
+                                if (index >= 0 && index < plugs.Count)
                                 {
-                                    archetype = plugDef.Name ?? "";
-                                    archetypeIcon = plugDef.Icon;
-                                }
-                                // Abilities (Subclass)
-                                else if (location != "vault" && bucketHash == 3284755031) // Subclass
-                                {
-                                    abilityIcons.Add(plugDef.Icon);
-                                }
-                                // Mods (Armor)
-                                else if (!string.IsNullOrEmpty(plugDef.ItemType) && plugDef.ItemType.Contains("Mod"))
-                                {
-                                    socketIcons.Add(plugDef.Icon);
+                                    var perkHash = plugs[index];
+                                    var perkDef = await GetItemDefinitionFromManifestAsync(perkHash);
+                                    if (perkDef != null && !string.IsNullOrEmpty(perkDef.Icon))
+                                    {
+                                        socketIcons.Add(perkDef.Icon);
+                                    }
                                 }
                             }
                         }
@@ -526,7 +516,8 @@ public class InventoryService : IInventoryService
                 // Phase 7: DIM Visual Properties
                 IsFeaturedItem = def.IsFeaturedItem,
                 SeasonIconUrl = def.SeasonIconUrl,
-                DefaultDamageTypeHash = def.DefaultDamageTypeHash
+                DefaultDamageTypeHash = def.DefaultDamageTypeHash,
+                SocketCategories = def.SocketCategories
             };
         }
         catch (Exception ex)
@@ -573,5 +564,6 @@ public class InventoryService : IInventoryService
         public string? SeasonIconUrl { get; init; }
         public string? IconWatermarkShelved { get; init; }
         public int DefaultDamageTypeHash { get; init; }
+        public List<SocketCategory> SocketCategories { get; init; } = new();
     }
 }

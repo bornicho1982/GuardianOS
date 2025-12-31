@@ -233,13 +233,37 @@ public class ManifestDatabase
                     // We'd need a secondary lookup to get the secondaryBackground from Icon table
                     // For now, use iconWatermark as a fallback
                     (root.TryGetProperty("iconWatermark", out var seasonIwm) ? seasonIwm.GetString() : null) : null,
-                DefaultDamageTypeHash = root.TryGetProperty("defaultDamageTypeHash", out var dmgHash) ? (int)dmgHash.GetUInt32() : 0
+                DefaultDamageTypeHash = root.TryGetProperty("defaultDamageTypeHash", out var dmgHash) ? (int)dmgHash.GetUInt32() : 0,
+                SocketCategories = ParseSocketCategories(root)
             };
         }
         catch
         {
             return null;
         }
+    }
+
+    private List<SocketCategory> ParseSocketCategories(JsonElement root)
+    {
+        var list = new List<SocketCategory>();
+        if (root.TryGetProperty("sockets", out var sockets) && 
+            sockets.TryGetProperty("socketCategories", out var categories))
+        {
+            foreach (var cat in categories.EnumerateArray())
+            {
+                if (cat.TryGetProperty("socketCategoryHash", out var hashProp) &&
+                    cat.TryGetProperty("socketIndexes", out var indexesProp))
+                {
+                    var indexes = new List<int>();
+                    foreach (var idx in indexesProp.EnumerateArray())
+                    {
+                        indexes.Add(idx.GetInt32());
+                    }
+                    list.Add(new SocketCategory(hashProp.GetUInt32(), indexes));
+                }
+            }
+        }
+        return list;
     }
 
     /// <summary>
@@ -464,7 +488,12 @@ public record ItemDefinition
     public bool IsFeaturedItem { get; init; }
     public string? SeasonIconUrl { get; init; }
     public int DefaultDamageTypeHash { get; init; }
+    
+    // Phase 8: Socket Categories (for Perks)
+    public List<SocketCategory> SocketCategories { get; init; } = new();
 }
+
+public record SocketCategory(uint Hash, List<int> Indexes);
 
 /// <summary>
 /// Parsed record/triumph definition.
