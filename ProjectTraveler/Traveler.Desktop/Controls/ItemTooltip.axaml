@@ -20,7 +20,7 @@
                     Padding="8">
                 <Grid ColumnDefinitions="Auto,*">
                     <Border CornerRadius="2" ClipToBounds="True" Width="48" Height="48" Background="#000">
-                        <asyncImageLoader:AdvancedImage Source="{Binding IconUrl}" Stretch="Uniform"/>
+                        <asyncImageLoader:AdvancedImage Source="{Binding Icon, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
                     </Border>
                     <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="White"/>
@@ -75,7 +75,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Width="32" Height="32" CornerRadius="16" ClipToBounds="True" Margin="0,0,4,4" Background="#111" BorderBrush="#444" BorderThickness="1">
-                                <asyncImageLoader:AdvancedImage Source="{Binding}" Stretch="Uniform"/>
+                                <asyncImageLoader:AdvancedImage Source="{Binding Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
