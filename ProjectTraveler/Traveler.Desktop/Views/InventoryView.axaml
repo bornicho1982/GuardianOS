@@ -91,8 +91,8 @@
                         <Border x:Name="KineticSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
                                 <!-- Equipped Item (Large) -->
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedKinetic}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedKinetic}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <!-- Inventory Grid -->
                                 <StackPanel Grid.Column="1">
@@ -100,12 +100,12 @@
                                     <ItemsControl ItemsSource="{Binding InventoryKinetic}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <WrapPanel/>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <controls:ItemControl Margin="2" Width="50" Height="64"/>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -116,14 +116,22 @@
                         <!-- Energy -->
                         <Border x:Name="EnergySection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedEnergy}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedEnergy}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="ENERGÍA" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
                                     <ItemsControl ItemsSource="{Binding InventoryEnergy}">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate><controls:ItemControl Margin="2" Width="50" Height="64"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
                             </Grid>
@@ -132,14 +140,22 @@
                         <!-- Power -->
                         <Border x:Name="PowerSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedPower}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedPower}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="PESADA" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
                                     <ItemsControl ItemsSource="{Binding InventoryPower}">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate><controls:ItemControl Margin="2" Width="50" Height="64"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
                             </Grid>
@@ -151,14 +167,22 @@
                         <!-- Helmet -->
                         <Border x:Name="HelmetSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedHelmet}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedHelmet}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="CASCO" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
                                     <ItemsControl ItemsSource="{Binding InventoryHelmet}">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate><controls:ItemControl Margin="2" Width="50" Height="64"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
                             </Grid>
@@ -167,14 +191,22 @@
                         <!-- Gauntlets -->
                         <Border x:Name="GauntletsSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedGauntlets}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedGauntlets}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="BRAZOS" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
                                     <ItemsControl ItemsSource="{Binding InventoryGauntlets}">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate><controls:ItemControl Margin="2" Width="50" Height="64"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
                             </Grid>
@@ -183,14 +215,22 @@
                         <!-- Chest -->
                         <Border x:Name="ChestSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedChest}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedChest}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="PECHO" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
                                     <ItemsControl ItemsSource="{Binding InventoryChest}">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate><controls:ItemControl Margin="2" Width="50" Height="64"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
                             </Grid>
@@ -199,14 +239,22 @@
                         <!-- Legs -->
                         <Border x:Name="LegsSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedLegs}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedLegs}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="BOTAS" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
                                     <ItemsControl ItemsSource="{Binding InventoryLegs}">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate><controls:ItemControl Margin="2" Width="50" Height="64"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
                             </Grid>
@@ -215,14 +263,22 @@
                         <!-- Class Item -->
                         <Border x:Name="ClassItemSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*">
-                                <Border Width="68" Height="68" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True">
-                                    <controls:ItemControl DataContext="{Binding EquippedClassItem}"/>
+                                <Border Width="70" Height="82" CornerRadius="4" Background="#3a3a3c" Margin="0,0,8,0" ClipToBounds="True" VerticalAlignment="Top">
+                                    <controls:ItemControl DataContext="{Binding EquippedClassItem}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Text="DISTINTIVO" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
                                     <ItemsControl ItemsSource="{Binding InventoryClassItem}">
-                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate><DataTemplate><controls:ItemControl Margin="2" Width="50" Height="64"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:ItemControl Margin="0,0,2,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
                             </Grid>
@@ -335,12 +391,12 @@
                         <ItemsControl ItemsSource="{Binding FilteredVaultItems}" Margin="8">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel/>
+                                    <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <controls:ItemControl Margin="2" Width="50" Height="64"/>
+                                    <controls:ItemControl Margin="0,0,2,2"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
