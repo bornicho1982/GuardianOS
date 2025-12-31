@@ -1,31 +1,22 @@
 using Avalonia.Data.Converters;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using System;
 using System.Globalization;
 
 namespace Traveler.Desktop.Converters;
 
 /// <summary>
-/// Converts damage type name to local Avalonia resource icon.
+/// Converts damage type name to local Avalonia resource URI string.
 /// </summary>
 public class DamageTypeIconConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is not string damageTypeName || string.IsNullOrEmpty(damageTypeName))
-            return null;
-
-        try
+        if (value is string type && !string.IsNullOrEmpty(type))
         {
-            var uri = new Uri($"avares://Traveler.Desktop/Assets/Icons/Elements/{damageTypeName}.png");
-            using var stream = AssetLoader.Open(uri);
-            return new Bitmap(stream);
+            // Asegúrate de que los nombres coincidan con tus archivos png (arc, solar, void, stasis, strand, kinetic)
+            return $"avares://Traveler.Desktop/Assets/Icons/Elements/{type.ToLower()}.png";
         }
-        catch
-        {
-            return null;
-        }
+        return null;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

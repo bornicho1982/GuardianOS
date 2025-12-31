@@ -14,6 +14,7 @@
         <converters:MasterworkBorderConverter x:Key="MasterworkBorderConverter"/>
         <converters:TierBackgroundConverter x:Key="TierBackgroundConverter"/>
         <converters:BoolToThicknessConverter x:Key="BoolToThicknessConverter"/>
+        <converters:DamageTypeIconConverter x:Key="DamageTypeIconConverter"/>
     </UserControl.Resources>
 
     <Border Classes="MainContainer" CornerRadius="0"
@@ -27,10 +28,11 @@
         </ToolTip.Tip>
             
         <Grid>
-            <Image asyncImageLoader:ImageLoader.Source="{Binding Icon, Converter={StaticResource BungieUrlConverter}}" 
-                   Stretch="UniformToFill"
-                   VerticalAlignment="Top"
-                   Height="66"/>
+            <asyncImageLoader:AdvancedImage 
+                Source="{Binding Icon, Converter={StaticResource BungieUrlConverter}}" 
+                Stretch="UniformToFill"
+                VerticalAlignment="Top"
+                Height="66"/>
 
             <Border Background="#90000000" CornerRadius="0,0,4,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <asyncImageLoader:AdvancedImage 
@@ -42,12 +44,11 @@
 
             <Border VerticalAlignment="Bottom" Height="16" Background="#E6101010" Margin="0,0,0,10">
                 <Grid ColumnDefinitions="Auto, *">
-                    <asyncImageLoader:AdvancedImage 
-                        Grid.Column="0"
-                        Source="{Binding DamageTypeIcon}" 
-                        Width="12" Height="12" 
-                        Margin="2,0,0,0"
-                        VerticalAlignment="Center"/>
+                    <Image Grid.Column="0"
+                           Source="{Binding DamageType, Converter={StaticResource DamageTypeIconConverter}}" 
+                           Width="12" Height="12" 
+                           Margin="2,0,0,0"
+                           VerticalAlignment="Center"/>
                     
                     <TextBlock Grid.Column="1"
                                Text="{Binding PowerLevel}"
@@ -71,7 +72,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border CornerRadius="6" ClipToBounds="True" Width="10" Height="10" Background="#333">
-                            <asyncImageLoader:AdvancedImage Source="{Binding}" Stretch="Uniform"/>
+                            <asyncImageLoader:AdvancedImage Source="{Binding Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform"/>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
