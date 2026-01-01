@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:vm="using:Traveler.Desktop.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="50"
+             x:Class="Traveler.Desktop.Views.Components.Molecules.CurrencyCellView"
+             x:DataType="vm:Currency">
+             
+    <Border Background="#2A2A2A" CornerRadius="4" Padding="10,5" Margin="0,0,10,10" Width="180">
+        <Grid ColumnDefinitions="32, *">
+            <asyncImageLoader:AdvancedImage Source="{Binding Icon, Converter={StaticResource BungieUrlConverter}}" 
+                                          Width="24" Height="24" VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Quantity}" FontWeight="Bold" FontSize="16"/>
+                <TextBlock Text="{Binding Name}" FontSize="11" Foreground="#888"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

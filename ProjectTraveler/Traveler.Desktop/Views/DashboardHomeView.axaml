@@ -5,6 +5,8 @@
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:vm="using:Traveler.Desktop.ViewModels"
              xmlns:services="using:Traveler.Core.Services"
+             xmlns:organisms="using:Traveler.Desktop.Views.Components.Organisms"
+             xmlns:molecules="using:Traveler.Desktop.Views.Components.Molecules"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="Traveler.Desktop.Views.DashboardHomeView"
              x:DataType="vm:DashboardHomeViewModel">
@@ -27,56 +29,8 @@
                     
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <!-- Tarjeta de Personaje -->
-                            <Border Margin="0,0,15,0" Height="120" CornerRadius="8" ClipToBounds="True" BoxShadow="0 4 10 0 #50000000">
-                                <Panel>
-                                    <!-- Fondo del Emblema -->
-                                    <asyncImageLoader:AdvancedImage 
-                                        Source="{Binding EmblemBackgroundPath, Converter={StaticResource BungieUrlConverter}}" 
-                                        Stretch="UniformToFill"/>
-                                    
-                                    <!-- Degradado oscuro para que se lea el texto -->
-                                    <Border>
-                                        <Border.Background>
-                                            <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
-                                                <GradientStop Color="#CC000000" Offset="0.0" />
-                                                <GradientStop Color="#00000000" Offset="0.8" />
-                                            </LinearGradientBrush>
-                                        </Border.Background>
-                                    </Border>
-
-                                    <!-- Datos del Personaje -->
-                                    <Grid ColumnDefinitions="Auto, *" Margin="20">
-                                        <!-- Icono de Clase (Placeholder o real si lo tienes) -->
-                                        <!-- <PathIcon Data="..." /> --> 
-                                        
-                                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="5">
-                                            <TextBlock Text="{Binding ClassType}" FontSize="24" FontWeight="Bold" Foreground="White" 
-                                                       Effect="drop-shadow(1 1 2 black)"/>
-                                            <TextBlock Text="{Binding RaceName}" FontSize="14" Foreground="#CCC"/>
-                                            <Border Background="#33FFFFFF" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left" Margin="0,5,0,0">
-                                                <TextBlock Text="{Binding Title}" FontSize="10" FontWeight="Bold" Foreground="#FFD700" LetterSpacing="1"/>
-                                            </Border>
-                                        </StackPanel>
-
-                                        <!-- Nivel de Luz a la derecha -->
-                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="2">
-                                                <PathIcon Data="{StaticResource GhostIcon}" Width="16" Height="16" Foreground="#FFD700" VerticalAlignment="Center"/>
-                                                <TextBlock Text="{Binding LightLevel}" FontSize="36" Foreground="#FFD700" FontWeight="Light"
-                                                           Effect="drop-shadow(2 2 4 black)"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Grid>
-                                    
-                                    <!-- Barra de Hover (Interacción) -->
-                                    <Border BorderBrush="#FFD700" BorderThickness="0,0,0,4" Opacity="0" Name="SelectionIndicator">
-                                        <Border.Styles>
-                                            <!-- Aquí irían estilos para mostrarse al hacer hover, requieren Styles en el padre -->
-                                        </Border.Styles>
-                                    </Border>
-                                </Panel>
-                            </Border>
+                            <!-- Tarjeta de Personaje (Organism) -->
+                            <organisms:CharacterCardView />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -100,16 +54,8 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#2A2A2A" CornerRadius="4" Padding="10,5" Margin="0,0,10,10" Width="180">
-                                        <Grid ColumnDefinitions="32, *">
-                                            <asyncImageLoader:AdvancedImage Source="{Binding Icon, Converter={StaticResource BungieUrlConverter}}" 
-                                                                          Width="24" Height="24" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Quantity}" FontWeight="Bold" FontSize="16"/>
-                                                <TextBlock Text="{Binding Name}" FontSize="11" Foreground="#888"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
+                                    <!-- Celda de Divisa (Molecule) -->
+                                    <molecules:CurrencyCellView />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

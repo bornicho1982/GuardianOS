@@ -9,6 +9,7 @@ public class CharacterInfo
     public string ClassName { get; set; } = "";
     public string RaceName { get; set; } = "";
     public string GenderName { get; set; } = "";
+    public string Title { get; set; } = ""; // Added logic
     public int LightLevel { get; set; }
     public string EmblemPath { get; set; } = "";
     public string EmblemBackgroundPath { get; set; } = "";
