@@ -76,370 +76,149 @@
             </Grid>
         </Border>
 
-        <!-- MAIN CONTENT: Two Equal Columns -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="8">
-            
-            <!-- LEFT PANEL: Character Inventory -->
-            <Border Grid.Column="0" Background="#1E1E20" CornerRadius="6" Margin="0,0,4,0" ClipToBounds="True"
-                    DragDrop.AllowDrop="True">
-                <ScrollViewer x:Name="LeftScrollViewer">
-                    <StackPanel Spacing="12" Margin="12">
-                        
-                        <!-- WEAPONS SECTION -->
-                        <TextBlock Text="⚔ ARMAS" FontSize="14" FontWeight="Bold" Foreground="#EBC805"/>
-                        
-                        <!-- Kinetic -->
-                        <Border x:Name="KineticSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <!-- Equipped Item -->
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedKinetic}"/>
-                                </Border>
-                                <!-- Inventory Grid -->
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="CINÉTICA" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryKinetic}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        
-                        <!-- Energy -->
-                        <Border x:Name="EnergySection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedEnergy}"/>
-                                </Border>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="ENERGÍA" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryEnergy}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        
-                        <!-- Power -->
-                        <Border x:Name="PowerSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedPower}"/>
-                                </Border>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="PESADA" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryPower}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        
-                        <!-- ARMOR SECTION -->
-                        <TextBlock Text="⛊ ARMADURA" FontSize="14" FontWeight="Bold" Foreground="#EBC805" Margin="0,8,0,0"/>
-                        
-                        <!-- Helmet -->
-                        <Border x:Name="HelmetSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedHelmet}"/>
-                                </Border>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="CASCO" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryHelmet}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        
-                        <!-- Gauntlets -->
-                        <Border x:Name="GauntletsSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedGauntlets}"/>
-                                </Border>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="BRAZOS" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryGauntlets}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        
-                        <!-- Chest -->
-                        <Border x:Name="ChestSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedChest}"/>
-                                </Border>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="PECHO" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryChest}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        
-                        <!-- Legs -->
-                        <Border x:Name="LegsSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedLegs}"/>
-                                </Border>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="BOTAS" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryLegs}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                        
-                        <!-- Class Item -->
-                        <Border x:Name="ClassItemSection" Background="#252528" CornerRadius="4" Padding="8" ClipToBounds="True">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Border Margin="0,0,12,0" VerticalAlignment="Top" Background="Transparent">
-                                    <controls:ItemControl DataContext="{Binding EquippedClassItem}"/>
-                                </Border>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="DISTINTIVO" FontSize="10" Foreground="#666" Margin="0,0,0,4"/>
-                                    <ItemsControl ItemsSource="{Binding InventoryClassItem}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
-            
-            <!-- RIGHT PANEL: Vault -->
-            <Border Grid.Column="1" Background="#1E1E20" CornerRadius="6" Margin="4,0,0,0" ClipToBounds="True"
-                    DragDrop.AllowDrop="True">
-                <Grid RowDefinitions="Auto,*">
-                    
-                    <!-- Filter Bar -->
-                    <Border Grid.Row="0" Background="#252528" Padding="8" CornerRadius="6,6,0,0">
-                        <StackPanel>
-                            <TextBlock Text="📦 DEPÓSITO" FontSize="14" FontWeight="Bold" Foreground="White" Margin="0,0,0,8"/>
-                            
-                            <!-- Filter Buttons with Destiny-style icons -->
-                            <WrapPanel HorizontalAlignment="Center">
-                                <!-- Weapons -->
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Kinetic Weapons"
-                                        ToolTip.Tip="Armas Cinéticas"
-                                        Padding="10,6" Margin="2" FontSize="11" FontWeight="Bold"
-                                        Background="{Binding IsKineticActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Text="◆" FontSize="10"/>
-                                        <TextBlock Text="Kin"/>
-                                    </StackPanel>
-                                </Button>
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Energy Weapons"
-                                        ToolTip.Tip="Armas de Energía"
-                                        Padding="10,6" Margin="2" FontSize="11" FontWeight="Bold"
-                                        Background="{Binding IsEnergyActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Text="◇" FontSize="10"/>
-                                        <TextBlock Text="Ene"/>
-                                    </StackPanel>
-                                </Button>
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Power Weapons"
-                                        ToolTip.Tip="Armas Pesadas"
-                                        Padding="10,6" Margin="2" FontSize="11" FontWeight="Bold"
-                                        Background="{Binding IsPowerActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Text="▣" FontSize="10"/>
-                                        <TextBlock Text="Pow"/>
-                                    </StackPanel>
-                                </Button>
-                                
-                                <Border Width="1" Background="#444" Margin="8,4"/>
-                                
-                                <!-- Armor with proper icons -->
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Helmet"
-                                        ToolTip.Tip="Casco"
-                                        Padding="8,6" Margin="2" FontSize="14"
-                                        Background="{Binding IsHelmetActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White" Content="⛑"/>
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Gauntlets"
-                                        ToolTip.Tip="Guanteletes"
-                                        Padding="8,6" Margin="2" FontSize="14"
-                                        Background="{Binding IsGauntletsActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White" Content="🥊"/>
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Chest Armor"
-                                        ToolTip.Tip="Pechera"
-                                        Padding="8,6" Margin="2" FontSize="14"
-                                        Background="{Binding IsChestActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White" Content="🛡"/>
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Leg Armor"
-                                        ToolTip.Tip="Botas"
-                                        Padding="8,6" Margin="2" FontSize="14"
-                                        Background="{Binding IsLegsActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White" Content="👢"/>
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="Class Armor"
-                                        ToolTip.Tip="Distintivo de Clase"
-                                        Padding="8,6" Margin="2" FontSize="14"
-                                        Background="{Binding IsClassItemActive, Converter={StaticResource BoolToColorConverter}}" 
-                                        Foreground="White" Content="⚜"/>
-                                
-                                <Border Width="1" Background="#444" Margin="8,4"/>
-                                
-                                <Button Command="{Binding SetBucketFilterCommand}" CommandParameter="All"
-                                        ToolTip.Tip="Ver Todo"
-                                        Padding="10,6" Margin="2" FontSize="11" FontWeight="Bold"
-                                        Background="#3D3D40" Foreground="White" Content="Todo"/>
-                            </WrapPanel>
-                            
-                            <!-- Search Bar + Count -->
-                            <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
-                                <Border Background="#1E1E20" CornerRadius="4" Padding="6,4" BorderThickness="1" BorderBrush="#EBC805">
-                                    <Grid ColumnDefinitions="Auto,*">
-                                        <TextBlock Text="🔍" FontSize="12" Foreground="#666" Margin="0,0,6,0"/>
-                                        <TextBox Grid.Column="1" Text="{Binding SearchText, Mode=TwoWay}"
-                                                 Watermark="Buscar en vault..."
-                                                 Background="Transparent" BorderThickness="0" Foreground="White"
-                                                 FontSize="11"/>
-                                    </Grid>
-                                </Border>
-                                <TextBlock Grid.Column="1" 
-                                           Text="{Binding VaultItemCount, StringFormat='{}{0} items'}"
-                                           FontSize="11" Foreground="#EBC805" 
-                                           VerticalAlignment="Center" Margin="8,0,0,0"/>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                    
-                    <!-- Vault Items Grid: Separated Weapons and Armor -->
-                    <ScrollViewer Grid.Row="1">
-                        <StackPanel Margin="8" Spacing="12">
-                            
-                            <!-- WEAPONS SECTION -->
-                            <Border Background="#252528" CornerRadius="4" Padding="8">
-                                <StackPanel>
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBlock Text="⚔ ARMAS" FontSize="12" FontWeight="Bold" Foreground="#EBC805"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding VaultWeaponsCount, StringFormat='{}{0}'}" FontSize="10" Foreground="#888"/>
-                                    </Grid>
-                                    <ItemsControl ItemsSource="{Binding VaultWeapons}" Margin="0,8,0,0">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Border>
-                            
-                            <!-- ARMOR SECTION -->
-                            <Border Background="#252528" CornerRadius="4" Padding="8">
-                                <StackPanel>
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBlock Text="⛊ ARMADURA" FontSize="12" FontWeight="Bold" Foreground="#EBC805"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding VaultArmorCount, StringFormat='{}{0}'}" FontSize="10" Foreground="#888"/>
-                                    </Grid>
-                                    <ItemsControl ItemsSource="{Binding VaultArmor}" Margin="0,8,0,0">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <controls:ItemControl Margin="0,0,2,2"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Border>
-                            
-                        </StackPanel>
-                    </ScrollViewer>
-                </Grid>
-            </Border>
-        </Grid>
+        <!-- MAIN CONTENT: Unified Grid Layout -->
+        <ScrollViewer Grid.Row="1" Margin="16">
+            <StackPanel Spacing="24">
+                
+                <!-- KINETIC WEAPONS -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="KINETIC WEAPONS" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding KineticWeapons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- ENERGY WEAPONS -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="ENERGY WEAPONS" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding EnergyWeapons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- POWER WEAPONS -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="POWER WEAPONS" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding PowerWeapons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                
+                <Rectangle Height="1" Fill="#333" Margin="0,12"/>
+
+                <!-- HELMETS -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="HELMETS" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding Helmets}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- GAUNTLETS -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="GAUNTLETS" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding Gauntlets}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- CHEST ARMOR -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="CHEST ARMOR" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding Chests}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- LEG ARMOR -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="LEG ARMOR" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding Legs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- CLASS ITEMS -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="CLASS ITEMS" FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+                    <ItemsControl ItemsSource="{Binding ClassItems}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="68" ItemHeight="80"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:ItemControl Margin="0,0,4,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

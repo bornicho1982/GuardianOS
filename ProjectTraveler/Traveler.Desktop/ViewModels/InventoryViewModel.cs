@@ -107,23 +107,60 @@ public class InventoryViewModel : ViewModelBase
             i.IsEquipped);
     }
     
-    // === INVENTORY ITEMS (non-equipped, 9 slots max) ===
-    public IEnumerable<InventoryItem> InventoryKinetic => GetInventory("Kinetic Weapons");
-    public IEnumerable<InventoryItem> InventoryEnergy => GetInventory("Energy Weapons");
-    public IEnumerable<InventoryItem> InventoryPower => GetInventory("Power Weapons");
-    public IEnumerable<InventoryItem> InventoryHelmet => GetInventory("Helmet");
-    public IEnumerable<InventoryItem> InventoryGauntlets => GetInventory("Gauntlets");
-    public IEnumerable<InventoryItem> InventoryChest => GetInventory("Chest Armor");
-    public IEnumerable<InventoryItem> InventoryLegs => GetInventory("Leg Armor");
-    public IEnumerable<InventoryItem> InventoryClassItem => GetInventory("Class Armor");
-    
-    private IEnumerable<InventoryItem> GetInventory(string bucketType)
+    // === INVENTORY COLLECTIONS (Separated by Bucket) ===
+    public ObservableCollection<InventoryItem> KineticWeapons { get; } = new();
+    public ObservableCollection<InventoryItem> EnergyWeapons { get; } = new();
+    public ObservableCollection<InventoryItem> PowerWeapons { get; } = new();
+    public ObservableCollection<InventoryItem> Helmets { get; } = new();
+    public ObservableCollection<InventoryItem> Gauntlets { get; } = new();
+    public ObservableCollection<InventoryItem> Chests { get; } = new();
+    public ObservableCollection<InventoryItem> Legs { get; } = new();
+    public ObservableCollection<InventoryItem> ClassItems { get; } = new();
+
+    // Legacy Aliases for View Compatibility (Optional, can be updated in XAML later)
+    public IEnumerable<InventoryItem> InventoryKinetic => KineticWeapons;
+    public IEnumerable<InventoryItem> InventoryEnergy => EnergyWeapons;
+    public IEnumerable<InventoryItem> InventoryPower => PowerWeapons;
+    public IEnumerable<InventoryItem> InventoryHelmet => Helmets;
+    public IEnumerable<InventoryItem> InventoryGauntlets => Gauntlets;
+    public IEnumerable<InventoryItem> InventoryChest => Chests;
+    public IEnumerable<InventoryItem> InventoryLegs => Legs;
+    public IEnumerable<InventoryItem> InventoryClassItem => ClassItems;
+
+    private void SortItems(IEnumerable<InventoryItem> items)
     {
-        if (SelectedCharacter == null) return Enumerable.Empty<InventoryItem>();
-        return FilterItems(Items.Where(i => 
-            i.Location == SelectedCharacter.CharacterId.ToString() &&
-            i.BucketType == bucketType &&
-            !i.IsEquipped)).Take(9);
+        // 1. Clear existing collections
+        KineticWeapons.Clear();
+        EnergyWeapons.Clear();
+        PowerWeapons.Clear();
+        Helmets.Clear();
+        Gauntlets.Clear();
+        Chests.Clear();
+        Legs.Clear();
+        ClassItems.Clear();
+
+        if (SelectedCharacter == null) return;
+        var charId = SelectedCharacter.CharacterId.ToString();
+
+        // 2. Filter for current character and unequipped items
+        // (Assuming we only want the inventory grid items here, distinct from Equipped* properties)
+        var charItems = items.Where(i => i.Location == charId && !i.IsEquipped);
+
+        // 3. Sort into buckets
+        foreach (var item in charItems)
+        {
+            switch (item.BucketHash)
+            {
+                case 1498876634: KineticWeapons.Add(item); break;
+                case 2465295065: EnergyWeapons.Add(item); break;
+                case 953998645:  PowerWeapons.Add(item); break;
+                case 3448274439: Helmets.Add(item); break;
+                case 3551918588: Gauntlets.Add(item); break;
+                case 14239492:   Chests.Add(item); break;
+                case 20886954:   Legs.Add(item); break;
+                case 1585787867: ClassItems.Add(item); break;
+            }
+        }
     }
     
     // === FILTERED VAULT ITEMS (based on SelectedBucketFilter) ===
@@ -259,6 +296,9 @@ public class InventoryViewModel : ViewModelBase
     
     private void OnCharacterChanged()
     {
+        // Re-sort items for the new character
+        SortItems(Items);
+
         // Notify all equipped items
         this.RaisePropertyChanged(nameof(EquippedKinetic));
         this.RaisePropertyChanged(nameof(EquippedEnergy));
@@ -295,6 +335,7 @@ public class InventoryViewModel : ViewModelBase
         }
         
         this.RaisePropertyChanged(nameof(Characters));
+        SortItems(Items); // Ensure items are sorted on refresh
         OnCharacterChanged();
     }
 
