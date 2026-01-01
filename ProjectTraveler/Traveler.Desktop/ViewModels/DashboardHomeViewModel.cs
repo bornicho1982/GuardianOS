@@ -70,6 +70,18 @@ namespace Traveler.Desktop.ViewModels
         [ObservableProperty]
         private string _loadingMessage = string.Empty;
 
+        // ===== WEEKLY RESET COUNTDOWN =====
+        [ObservableProperty]
+        private string _weeklyResetCountdown = "Calculating...";
+
+        [ObservableProperty]
+        private string _dailyResetCountdown = "Calculating...";
+
+        [ObservableProperty]
+        private double _weeklyResetProgress = 0;
+
+        private System.Timers.Timer? _countdownTimer;
+
         // ===== COMMANDS =====
         public IAsyncRelayCommand LoginCommand { get; }
         public IRelayCommand LogoutCommand { get; }
@@ -94,6 +106,9 @@ namespace Traveler.Desktop.ViewModels
 
             // Initialize with default/placeholder data
             InitializeDefaultState();
+            
+            // Start countdown timer
+            StartCountdownTimer();
 
             // If already authenticated, load real data
             if (_authService.IsAuthenticated)
@@ -103,6 +118,53 @@ namespace Traveler.Desktop.ViewModels
                 UserTitle = "Online";
                 _ = RefreshAllDataAsync();
             }
+        }
+
+        /// <summary>
+        /// Starts the countdown timer for weekly/daily resets (updates every second)
+        /// </summary>
+        private void StartCountdownTimer()
+        {
+            UpdateCountdowns(); // Initial calculation
+            
+            _countdownTimer = new System.Timers.Timer(1000); // Update every second
+            _countdownTimer.Elapsed += (s, e) => 
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(() => UpdateCountdowns());
+            };
+            _countdownTimer.Start();
+        }
+
+        /// <summary>
+        /// Calculates time until next weekly (Tuesday 17:00 UTC) and daily reset (17:00 UTC)
+        /// </summary>
+        private void UpdateCountdowns()
+        {
+            var now = DateTime.UtcNow;
+            
+            // Daily reset: 17:00 UTC every day
+            var nextDailyReset = now.Date.AddHours(17);
+            if (now.Hour >= 17)
+                nextDailyReset = nextDailyReset.AddDays(1);
+            
+            var dailyDiff = nextDailyReset - now;
+            DailyResetCountdown = $"{dailyDiff.Hours:D2}h {dailyDiff.Minutes:D2}m {dailyDiff.Seconds:D2}s";
+            
+            // Weekly reset: Tuesday 17:00 UTC
+            var daysUntilTuesday = ((int)DayOfWeek.Tuesday - (int)now.DayOfWeek + 7) % 7;
+            if (daysUntilTuesday == 0 && now.Hour >= 17)
+                daysUntilTuesday = 7;
+            
+            var nextWeeklyReset = now.Date.AddDays(daysUntilTuesday).AddHours(17);
+            var weeklyDiff = nextWeeklyReset - now;
+            
+            if (weeklyDiff.Days > 0)
+                WeeklyResetCountdown = $"{weeklyDiff.Days}d {weeklyDiff.Hours}h {weeklyDiff.Minutes}m";
+            else
+                WeeklyResetCountdown = $"{weeklyDiff.Hours}h {weeklyDiff.Minutes}m {weeklyDiff.Seconds}s";
+            
+            // Progress bar (0-100, where 100 = just reset, 0 = about to reset)
+            WeeklyResetProgress = Math.Max(0, (weeklyDiff.TotalDays / 7.0) * 100);
         }
 
         /// <summary>
@@ -118,6 +180,32 @@ namespace Traveler.Desktop.ViewModels
 
             // Postmaster (hidden by default)
             IsPostmasterWarning = false;
+
+            // Daily Activities (always show even when logged out)
+            DailyActivities = new ObservableCollection<DailyRotation>
+            {
+                new DailyRotation
+                {
+                    ActivityName = "Bunker E15",
+                    ActivityType = "Legend Lost Sector",
+                    Reward = "Exotic Helmet",
+                    Modifiers = new List<string> { "Arc Burn", "Barrier Champions" }
+                },
+                new DailyRotation
+                {
+                    ActivityName = "The Disgraced",
+                    ActivityType = "Nightfall: Grandmaster",
+                    Reward = "Wendigo GL3 (Adept)",
+                    Modifiers = new List<string> { "Solar Burn", "Match Game" }
+                },
+                new DailyRotation
+                {
+                    ActivityName = "Last Wish",
+                    ActivityType = "Featured Raid",
+                    Reward = "Pinnacle Gear",
+                    Modifiers = new List<string> { "Contest Mode Active" }
+                }
+            };
 
             // Featured Vendors (static for now - TODO: API integration)
             FeaturedVendors = new ObservableCollection<VendorItem>

@@ -149,6 +149,55 @@
             <!-- COLUMNA DERECHA: Utilidades y Alertas -->
             <StackPanel Grid.Row="1" Grid.Column="1" Spacing="20">
                 
+                <!-- 0. WEEKLY RESET COUNTDOWN (Premium Feature) -->
+                <Border CornerRadius="16" Padding="20" BoxShadow="0 4 15 0 #40000000">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                            <GradientStop Color="#1A1A2E" Offset="0"/>
+                            <GradientStop Color="#16213E" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid RowDefinitions="Auto, Auto, Auto, Auto">
+                        <!-- Header -->
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Border Background="#FFD700" Width="4" Height="20" CornerRadius="2"/>
+                            <TextBlock Text="RESET COUNTDOWN" FontWeight="Bold" Foreground="#FFD700" 
+                                       FontSize="11" LetterSpacing="1"/>
+                        </StackPanel>
+                        
+                        <!-- Weekly Timer -->
+                        <Grid Grid.Row="1" Margin="0,15,0,0" ColumnDefinitions="*, Auto">
+                            <StackPanel>
+                                <TextBlock Text="Weekly Reset" Foreground="#888" FontSize="11"/>
+                                <TextBlock Text="{Binding WeeklyResetCountdown}" 
+                                           FontSize="28" FontWeight="Bold" Foreground="White" 
+                                           FontFamily="Consolas" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="#1E3A5F" CornerRadius="8" 
+                                    Padding="12,8" VerticalAlignment="Center">
+                                <TextBlock Text="Tuesday 17:00 UTC" Foreground="#4FC3F7" FontSize="10"/>
+                            </Border>
+                        </Grid>
+                        
+                        <!-- Progress Bar -->
+                        <ProgressBar Grid.Row="2" Value="{Binding WeeklyResetProgress}" Maximum="100"
+                                     Height="4" CornerRadius="2" Margin="0,12,0,0"
+                                     Background="#222" Foreground="#FFD700"/>
+                        
+                        <!-- Daily Timer (Smaller) -->
+                        <Grid Grid.Row="3" Margin="0,12,0,0" ColumnDefinitions="Auto, *">
+                            <Border Background="#252525" CornerRadius="6" Padding="8,4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="Daily:" Foreground="#666" FontSize="11"/>
+                                    <TextBlock Text="{Binding DailyResetCountdown}" 
+                                               Foreground="#4CAF50" FontWeight="SemiBold" FontSize="11"
+                                               FontFamily="Consolas"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+                
                 <!-- 1. Postmaster Alert (Si está lleno) -->
                 <Border IsVisible="{Binding IsPostmasterWarning}"
                         Background="#2D1212" BorderBrush="#FF5555" BorderThickness="1" 
