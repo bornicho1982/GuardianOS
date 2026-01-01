@@ -10,15 +10,16 @@ namespace Traveler.Desktop.Converters;
 /// </summary>
 public class BoolToColorConverter : IValueConverter
 {
+    public Color TrueColor { get; set; } = Color.Parse("#EBC805");
+    public Color FalseColor { get; set; } = Color.Parse("#3D3D40");
+
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is bool isActive && isActive)
         {
-            // Active state - gold/yellow
-            return new SolidColorBrush(Color.Parse("#EBC805"));
+            return new SolidColorBrush(TrueColor);
         }
-        // Inactive state - dark gray
-        return new SolidColorBrush(Color.Parse("#3D3D40"));
+        return new SolidColorBrush(FalseColor);
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

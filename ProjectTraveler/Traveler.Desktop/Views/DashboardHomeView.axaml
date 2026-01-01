@@ -7,80 +7,139 @@
              xmlns:services="using:Traveler.Core.Services"
              xmlns:organisms="using:Traveler.Desktop.Views.Components.Organisms"
              xmlns:molecules="using:Traveler.Desktop.Views.Components.Molecules"
+             xmlns:converters="using:Traveler.Desktop.Converters"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="Traveler.Desktop.Views.DashboardHomeView"
              x:DataType="vm:DashboardHomeViewModel">
 
-    <ScrollViewer Padding="20">
-        <StackPanel Spacing="30">
+    <UserControl.Resources>
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+        <converters:BungieUrlConverter x:Key="BungieUrlConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer>
+        <Grid ColumnDefinitions="2*, 1*" Margin="24" ColumnSpacing="24">
             
-            <!-- SECCIÓN 1: ESCUADRA (LOS 3 PERSONAJES) -->
-            <StackPanel Spacing="10">
-                <TextBlock Text="{Binding [status.guardian], Source={x:Static services:LocalizationService.Instance}, FallbackValue='GUARDIAN ROSTER'}" 
-                           FontSize="20" FontWeight="Bold" Foreground="White" Opacity="0.8"/>
+            <!-- COLUMNA 0: PRINCIPAL -->
+            <StackPanel Grid.Column="0" Spacing="24">
                 
-                <!-- Lista Horizontal de Personajes -->
+                <!-- ROW 0: WELCOME & LOGIN -->
+                <Border Background="#1E1E1E" CornerRadius="12" Padding="24">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <StackPanel>
+                            <TextBlock Text="Welcome back, Guardian." Classes="H1" FontSize="28" Foreground="White" Margin="0,0,0,4"/>
+                            <TextBlock Text="The Last City awaits your return." FontSize="14" Foreground="#888"/>
+                        </StackPanel>
+                        
+                        <Button Grid.Column="1" Command="{Binding LoginCommand}" IsVisible="{Binding !IsLoggedIn}"
+                                Classes="Premium" Content="CONNECT TO BUNGIE.NET" Padding="20,10"/>
+                    </Grid>
+                </Border>
+
+                <!-- ROW 1: SQUAD ROSTER -->
                 <ItemsControl ItemsSource="{Binding Characters}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Rows="1" HorizontalAlignment="Stretch"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-                    
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <!-- Tarjeta de Personaje (Organism) -->
-                            <organisms:CharacterCardView DataContext="{Binding}" Margin="0,0,15,0" Height="120"/>
+                            <organisms:CharacterCardView DataContext="{Binding}" Margin="0,0,16,0" Height="140"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </StackPanel>
 
-            <!-- SECCIÓN 2: ECONOMÍA Y BÓVEDA -->
-            <Grid ColumnDefinitions="2*, 1*" >
+                <!-- ROW 2: HEADLINES (DAILY ROTATION) -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="TODAY'S HEADLINES" Classes="H2" Opacity="0.7" Margin="4,0,0,0"/>
+                    
+                    <ItemsControl ItemsSource="{Binding DailyActivities}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="16"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#1E1E1E" CornerRadius="12" Width="300" Height="180" ClipToBounds="True">
+                                    <Grid>
+                                        <asyncImageLoader:AdvancedImage Source="{Binding ImagePath, Converter={StaticResource BungieUrlConverter}}" Stretch="UniformToFill" Opacity="0.4"/>
+                                        <Border Background="LinearGradientBrush" Opacity="0.8">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Color="Transparent" Offset="0"/>
+                                                    <GradientStop Color="#000000" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                        
+                                        <StackPanel VerticalAlignment="Bottom" Margin="16">
+                                            <TextBlock Text="{Binding ActivityType}" FontSize="12" Foreground="#FFD700" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding ActivityName}" FontSize="18" FontWeight="Bold" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding Reward}" FontSize="12" Foreground="#CCC" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
+            
+            <!-- COLUMNA 1: UTILIDAD -->
+            <StackPanel Grid.Column="1" Spacing="24">
                 
-                <!-- Columna Izquierda: Divisas -->
-                <Border Grid.Column="0" Background="#1E1E1E" CornerRadius="8" Padding="20" Margin="0,0,20,0">
-                    <StackPanel Spacing="15">
-                        <TextBlock Text="{Binding [status.currencies], Source={x:Static services:LocalizationService.Instance}, FallbackValue='RESOURCES'}" 
-                                   FontWeight="Bold" Foreground="#888" LetterSpacing="1"/>
+                <!-- CARD 1: VAULT STATUS -->
+                <Border Background="#1E1E1E" CornerRadius="12" Padding="20">
+                    <StackPanel Spacing="12">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="VAULT STATUS" FontWeight="Bold" Foreground="#888"/>
+                            <TextBlock Text="{Binding VaultSpaceText}" Foreground="{Binding VaultSpaceColor}" FontWeight="Bold"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding VaultSpaceUsed}" Maximum="{Binding VaultSpaceTotal}" Height="8" 
+                                     Foreground="{Binding VaultSpaceColor}" Background="#333" CornerRadius="4"/>
+                        <TextBlock Text="Manage your inventory to avoid losing items." FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- CARD 2: POSTMASTER -->
+                <Border Background="#1E1E1E" CornerRadius="12" Padding="20" BorderThickness="2">
+                    <Border.BorderBrush>
+                        <Binding Path="IsPostmasterWarning">
+                            <Binding.Converter>
+                                <converters:BoolToColorConverter TrueColor="#FF5555" FalseColor="Transparent"/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Border.BorderBrush>
+                    
+                    <Grid ColumnDefinitions="Auto, *">
+                        <PathIcon Data="{StaticResource MailIcon}" Width="24" Height="24" Margin="0,0,16,0"
+                                  Foreground="{Binding IsPostmasterWarning, Converter={StaticResource BoolToColorConverter}, ConverterParameter=Postmaster}"/>
                         
-                        <!-- Grid de Materiales -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="POSTMASTER" FontWeight="Bold" Foreground="#888" FontSize="11"/>
+                            <TextBlock Text="{Binding PostmasterStatusText}" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- CARD 3: ECONOMY -->
+                <Border Background="#1E1E1E" CornerRadius="12" Padding="20">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="ECONOMY" FontWeight="Bold" Foreground="#888"/>
                         <ItemsControl ItemsSource="{Binding Currencies}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <!-- Celda de Divisa (Molecule) -->
-                                    <molecules:CurrencyCellView DataContext="{Binding}" Margin="0,0,10,10" Width="180"/>
+                                    <molecules:CurrencyCellView DataContext="{Binding}" Margin="0,0,0,8"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </StackPanel>
                 </Border>
-
-                <!-- Columna Derecha: Bóveda -->
-                <Border Grid.Column="1" Background="#1E1E1E" CornerRadius="8" Padding="20">
-                    <StackPanel Spacing="15">
-                        <Grid ColumnDefinitions="*, Auto">
-                            <TextBlock Text="{Binding [status.vaultItems], Source={x:Static services:LocalizationService.Instance}, FallbackValue='VAULT'}" 
-                                       FontWeight="Bold" Foreground="#888" LetterSpacing="1"/>
-                            <TextBlock Grid.Column="1" Text="{Binding VaultSpaceText}" Foreground="{Binding VaultSpaceColor}" FontWeight="Bold"/>
-                        </Grid>
-                        
-                        <!-- Barra de Progreso Grande -->
-                        <ProgressBar Value="{Binding VaultSpaceUsed}" Maximum="{Binding VaultSpaceTotal}" Height="15" 
-                                     Foreground="{Binding VaultSpaceColor}" Background="#111" CornerRadius="7"/>
-                        
-                        <TextBlock Text="Manage your storage carefully. Items may be lost if Postmaster overflows." 
-                                   FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-        </StackPanel>
+                
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </UserControl>

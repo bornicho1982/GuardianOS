@@ -9,8 +9,13 @@ public class CharacterInfo
     public string ClassName { get; set; } = "";
     public string RaceName { get; set; } = "";
     public string GenderName { get; set; } = "";
-    public string Title { get; set; } = ""; // Added logic
+    public string Title { get; set; } = ""; 
     public int LightLevel { get; set; }
+    
+    // Power Breakdown
+    public int BasePowerLevel { get; set; }
+    public int ArtifactBonus { get; set; }
+    public string PowerDisplay => $"{BasePowerLevel} + {ArtifactBonus}";
     public string EmblemPath { get; set; } = "";
     public string EmblemBackgroundPath { get; set; } = "";
     
