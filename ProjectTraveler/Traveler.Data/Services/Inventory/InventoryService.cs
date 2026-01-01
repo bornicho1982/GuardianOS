@@ -164,7 +164,7 @@ public class InventoryService : IInventoryService
     public async Task<(int used, int total)> GetVaultStatusAsync()
     {
         const int VAULT_BUCKET_HASH = 138197802; // General Vault bucket
-        const int VAULT_MAX_CAPACITY = 600;
+        const int VAULT_MAX_CAPACITY = 700; // Updated in The Final Shape (June 2024)
 
         if (!_authService.IsAuthenticated)
             return (0, VAULT_MAX_CAPACITY);
@@ -224,26 +224,45 @@ public class InventoryService : IInventoryService
         {
             var membershipType = (int)_authService.DestinyMembershipType;
             var membershipId = _authService.DestinyMembershipId;
-            var url = $"{BaseUrl}/Destiny2/{membershipType}/Profile/{membershipId}/?components=100";
+            // Component 103 = ProfileCurrencies
+            var url = $"{BaseUrl}/Destiny2/{membershipType}/Profile/{membershipId}/?components=103";
 
             _httpClient.DefaultRequestHeaders.Authorization = 
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
 
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[InventoryService] GetCurrencies failed: {response.StatusCode}");
                 return currencies;
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             using var doc = JsonDocument.Parse(json);
 
             if (doc.RootElement.TryGetProperty("Response", out var resp) &&
-                resp.TryGetProperty("profile", out var profile) &&
-                profile.TryGetProperty("data", out var data) &&
-                data.TryGetProperty("userInfo", out _))
+                resp.TryGetProperty("profileCurrencies", out var profileCurrencies) &&
+                profileCurrencies.TryGetProperty("data", out var data) &&
+                data.TryGetProperty("items", out var items))
             {
-                // Note: Currencies are actually in a different component or need parsing from items
-                // For now, return placeholder - full implementation requires component 1400 (stringvariables)
-                Console.WriteLine("[InventoryService] Currency API stub - needs implementation");
+                foreach (var item in items.EnumerateArray())
+                {
+                    if (item.TryGetProperty("itemHash", out var hashProp) &&
+                        item.TryGetProperty("quantity", out var quantityProp))
+                    {
+                        var hash = hashProp.GetUInt32();
+                        var quantity = quantityProp.GetInt64();
+                        currencies[hash] = quantity;
+                    }
+                }
+                
+                Console.WriteLine($"[InventoryService] Currencies loaded: {currencies.Count} types");
+                if (currencies.ContainsKey(GLIMMER))
+                    Console.WriteLine($"  Glimmer: {currencies[GLIMMER]:N0}");
+                if (currencies.ContainsKey(LEGENDARY_SHARDS))
+                    Console.WriteLine($"  Legendary Shards: {currencies[LEGENDARY_SHARDS]:N0}");
+                if (currencies.ContainsKey(BRIGHT_DUST))
+                    Console.WriteLine($"  Bright Dust: {currencies[BRIGHT_DUST]:N0}");
             }
         }
         catch (Exception ex)

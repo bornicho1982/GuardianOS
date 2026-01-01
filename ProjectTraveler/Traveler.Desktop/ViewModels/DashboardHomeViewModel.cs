@@ -174,8 +174,8 @@ namespace Traveler.Desktop.ViewModels
         {
             // Vault defaults
             VaultSpaceUsed = 0;
-            VaultSpaceTotal = 600;
-            VaultSpaceText = "-- / 600";
+            VaultSpaceTotal = 700; // Updated in The Final Shape (June 2024)
+            VaultSpaceText = "-- / 700";
             VaultSpaceColor = SolidColorBrush.Parse("#4CAF50");
 
             // Postmaster (hidden by default)
@@ -311,13 +311,13 @@ namespace Traveler.Desktop.ViewModels
                 VaultSpaceTotal = vaultTotal;
                 VaultSpaceText = $"{vaultUsed} / {vaultTotal}";
                 
-                // Color logic: Red if over capacity, Yellow if near full, Orange if getting full, Green otherwise
+                // Color logic: Red if over capacity, Yellow if near full (90%), Orange if getting full (95%), Green otherwise
                 if (vaultUsed > vaultTotal)
                     VaultSpaceColor = SolidColorBrush.Parse("#FF5555"); // RED - OVER CAPACITY!
-                else if (vaultUsed > 550)
+                else if (vaultUsed > 665)  // >95% full
+                    VaultSpaceColor = SolidColorBrush.Parse("#FF9800"); // Orange - Critical
+                else if (vaultUsed > 630)  // >90% full
                     VaultSpaceColor = SolidColorBrush.Parse("#FFC107"); // Yellow - Warning
-                else if (vaultUsed > 500)
-                    VaultSpaceColor = SolidColorBrush.Parse("#FF9800"); // Orange - Getting full
                 else
                     VaultSpaceColor = SolidColorBrush.Parse("#4CAF50"); // Green - OK
 
@@ -338,16 +338,25 @@ namespace Traveler.Desktop.ViewModels
                     }
                 }
 
-                // 5. Update Currencies (Mock realistic values until real API implemented)
-                // TODO: Implement _inventoryService.GetCurrenciesAsync() with real data
+                // 5. Update Currencies (Real API - Component 103)
                 LoadingMessage = "Loading currencies...";
-                Currencies = new ObservableCollection<Currency>
+                var currencyData = await _inventoryService.GetCurrenciesAsync();
+                
+                // Currency hash -> (Name, Icon) mapping
+                var currencyMap = new Dictionary<uint, (string Name, string Icon)>
                 {
-                    new Currency { Name = "Glimmer", Quantity = 234567, Icon = "/common/destiny2_content/icons/6b1702878985223049da03c27e49ba3f.png" },
-                    new Currency { Name = "Legendary Shards", Quantity = 5432, Icon = "/common/destiny2_content/icons/5cebde6dd0315a061348b4a4e444762c.png" },
-                    new Currency { Name = "Bright Dust", Quantity = 12340, Icon = "/common/destiny2_content/icons/d9254c0e5568f65fa48566cf5bad26e5.png" },
-                    new Currency { Name = "Silver", Quantity = 500, Icon = "/common/destiny2_content/icons/865c34cb24249a200702df9c4d920252.png" }
+                    { 3159615086, ("Glimmer", "/common/destiny2_content/icons/6b1702878985223049da03c27e49ba3f.png") },
+                    { 1022552290, ("Legendary Shards", "/common/destiny2_content/icons/5cebde6dd0315a061348b4a4e444762c.png") },
+                    { 2817410917, ("Bright Dust", "/common/destiny2_content/icons/d9254c0e5568f65fa48566cf5bad26e5.png") },
+                    { 3147280338, ("Silver", "/common/destiny2_content/icons/865c34cb24249a200702df9c4d920252.png") }
                 };
+                
+                Currencies.Clear();
+                foreach (var (hash, meta) in currencyMap)
+                {
+                    var quantity = currencyData.ContainsKey(hash) ? currencyData[hash] : 0;
+                    Currencies.Add(new Currency { Name = meta.Name, Quantity = (int)quantity, Icon = meta.Icon });
+                }
 
                 System.Diagnostics.Debug.WriteLine($"[DashboardVM] Refresh complete. {Characters.Count} characters, Vault: {vaultUsed}/{vaultTotal}");
             }
