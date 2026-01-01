@@ -182,6 +182,34 @@
                     </StackPanel>
                 </Border>
 
+                <!-- 4. Featured Vendors -->
+                <Border Background="#151515" CornerRadius="16" Padding="20">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="FEATURED VENDORS" FontWeight="Bold" Foreground="#666" FontSize="11" LetterSpacing="0.5"/>
+                        <ItemsControl ItemsSource="{Binding FeaturedVendors}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="40, *, Auto" Margin="0,0,0,12">
+                                        <!-- Vendor Icon -->
+                                        <Border CornerRadius="20" ClipToBounds="True" Width="36" Height="36">
+                                            <asyncImageLoader:AdvancedImage Source="{Binding VendorIcon, Converter={StaticResource BungieUrlConverter}}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        
+                                        <!-- Details -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                                            <TextBlock Text="{Binding VendorName}" Foreground="White" FontWeight="Bold" FontSize="13"/>
+                                            <TextBlock Text="{Binding Status}" Foreground="#888" FontSize="11"/>
+                                        </StackPanel>
+                                        
+                                        <!-- Action/Arrow -->
+                                        <PathIcon Grid.Column="2" Data="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z" 
+                                                  Foreground="#444" Width="12" Height="12"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </Grid>
     </ScrollViewer>

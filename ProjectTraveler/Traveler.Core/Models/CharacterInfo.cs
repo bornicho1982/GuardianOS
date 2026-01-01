@@ -22,6 +22,11 @@ public class CharacterInfo
     public int ArtifactBonus { get; set; }
     public double PercentToNextLevel { get; set; } // 0.0 to 1.0
     public string PowerDisplay => $"{BasePowerLevel} + {ArtifactBonus}";
+
+    // Season Pass
+    public int SeasonRank { get; set; }
+    public double SeasonProgressPercent { get; set; } // 0.0 to 1.0
+    public string SeasonRewardIcon { get; set; } = string.Empty;
     public string EmblemPath { get; set; } = "";
     public string EmblemBackgroundPath { get; set; } = "";
     

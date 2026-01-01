@@ -41,4 +41,4 @@ e:\GuardianOS\ProjectTraveler\Traveler.Desktop\ViewModels\DashboardHomeViewModel
     15 Advertencia(s)
     1 Errores
 
-Tiempo transcurrido 00:00:03.23
+Tiempo transcurrido 00:00:03.25

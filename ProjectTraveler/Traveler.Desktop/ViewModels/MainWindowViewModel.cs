@@ -59,7 +59,7 @@ public class MainWindowViewModel : ViewModelBase
 
         // Default selection
         SelectedIndex = 0;
-        CurrentPage = _dashboardHomeVm;
+        CurrentPage = (object)_dashboardHomeVm;
     }
 
     private void UpdateCurrentPage()
@@ -72,7 +72,7 @@ public class MainWindowViewModel : ViewModelBase
             // 3 => _vendorsVm, // If added to UI later
             // 4 => _triumphsVm, // If added to UI later
             // 5 => _settingsVm, // Settings is a button outside listbox in XAML logic, will handle separate command if needed
-            _ => _dashboardHomeVm
+            _ => (object)_dashboardHomeVm
         };
     }
 }

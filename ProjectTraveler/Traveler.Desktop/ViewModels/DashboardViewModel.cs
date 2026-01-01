@@ -91,7 +91,7 @@ public class DashboardViewModel : ViewModelBase
 
     private void NavigateTo(NavigationItem item)
     {
-        if (item.ViewModelType == typeof(DashboardHomeViewModel)) CurrentView = _dashboardHomeVm;
+        if (item.ViewModelType == typeof(DashboardHomeViewModel)) CurrentView = (object)_dashboardHomeVm;
         else if (item.ViewModelType == typeof(InventoryViewModel)) CurrentView = _inventoryVm;
         else if (item.ViewModelType == typeof(LoadoutsViewModel)) CurrentView = _loadoutsVm;
         else if (item.ViewModelType == typeof(BuildArchitectViewModel)) CurrentView = _buildVm;

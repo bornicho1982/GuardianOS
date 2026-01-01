@@ -21,6 +21,9 @@ namespace Traveler.Desktop.ViewModels
         [ObservableProperty]
         private ObservableCollection<DailyRotation> _dailyActivities;
 
+        [ObservableProperty]
+        private ObservableCollection<VendorItem> _featuredVendors;
+
         // Estado del Vault
         [ObservableProperty]
         private double _vaultSpaceUsed;
@@ -94,25 +97,28 @@ namespace Traveler.Desktop.ViewModels
                     CharacterId = "1", ClassType = "Warlock", RaceName = "Exo",
                     LightLevel = 1825, BasePowerLevel = 1810, ArtifactBonus = 15,
                     EmblemBackgroundPath = "/common/destiny2_content/icons/f5304fcd2796417730e75525048d8b33.jpg",
-                    Title = "Godslayer"
+                    Title = "Godslayer",
+                    SeasonRank = 95, SeasonProgressPercent = 0.85, SeasonRewardIcon = "/common/destiny2_content/icons/SeasonRewardPlaceholder.jpg"
                 },
                 new CharacterInfo
                 {
                     CharacterId = "2", ClassType = "Hunter", RaceName = "Human",
                     LightLevel = 1822, BasePowerLevel = 1807, ArtifactBonus = 15,
                     EmblemBackgroundPath = "/common/destiny2_content/icons/87dfeb3fb385a4a28966276707373972.jpg",
-                    Title = "Revenant"
+                    Title = "Revenant",
+                    SeasonRank = 95, SeasonProgressPercent = 0.85, SeasonRewardIcon = ""
                 },
                 new CharacterInfo
                 {
                     CharacterId = "3", ClassType = "Titan", RaceName = "Awoken",
                     LightLevel = 1815, BasePowerLevel = 1800, ArtifactBonus = 15,
                     EmblemBackgroundPath = "/common/destiny2_content/icons/2a6cb5690327ba290eb9e355e4b77943.jpg",
-                    Title = "Dredgen"
+                    Title = "Dredgen",
+                    SeasonRank = 95, SeasonProgressPercent = 0.85, SeasonRewardIcon = ""
                 }
             };
 
-            // 2. Actividades Diarias (Headlines)
+            // 2. Actividades Diarias
             DailyActivities = new ObservableCollection<DailyRotation>
             {
                 new DailyRotation
@@ -131,7 +137,15 @@ namespace Traveler.Desktop.ViewModels
                 }
             };
 
-            // 3. Divisas (Mock de iconos comunes)
+            // 3. Vendedores Destacados
+            FeaturedVendors = new ObservableCollection<VendorItem>
+            {
+                new VendorItem { VendorName = "Ada-1", Status = "Selling Powerful Friends", VendorIcon = "/common/destiny2_content/icons/Ada1.jpg" },
+                new VendorItem { VendorName = "Banshee-44", Status = "God Roll Funnelweb", VendorIcon = "/common/destiny2_content/icons/Banshee44.jpg" },
+                new VendorItem { VendorName = "Xûr", Status = "At Watcher's Grave", VendorIcon = "/common/destiny2_content/icons/Xur.jpg" }
+            };
+
+            // 4. Divisas
             Currencies = new ObservableCollection<Currency>
             {
                 new Currency { Name = "Glimmer", Quantity = 250000, Icon = "/common/destiny2_content/icons/6b1702878985223049da03c27e49ba3f.png" },
