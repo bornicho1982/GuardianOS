@@ -256,7 +256,87 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 4. Featured Vendors -->
+                <!-- 4. Crucible PvP Stats (Power BI Inspired) -->
+                <Border Background="#151515" CornerRadius="16" Padding="20" IsVisible="{Binding IsLoggedIn}">
+                    <Grid RowDefinitions="Auto, Auto, Auto, Auto">
+                        <!-- Header -->
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Border Background="#B71C1C" Width="4" Height="20" CornerRadius="2"/>
+                            <TextBlock Text="CRUCIBLE STATS" FontWeight="Bold" Foreground="#F44336" 
+                                       FontSize="11" LetterSpacing="1"/>
+                        </StackPanel>
+                        
+                        <!-- Main K/D and Win Rate -->
+                        <Grid Grid.Row="1" Margin="0,15,0,0" ColumnDefinitions="*, *">
+                            <!-- K/D Ratio -->
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding CrucibleKD, StringFormat='{}{0:F2}'}" 
+                                           FontSize="36" FontWeight="Bold" Foreground="#FFD700" 
+                                           HorizontalAlignment="Center" FontFamily="Consolas"/>
+                                <TextBlock Text="K/D Ratio" Foreground="#888" FontSize="11" 
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            
+                            <!-- Win Rate -->
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding CrucibleWinRate, StringFormat='{}{0:F1}%'}" 
+                                           FontSize="36" FontWeight="Bold" Foreground="#4CAF50" 
+                                           HorizontalAlignment="Center" FontFamily="Consolas"/>
+                                <TextBlock Text="Win Rate" Foreground="#888" FontSize="11" 
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                        
+                        <!-- Secondary Stats Grid -->
+                        <Grid Grid.Row="2" Margin="0,15,0,0" ColumnDefinitions="*, *, *">
+                            <!-- Matches -->
+                            <Border Background="#1A1A1A" CornerRadius="8" Padding="10,8">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding CrucibleMatches, StringFormat='{}{0:N0}'}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="White"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Matches" Foreground="#666" FontSize="10" 
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Time Played -->
+                            <Border Grid.Column="1" Background="#1A1A1A" CornerRadius="8" Padding="10,8" Margin="5,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding CrucibleTimePlayed}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="White"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Time" Foreground="#666" FontSize="10" 
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Best Streak -->
+                            <Border Grid.Column="2" Background="#1A1A1A" CornerRadius="8" Padding="10,8">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding CrucibleBestStreak}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="#FF9800"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Best Streak" Foreground="#666" FontSize="10" 
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        
+                        <!-- Efficiency Badge -->
+                        <Border Grid.Row="3" Background="#252525" CornerRadius="6" Padding="10,6" Margin="0,12,0,0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock Text="Efficiency:" Foreground="#888" FontSize="11"/>
+                                    <TextBlock Text="{Binding CrucibleEfficiency, StringFormat='{}{0:F2}'}" 
+                                               Foreground="#00BCD4" FontWeight="Bold" FontSize="11"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- 5. Featured Vendors -->
                 <Border Background="#151515" CornerRadius="16" Padding="20">
                     <StackPanel Spacing="15">
                         <TextBlock Text="FEATURED VENDORS" FontWeight="Bold" Foreground="#666" FontSize="11" LetterSpacing="0.5"/>

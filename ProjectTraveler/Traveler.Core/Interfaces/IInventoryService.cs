@@ -49,5 +49,10 @@ public interface IInventoryService
     /// Gets profile currencies.
     /// </summary>
     Task<Dictionary<uint, long>> GetCurrenciesAsync();
+    
+    /// <summary>
+    /// Gets Crucible (PvP) historical statistics.
+    /// </summary>
+    Task<CrucibleStats> GetCrucibleStatsAsync();
 }
 

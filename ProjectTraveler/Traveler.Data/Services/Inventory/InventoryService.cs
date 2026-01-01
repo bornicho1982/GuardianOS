@@ -327,6 +327,105 @@ public class InventoryService : IInventoryService
         return 0;
     }
     
+    /// <summary>
+    /// Gets Crucible (PvP) historical statistics for the authenticated user.
+    /// Uses GetHistoricalStats endpoint with mode=5 (AllPublicPvP).
+    /// </summary>
+    public async Task<CrucibleStats> GetCrucibleStatsAsync()
+    {
+        var stats = new CrucibleStats();
+        
+        if (!_authService.IsAuthenticated)
+            return stats;
+
+        try
+        {
+            var membershipType = (int)_authService.DestinyMembershipType;
+            var membershipId = _authService.DestinyMembershipId;
+            
+            // GetHistoricalStats endpoint with characterId=0 for account aggregate
+            // mode=5 = AllPvP, groups=General for basic stats
+            var url = $"{BaseUrl}/Destiny2/{membershipType}/Account/{membershipId}/Character/0/Stats/?modes=5&groups=General&periodType=AllTime";
+
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
+
+            Console.WriteLine($"[InventoryService] Fetching Crucible stats: {url}");
+            var response = await _httpClient.GetAsync(url);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[InventoryService] GetCrucibleStats failed: {response.StatusCode}");
+                return stats;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            // Navigate to Response.allPvP.allTime for aggregate stats
+            if (doc.RootElement.TryGetProperty("Response", out var resp) &&
+                resp.TryGetProperty("allPvP", out var allPvP) &&
+                allPvP.TryGetProperty("allTime", out var allTime))
+            {
+                // Extract individual stats
+                if (allTime.TryGetProperty("kills", out var kills) && 
+                    kills.TryGetProperty("basic", out var killsBasic))
+                    stats.Kills = killsBasic.TryGetProperty("value", out var kv) ? (int)kv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("deaths", out var deaths) && 
+                    deaths.TryGetProperty("basic", out var deathsBasic))
+                    stats.Deaths = deathsBasic.TryGetProperty("value", out var dv) ? (int)dv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("assists", out var assists) && 
+                    assists.TryGetProperty("basic", out var assistsBasic))
+                    stats.Assists = assistsBasic.TryGetProperty("value", out var av) ? (int)av.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("killsDeathsRatio", out var kdr) && 
+                    kdr.TryGetProperty("basic", out var kdrBasic))
+                    stats.KillDeathRatio = kdrBasic.TryGetProperty("value", out var kdrv) ? kdrv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("efficiency", out var eff) && 
+                    eff.TryGetProperty("basic", out var effBasic))
+                    stats.Efficiency = effBasic.TryGetProperty("value", out var effv) ? effv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("activitiesEntered", out var matches) && 
+                    matches.TryGetProperty("basic", out var matchesBasic))
+                    stats.MatchesPlayed = matchesBasic.TryGetProperty("value", out var mv) ? (int)mv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("activitiesWon", out var wins) && 
+                    wins.TryGetProperty("basic", out var winsBasic))
+                    stats.Wins = winsBasic.TryGetProperty("value", out var wv) ? (int)wv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("secondsPlayed", out var time) && 
+                    time.TryGetProperty("basic", out var timeBasic))
+                    stats.SecondsPlayed = timeBasic.TryGetProperty("value", out var tv) ? (long)tv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("longestKillSpree", out var streak) && 
+                    streak.TryGetProperty("basic", out var streakBasic))
+                    stats.BestKillStreak = streakBasic.TryGetProperty("value", out var sv) ? (int)sv.GetDouble() : 0;
+                    
+                if (allTime.TryGetProperty("precisionKills", out var precision) && 
+                    precision.TryGetProperty("basic", out var precisionBasic))
+                    stats.PrecisionKills = precisionBasic.TryGetProperty("value", out var pv) ? (int)pv.GetDouble() : 0;
+                
+                // Calculate win rate
+                stats.Losses = stats.MatchesPlayed - stats.Wins;
+                stats.WinRate = stats.MatchesPlayed > 0 ? (double)stats.Wins / stats.MatchesPlayed * 100 : 0;
+                
+                Console.WriteLine($"[InventoryService] Crucible Stats loaded:");
+                Console.WriteLine($"  K/D: {stats.KillDeathRatio:F2}, Efficiency: {stats.Efficiency:F2}");
+                Console.WriteLine($"  Win Rate: {stats.WinRate:F1}%, Matches: {stats.MatchesPlayed:N0}");
+                Console.WriteLine($"  Time Played: {stats.TimePlayed}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[InventoryService] GetCrucibleStats error: {ex.Message}");
+        }
+
+        return stats;
+    }
+    
     public int MembershipType { get; private set; }
     public long DestinyMembershipId { get; private set; }
     public List<long> CharacterIds { get; private set; } = new();

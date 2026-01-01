@@ -82,6 +82,25 @@ namespace Traveler.Desktop.ViewModels
 
         private System.Timers.Timer? _countdownTimer;
 
+        // ===== CRUCIBLE PVP STATS =====
+        [ObservableProperty]
+        private double _crucibleKD = 0;
+
+        [ObservableProperty]
+        private double _crucibleWinRate = 0;
+
+        [ObservableProperty]
+        private int _crucibleMatches = 0;
+
+        [ObservableProperty]
+        private string _crucibleTimePlayed = "--";
+
+        [ObservableProperty]
+        private double _crucibleEfficiency = 0;
+
+        [ObservableProperty]
+        private int _crucibleBestStreak = 0;
+
         // ===== COMMANDS =====
         public IAsyncRelayCommand LoginCommand { get; }
         public IRelayCommand LogoutCommand { get; }
@@ -358,7 +377,17 @@ namespace Traveler.Desktop.ViewModels
                     Currencies.Add(new Currency { Name = meta.Name, Quantity = (int)quantity, Icon = meta.Icon });
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[DashboardVM] Refresh complete. {Characters.Count} characters, Vault: {vaultUsed}/{vaultTotal}");
+                // 6. Crucible PvP Stats (Historical Stats API)
+                LoadingMessage = "Loading Crucible stats...";
+                var crucibleStats = await _inventoryService.GetCrucibleStatsAsync();
+                CrucibleKD = crucibleStats.KillDeathRatio;
+                CrucibleWinRate = crucibleStats.WinRate;
+                CrucibleMatches = crucibleStats.MatchesPlayed;
+                CrucibleTimePlayed = crucibleStats.TimePlayed;
+                CrucibleEfficiency = crucibleStats.Efficiency;
+                CrucibleBestStreak = crucibleStats.BestKillStreak;
+
+                System.Diagnostics.Debug.WriteLine($"[DashboardVM] Refresh complete. {Characters.Count} characters, Vault: {vaultUsed}/{vaultTotal}, K/D: {CrucibleKD:F2}");
             }
             catch (Exception ex)
             {
