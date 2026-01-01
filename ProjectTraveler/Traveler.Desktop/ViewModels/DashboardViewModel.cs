@@ -21,7 +21,8 @@ public class NavigationItem
 
 public class DashboardViewModel : ViewModelBase
 {
-    private ViewModelBase _currentView = null!;
+    // Services retained for DI
+    private object _currentView = null!;
     private NavigationItem _selectedItem = null!;
 
     public ObservableCollection<NavigationItem> NavigationItems { get; }
@@ -37,7 +38,7 @@ public class DashboardViewModel : ViewModelBase
         }
     }
 
-    public ViewModelBase CurrentView
+    public object CurrentView
     {
         get => _currentView;
         private set => this.RaiseAndSetIfChanged(ref _currentView, value);

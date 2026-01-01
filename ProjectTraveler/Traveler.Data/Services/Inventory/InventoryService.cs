@@ -409,7 +409,7 @@ public class InventoryService : IInventoryService
 
             var charInfo = new CharacterInfo
             {
-                CharacterId = charId,
+                CharacterId = charId.ToString(),
                 ClassName = className,
                 RaceName = raceName,
                 LightLevel = light,

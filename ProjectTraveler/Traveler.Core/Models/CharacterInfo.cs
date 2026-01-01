@@ -5,16 +5,22 @@ namespace Traveler.Core.Models;
 /// </summary>
 public class CharacterInfo
 {
-    public long CharacterId { get; set; }
-    public string ClassName { get; set; } = "";
-    public string RaceName { get; set; } = "";
-    public string GenderName { get; set; } = "";
-    public string Title { get; set; } = ""; 
+    public string CharacterId { get; set; } = string.Empty;
+    public string ClassType { get; set; } = string.Empty; // Titan, Hunter, Warlock
+    public string ClassName 
+    { 
+        get => ClassType; 
+        set => ClassType = value; 
+    } // Backward compatibility alias
+    public string RaceName { get; set; } = string.Empty;
+    public string GenderName { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty; 
     public int LightLevel { get; set; }
     
     // Power Breakdown
     public int BasePowerLevel { get; set; }
     public int ArtifactBonus { get; set; }
+    public double PercentToNextLevel { get; set; } // 0.0 to 1.0
     public string PowerDisplay => $"{BasePowerLevel} + {ArtifactBonus}";
     public string EmblemPath { get; set; } = "";
     public string EmblemBackgroundPath { get; set; } = "";

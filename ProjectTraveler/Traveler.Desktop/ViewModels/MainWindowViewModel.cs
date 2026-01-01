@@ -6,7 +6,7 @@ namespace Traveler.Desktop.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private ViewModelBase _currentPage = null!;
+    private object _currentPage = null!;
     private int _selectedIndex;
 
     public int SelectedIndex
@@ -19,7 +19,7 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public ViewModelBase CurrentPage
+    public object CurrentPage
     {
         get => _currentPage;
         private set => this.RaiseAndSetIfChanged(ref _currentPage, value);
@@ -66,7 +66,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         CurrentPage = SelectedIndex switch
         {
-            0 => _dashboardHomeVm,
+            0 => (object)_dashboardHomeVm,
             1 => _inventoryVm,
             2 => _loadoutsVm,
             // 3 => _vendorsVm, // If added to UI later

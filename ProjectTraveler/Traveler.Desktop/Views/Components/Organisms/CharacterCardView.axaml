@@ -7,20 +7,51 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="120"
              x:Class="Traveler.Desktop.Views.Components.Organisms.CharacterCardView"
              x:DataType="models:CharacterInfo">
+
+    <UserControl.Styles>
+        <!-- Hover Enhancement -->
+        <Style Selector="Border.CardContainer">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut"/>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.CardContainer:pointerover">
+            <Setter Property="RenderTransform" Value="scale(1.02)"/>
+            <Setter Property="BoxShadow" Value="0 8 20 0 #80000000"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        
+        <!-- Image Zoom on Hover -->
+        <Style Selector="Border.CardContainer:pointerover asyncImageLoader|AdvancedImage">
+            <Setter Property="RenderTransform" Value="scale(1.05)"/>
+        </Style>
+        <Style Selector="asyncImageLoader|AdvancedImage">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.4" Easing="SineEaseOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
              
-    <Border Margin="0,0,15,0" Height="120" CornerRadius="8" ClipToBounds="True" BoxShadow="0 4 10 0 #50000000">
+    <Border Classes="CardContainer" Margin="0,0,15,0" Height="120" CornerRadius="8" ClipToBounds="True" BoxShadow="0 4 10 0 #50000000">
         <Panel>
             <!-- Background Image -->
             <asyncImageLoader:AdvancedImage 
                 Source="{Binding EmblemBackgroundPath, Converter={StaticResource BungieUrlConverter}}" 
-                Stretch="UniformToFill"/>
+                Stretch="UniformToFill"
+                RenderTransformOrigin="50%,50%"/>
             
-            <!-- Dark Gradient Overlay -->
+            <!-- Dark Gradient Overlay (Dual Sided) -->
             <Border>
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
-                        <GradientStop Color="#CC000000" Offset="0.0" />
-                        <GradientStop Color="#00000000" Offset="0.8" />
+                        <GradientStop Color="#E6000000" Offset="0.0" />
+                        <GradientStop Color="#40000000" Offset="0.5" />
+                        <GradientStop Color="#E6000000" Offset="1.0" />
                     </LinearGradientBrush>
                 </Border.Background>
             </Border>
