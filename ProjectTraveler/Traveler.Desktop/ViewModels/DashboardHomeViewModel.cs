@@ -310,7 +310,16 @@ namespace Traveler.Desktop.ViewModels
                 VaultSpaceUsed = vaultUsed;
                 VaultSpaceTotal = vaultTotal;
                 VaultSpaceText = $"{vaultUsed} / {vaultTotal}";
-                VaultSpaceColor = SolidColorBrush.Parse(vaultUsed > 550 ? "#FFC107" : vaultUsed > 500 ? "#FF9800" : "#4CAF50");
+                
+                // Color logic: Red if over capacity, Yellow if near full, Orange if getting full, Green otherwise
+                if (vaultUsed > vaultTotal)
+                    VaultSpaceColor = SolidColorBrush.Parse("#FF5555"); // RED - OVER CAPACITY!
+                else if (vaultUsed > 550)
+                    VaultSpaceColor = SolidColorBrush.Parse("#FFC107"); // Yellow - Warning
+                else if (vaultUsed > 500)
+                    VaultSpaceColor = SolidColorBrush.Parse("#FF9800"); // Orange - Getting full
+                else
+                    VaultSpaceColor = SolidColorBrush.Parse("#4CAF50"); // Green - OK
 
                 // 4. Postmaster Check (Real API)
                 if (characters.Count > 0)
@@ -328,6 +337,17 @@ namespace Traveler.Desktop.ViewModels
                         IsPostmasterWarning = false;
                     }
                 }
+
+                // 5. Update Currencies (Mock realistic values until real API implemented)
+                // TODO: Implement _inventoryService.GetCurrenciesAsync() with real data
+                LoadingMessage = "Loading currencies...";
+                Currencies = new ObservableCollection<Currency>
+                {
+                    new Currency { Name = "Glimmer", Quantity = 234567, Icon = "/common/destiny2_content/icons/6b1702878985223049da03c27e49ba3f.png" },
+                    new Currency { Name = "Legendary Shards", Quantity = 5432, Icon = "/common/destiny2_content/icons/5cebde6dd0315a061348b4a4e444762c.png" },
+                    new Currency { Name = "Bright Dust", Quantity = 12340, Icon = "/common/destiny2_content/icons/d9254c0e5568f65fa48566cf5bad26e5.png" },
+                    new Currency { Name = "Silver", Quantity = 500, Icon = "/common/destiny2_content/icons/865c34cb24249a200702df9c4d920252.png" }
+                };
 
                 System.Diagnostics.Debug.WriteLine($"[DashboardVM] Refresh complete. {Characters.Count} characters, Vault: {vaultUsed}/{vaultTotal}");
             }

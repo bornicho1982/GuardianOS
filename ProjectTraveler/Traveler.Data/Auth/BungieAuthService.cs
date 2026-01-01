@@ -39,8 +39,8 @@ public class BungieAuthService
     private const string ClientSecret = "E7ijog02U.jWK8oRz-rf5wkT.6e4NNrAfoj-eIhVXj8";
     public const string ApiKey = "e1a73d9d631a46a8b7e2b6e37ae30492";
 
-    private const string RedirectUrl = "https://localhost:55555/callback/";
-    private const string ListenerPrefix = "https://localhost:55555/callback/";
+    private const string RedirectUrl = "https://localhost:55555/callback";      // NO trailing slash - must match Bungie registration EXACTLY
+    private const string ListenerPrefix = "https://localhost:55555/callback";   // NO trailing slash
     private const string AuthUrl = "https://www.bungie.net/en/OAuth/Authorize";
     private const string TokenUrl = "https://www.bungie.net/Platform/App/OAuth/token/";
     private const string MembershipsUrl = "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/";
@@ -353,27 +353,46 @@ public class BungieAuthService
 
     private async Task<string> ExchangeCodeForTokenAsync(string code, string codeVerifier)
     {
+        // For Confidential OAuth clients, Bungie expects Basic Auth header
+        // NOT client_secret in the body (that's for Public clients)
+        var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{ClientId}:{ClientSecret}"));
+        
+        // Create a new HttpClient for this request to avoid header conflicts
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("X-API-Key", ApiKey);
+        client.DefaultRequestHeaders.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", credentials);
+
         var requestBody = new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string, string>("grant_type", "authorization_code"),
             new KeyValuePair<string, string>("code", code),
             new KeyValuePair<string, string>("client_id", ClientId),
-            new KeyValuePair<string, string>("client_secret", ClientSecret),
             new KeyValuePair<string, string>("code_verifier", codeVerifier),
-            new KeyValuePair<string, string>("redirect_uri", RedirectUrl) // CRITICAL: Required by Bungie OAuth
+            new KeyValuePair<string, string>("redirect_uri", RedirectUrl)
         });
 
         Console.WriteLine($"[BungieAuth] Token exchange request to: {TokenUrl}");
         Console.WriteLine($"[BungieAuth] Using redirect_uri: {RedirectUrl}");
+        Console.WriteLine($"[BungieAuth] Using Basic Auth header with client_id: {ClientId}");
+        Console.WriteLine($"[BungieAuth] Code verifier length: {codeVerifier.Length}");
         
-        var response = await _httpClient.PostAsync(TokenUrl, requestBody);
+        var response = await client.PostAsync(TokenUrl, requestBody);
         
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"[BungieAuth] Token exchange failed: {response.StatusCode}");
             Console.WriteLine($"[BungieAuth] Error details: {errorContent}");
-            response.EnsureSuccessStatusCode(); // Throw with proper message
+            
+            // Also log all response headers for debugging
+            Console.WriteLine("[BungieAuth] Response headers:");
+            foreach (var header in response.Headers)
+            {
+                Console.WriteLine($"  {header.Key}: {string.Join(", ", header.Value)}");
+            }
+            
+            response.EnsureSuccessStatusCode();
         }
 
         return await response.Content.ReadAsStringAsync();
