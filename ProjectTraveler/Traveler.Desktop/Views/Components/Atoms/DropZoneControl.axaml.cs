@@ -5,7 +5,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Traveler.Core.Models;
 
-namespace Traveler.Desktop.Controls;
+namespace Traveler.Desktop.Views.Components.Atoms;
 
 public partial class DropZoneControl : UserControl
 {

@@ -30,7 +30,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <!-- Tarjeta de Personaje (Organism) -->
-                            <organisms:CharacterCardView />
+                            <organisms:CharacterCardView DataContext="{Binding}" Margin="0,0,15,0" Height="120"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -55,7 +55,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <!-- Celda de Divisa (Molecule) -->
-                                    <molecules:CurrencyCellView />
+                                    <molecules:CurrencyCellView DataContext="{Binding}" Margin="0,0,10,10" Width="180"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

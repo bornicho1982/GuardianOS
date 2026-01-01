@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Traveler.Desktop.Controls;
+namespace Traveler.Desktop.Views.Components.Atoms;
 
 public partial class ItemTooltip : UserControl
 {

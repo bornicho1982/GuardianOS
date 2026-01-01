@@ -618,6 +618,20 @@ public class InventoryService : IInventoryService
         }
     }
 
+
+    private string GetBucketName(uint bucketHash) => bucketHash switch
+    {
+        1498876634 => "Kinetic Weapons",
+        2465295065 => "Energy Weapons",
+        953998645 => "Power Weapons",
+        3448274439 => "Helmets",
+        3551918588 => "Gauntlets",
+        14239492 => "Chest Armor",
+        20886954 => "Leg Armor",
+        1585787867 => "Class Armor",
+        _ => "General"
+    };
+
     private async Task<ItemDefinition?> GetItemDefinitionFromManifestAsync(uint hash)
     {
         try

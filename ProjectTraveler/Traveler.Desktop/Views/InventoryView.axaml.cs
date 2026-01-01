@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Traveler.Core.Models;
-using Traveler.Desktop.Controls;
+using Traveler.Desktop.Views.Components.Molecules;
 using Traveler.Desktop.ViewModels;
 
 namespace Traveler.Desktop.Views;

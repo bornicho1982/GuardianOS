@@ -3,7 +3,7 @@
              xmlns:models="using:Traveler.Core.Models"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:converters="using:Traveler.Desktop.Converters"
-             xmlns:controls="using:Traveler.Desktop.Controls"
+             xmlns:atoms="using:Traveler.Desktop.Views.Components.Atoms"
              x:Class="Traveler.Desktop.Views.Components.Molecules.ItemControl"
              x:DataType="models:InventoryItem"
              Width="66" Height="78"
@@ -24,7 +24,7 @@
             ClipToBounds="False">
             
         <ToolTip.Tip>
-            <controls:ItemTooltip DataContext="{Binding}" />
+            <atoms:ItemTooltip DataContext="{Binding}" />
         </ToolTip.Tip>
             
         <Grid>

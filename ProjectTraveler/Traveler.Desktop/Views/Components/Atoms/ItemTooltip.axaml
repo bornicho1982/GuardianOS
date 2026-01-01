@@ -3,7 +3,7 @@
              xmlns:models="using:Traveler.Core.Models"
              xmlns:converters="using:Traveler.Desktop.Converters"
              xmlns:asyncImageLoader="using:AsyncImageLoader"
-             x:Class="Traveler.Desktop.Controls.ItemTooltip"
+             x:Class="Traveler.Desktop.Views.Components.Atoms.ItemTooltip"
              x:DataType="models:InventoryItem"
              Width="320">
 
