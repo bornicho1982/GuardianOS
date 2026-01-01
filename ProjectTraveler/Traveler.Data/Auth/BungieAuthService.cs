@@ -359,11 +359,22 @@ public class BungieAuthService
             new KeyValuePair<string, string>("code", code),
             new KeyValuePair<string, string>("client_id", ClientId),
             new KeyValuePair<string, string>("client_secret", ClientSecret),
-            new KeyValuePair<string, string>("code_verifier", codeVerifier)
+            new KeyValuePair<string, string>("code_verifier", codeVerifier),
+            new KeyValuePair<string, string>("redirect_uri", RedirectUrl) // CRITICAL: Required by Bungie OAuth
         });
 
+        Console.WriteLine($"[BungieAuth] Token exchange request to: {TokenUrl}");
+        Console.WriteLine($"[BungieAuth] Using redirect_uri: {RedirectUrl}");
+        
         var response = await _httpClient.PostAsync(TokenUrl, requestBody);
-        response.EnsureSuccessStatusCode();
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[BungieAuth] Token exchange failed: {response.StatusCode}");
+            Console.WriteLine($"[BungieAuth] Error details: {errorContent}");
+            response.EnsureSuccessStatusCode(); // Throw with proper message
+        }
 
         return await response.Content.ReadAsStringAsync();
     }
