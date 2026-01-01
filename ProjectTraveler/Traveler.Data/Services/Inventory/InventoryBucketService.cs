@@ -103,4 +103,45 @@ public class InventoryBucketService : IInventoryBucketService
             _ => BucketCategory.Unknown
         };
     }
+
+    public List<InventoryBucket> Bucketize(IEnumerable<InventoryItem> items)
+    {
+        // define definitions for the buckets we want to return
+        var buckets = new List<InventoryBucket>
+        {
+            // Weapons
+            new() { Name = "Kinetic Weapons", Hash = 1498876634, Category = BucketCategory.Kinetic },
+            new() { Name = "Energy Weapons", Hash = 2465295065, Category = BucketCategory.Energy },
+            new() { Name = "Power Weapons", Hash = 953998645, Category = BucketCategory.Power },
+            
+            // Armor
+            new() { Name = "Helmets", Hash = 3448274439, Category = BucketCategory.Helmet },
+            new() { Name = "Gauntlets", Hash = 3551918588, Category = BucketCategory.Gauntlets },
+            new() { Name = "Chest Armor", Hash = 14239492, Category = BucketCategory.Chest },
+            new() { Name = "Leg Armor", Hash = 20886954, Category = BucketCategory.Legs },
+            new() { Name = "Class Armor", Hash = 1585787867, Category = BucketCategory.ClassItem },
+            
+            // General (Catch-all)
+            new() { Name = "General", Hash = 0, Category = BucketCategory.Unknown } 
+        };
+
+        var bucketMap = buckets.ToDictionary(b => b.Hash);
+        var generalBucket = buckets.Last(); // The General bucket
+
+        foreach (var item in items)
+        {
+            if (bucketMap.TryGetValue(item.BucketHash, out var bucket))
+            {
+                bucket.Items.Add(item);
+            }
+            else
+            {
+                // If hash not found in our specific map, goes to General
+                // This covers Ghost, Vehicle, Ship, Consumables per requirements
+                generalBucket.Items.Add(item);
+            }
+        }
+
+        return buckets;
+    }
 }

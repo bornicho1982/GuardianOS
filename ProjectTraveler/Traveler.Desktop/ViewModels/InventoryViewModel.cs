@@ -110,6 +110,16 @@ public class InventoryViewModel : ViewModelBase
     // ... existing properties ...
 
     // === INVENTORY COLLECTIONS (Redirection to Service Buckets) ===
+    // === BUCKET FILTERED ITEMS ===
+    private ObservableCollection<InventoryBucket> _buckets = new();
+    public ObservableCollection<InventoryBucket> Buckets
+    {
+        get => _buckets;
+        set => this.RaiseAndSetIfChanged(ref _buckets, value);
+    }
+
+    // Keep legacy properties for now, but they will be empty if not populated via DistributeItems
+    // Ideally the View should bind to Buckets directly
     public ObservableCollection<InventoryItem> KineticWeapons => _bucketService.GetBucket(BucketCategory.Kinetic).Items;
     public ObservableCollection<InventoryItem> EnergyWeapons => _bucketService.GetBucket(BucketCategory.Energy).Items;
     public ObservableCollection<InventoryItem> PowerWeapons => _bucketService.GetBucket(BucketCategory.Power).Items;
@@ -118,6 +128,7 @@ public class InventoryViewModel : ViewModelBase
     public ObservableCollection<InventoryItem> Chests => _bucketService.GetBucket(BucketCategory.Chest).Items;
     public ObservableCollection<InventoryItem> Legs => _bucketService.GetBucket(BucketCategory.Legs).Items;
     public ObservableCollection<InventoryItem> ClassItems => _bucketService.GetBucket(BucketCategory.ClassItem).Items;
+
 
     // Legacy Aliases for View Compatibility
     public IEnumerable<InventoryItem> InventoryKinetic => KineticWeapons;
@@ -135,9 +146,13 @@ public class InventoryViewModel : ViewModelBase
         var charId = SelectedCharacter.CharacterId.ToString();
 
         // 1. Filter for current character and unequipped items
-        var charItems = items.Where(i => i.Location == charId && !i.IsEquipped);
+        var charItems = items.Where(i => i.Location == charId && !i.IsEquipped).ToList();
 
-        // 2. Delegate sorting to BucketService
+        // 2. Use new Bucketize logic
+        var newBuckets = _bucketService.Bucketize(charItems);
+        Buckets = new ObservableCollection<InventoryBucket>(newBuckets);
+        
+        // 3. Also call legacy DistributeItems to keep existing bindings working for now (KineticWeapons, etc.)
         _bucketService.DistributeItems(charItems);
     }
     
