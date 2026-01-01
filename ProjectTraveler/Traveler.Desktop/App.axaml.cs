@@ -9,7 +9,10 @@ using Traveler.Data.Services.Inventory;
 using Traveler.Data.Services.Triumphs;
 using Traveler.Data.Services.Vendors;
 using Traveler.Data.Services.Settings;
+using Traveler.Data.Services;
+using Traveler.Data.Services.Inventory;
 using Traveler.Core.Optimization;
+using Traveler.Core.Interfaces;
 
 namespace Traveler.Desktop;
 
@@ -27,9 +30,12 @@ public partial class App : Application
             // ===== COMPOSITION ROOT =====
             
             // Core Services
-            var authService = new BungieAuthService();
+            var localDbService = new LocalDatabaseService();
+            var authService = new BungieAuthService(localDbService);
             var manifestService = new ManifestDatabase();
             var settingsService = new SettingsService();
+            var bucketService = new InventoryBucketService();
+            var filterService = new InventoryFilterService(); // New Service
             
             // Initialize async services (fire-and-forget with console logging)
             _ = Task.Run(async () => 
@@ -82,7 +88,7 @@ public partial class App : Application
             var dashboardHomeVm = new DashboardHomeViewModel(inventoryService, authService);
             
             // Main Views
-            var inventoryVm = new InventoryViewModel(inventoryService, smartMoveService);
+            var inventoryVm = new InventoryViewModel(inventoryService, smartMoveService, bucketService, filterService);
             var organizerVm = new OrganizerViewModel(inventoryService);
             
             // Build Constructor

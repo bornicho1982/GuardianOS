@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Traveler.Core.Models;
 
-namespace Traveler.Desktop.Controls;
+namespace Traveler.Desktop.Views.Components.Molecules;
 
 public partial class ItemControl : UserControl
 {

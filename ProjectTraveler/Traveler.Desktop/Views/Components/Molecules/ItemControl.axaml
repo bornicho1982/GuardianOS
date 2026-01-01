@@ -4,7 +4,7 @@
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:converters="using:Traveler.Desktop.Converters"
              xmlns:controls="using:Traveler.Desktop.Controls"
-             x:Class="Traveler.Desktop.Controls.ItemControl"
+             x:Class="Traveler.Desktop.Views.Components.Molecules.ItemControl"
              x:DataType="models:InventoryItem"
              Width="66" Height="78"
              UseLayoutRounding="True">

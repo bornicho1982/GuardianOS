@@ -1,0 +1,69 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- DESIGN TOKENS MOVED TO APP.AXAML -->
+    <!-- Preserving comments for structure -->
+
+    <!-- GLASS CARD STYLE -->
+    <Style Selector="Border.GlassCard">
+        <Setter Property="Background" Value="#15FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#25FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="BoxShadow" Value="0 4 15 0 #20000000"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Border.GlassCard:pointerover">
+        <Setter Property="Background" Value="#25FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+    </Style>
+
+    <!-- PREMIUM BUTTON STYLE -->
+    <Style Selector="Button.Premium">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{StaticResource TitanGold}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Foreground" Value="{StaticResource TitanGold}"/>
+        <Setter Property="Padding" Value="24,12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.Premium:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{StaticResource TitanGold}"/>
+        <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    
+    <Style Selector="Button.Premium:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+    </Style>
+
+    <!-- HEADER TEXT -->
+    <Style Selector="TextBlock.H1">
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="Segoe UI Variable Display, Segoe UI, sans-serif"/>
+    </Style>
+    
+    <Style Selector="TextBlock.H2">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#EEE"/>
+    </Style>
+    
+</Styles>

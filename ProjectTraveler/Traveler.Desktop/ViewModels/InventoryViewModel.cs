@@ -9,18 +9,23 @@ using ReactiveUI;
 using Traveler.Core.Interfaces;
 using Traveler.Core.Models;
 
+using Traveler.Desktop.Stores;
+
 namespace Traveler.Desktop.ViewModels;
 
 public class InventoryViewModel : ViewModelBase
 {
     private readonly IInventoryService _inventoryService;
     private readonly ISmartMoveService _smartMoveService;
+    private readonly IInventoryBucketService _bucketService;
+    private readonly IInventoryFilterService _filterService;
+    private readonly InventoryStore _inventoryStore;
     
     private string _searchText = "";
     private CharacterInfo? _selectedCharacter;
     private string _selectedBucketFilter = "All";
 
-    public ObservableCollection<InventoryItem> Items => _inventoryService.AllItems;
+    public ObservableCollection<InventoryItem> Items => _inventoryStore.AllItems;
     public ObservableCollection<CharacterInfo> Characters => _inventoryService.Characters;
     
     // === SELECTED CHARACTER ===
@@ -78,14 +83,7 @@ public class InventoryViewModel : ViewModelBase
     
     private IEnumerable<InventoryItem> FilterItems(IEnumerable<InventoryItem> items)
     {
-        if (string.IsNullOrWhiteSpace(SearchText))
-            return items;
-            
-        var search = SearchText.ToLower();
-        return items.Where(i => 
-            i.Name.ToLower().Contains(search) ||
-            i.ItemType.ToLower().Contains(search) ||
-            i.TierType.ToLower().Contains(search));
+        return _filterService.FilterItems(items, SearchText);
     }
     
     // === EQUIPPED ITEMS (1 per slot) ===
@@ -107,17 +105,21 @@ public class InventoryViewModel : ViewModelBase
             i.IsEquipped);
     }
     
-    // === INVENTORY COLLECTIONS (Separated by Bucket) ===
-    public ObservableCollection<InventoryItem> KineticWeapons { get; } = new();
-    public ObservableCollection<InventoryItem> EnergyWeapons { get; } = new();
-    public ObservableCollection<InventoryItem> PowerWeapons { get; } = new();
-    public ObservableCollection<InventoryItem> Helmets { get; } = new();
-    public ObservableCollection<InventoryItem> Gauntlets { get; } = new();
-    public ObservableCollection<InventoryItem> Chests { get; } = new();
-    public ObservableCollection<InventoryItem> Legs { get; } = new();
-    public ObservableCollection<InventoryItem> ClassItems { get; } = new();
+    // ... existing fields ...
 
-    // Legacy Aliases for View Compatibility (Optional, can be updated in XAML later)
+    // ... existing properties ...
+
+    // === INVENTORY COLLECTIONS (Redirection to Service Buckets) ===
+    public ObservableCollection<InventoryItem> KineticWeapons => _bucketService.GetBucket(BucketCategory.Kinetic).Items;
+    public ObservableCollection<InventoryItem> EnergyWeapons => _bucketService.GetBucket(BucketCategory.Energy).Items;
+    public ObservableCollection<InventoryItem> PowerWeapons => _bucketService.GetBucket(BucketCategory.Power).Items;
+    public ObservableCollection<InventoryItem> Helmets => _bucketService.GetBucket(BucketCategory.Helmet).Items;
+    public ObservableCollection<InventoryItem> Gauntlets => _bucketService.GetBucket(BucketCategory.Gauntlets).Items;
+    public ObservableCollection<InventoryItem> Chests => _bucketService.GetBucket(BucketCategory.Chest).Items;
+    public ObservableCollection<InventoryItem> Legs => _bucketService.GetBucket(BucketCategory.Legs).Items;
+    public ObservableCollection<InventoryItem> ClassItems => _bucketService.GetBucket(BucketCategory.ClassItem).Items;
+
+    // Legacy Aliases for View Compatibility
     public IEnumerable<InventoryItem> InventoryKinetic => KineticWeapons;
     public IEnumerable<InventoryItem> InventoryEnergy => EnergyWeapons;
     public IEnumerable<InventoryItem> InventoryPower => PowerWeapons;
@@ -129,38 +131,14 @@ public class InventoryViewModel : ViewModelBase
 
     private void SortItems(IEnumerable<InventoryItem> items)
     {
-        // 1. Clear existing collections
-        KineticWeapons.Clear();
-        EnergyWeapons.Clear();
-        PowerWeapons.Clear();
-        Helmets.Clear();
-        Gauntlets.Clear();
-        Chests.Clear();
-        Legs.Clear();
-        ClassItems.Clear();
-
         if (SelectedCharacter == null) return;
         var charId = SelectedCharacter.CharacterId.ToString();
 
-        // 2. Filter for current character and unequipped items
-        // (Assuming we only want the inventory grid items here, distinct from Equipped* properties)
+        // 1. Filter for current character and unequipped items
         var charItems = items.Where(i => i.Location == charId && !i.IsEquipped);
 
-        // 3. Sort into buckets
-        foreach (var item in charItems)
-        {
-            switch (item.BucketHash)
-            {
-                case 1498876634: KineticWeapons.Add(item); break;
-                case 2465295065: EnergyWeapons.Add(item); break;
-                case 953998645:  PowerWeapons.Add(item); break;
-                case 3448274439: Helmets.Add(item); break;
-                case 3551918588: Gauntlets.Add(item); break;
-                case 14239492:   Chests.Add(item); break;
-                case 20886954:   Legs.Add(item); break;
-                case 1585787867: ClassItems.Add(item); break;
-            }
-        }
+        // 2. Delegate sorting to BucketService
+        _bucketService.DistributeItems(charItems);
     }
     
     // === FILTERED VAULT ITEMS (based on SelectedBucketFilter) ===
@@ -258,10 +236,13 @@ public class InventoryViewModel : ViewModelBase
     public ReactiveCommand<string, System.Reactive.Unit> SetBucketFilterCommand { get; }
     public ICommand TransferItemCommand { get; }
 
-    public InventoryViewModel(IInventoryService inventoryService, ISmartMoveService smartMoveService)
+    public InventoryViewModel(IInventoryService inventoryService, ISmartMoveService smartMoveService, IInventoryBucketService bucketService, IInventoryFilterService filterService)
     {
         _inventoryService = inventoryService;
         _smartMoveService = smartMoveService;
+        _bucketService = bucketService;
+        _filterService = filterService;
+        _inventoryStore = InventoryStore.Instance;
 
         RefreshCommand = ReactiveCommand.CreateFromTask(RefreshInventory);
         SelectCharacterCommand = ReactiveCommand.Create<CharacterInfo>(SelectCharacter);
@@ -280,6 +261,11 @@ public class InventoryViewModel : ViewModelBase
         });
         
         _inventoryService.InventoryRefreshed += OnInventoryRefreshed;
+        _inventoryStore.ItemsChanged += () => 
+        {
+             // Trigger UI update when Store changes
+             OnInventoryRefreshed();
+        };
         
         RxApp.MainThreadScheduler.Schedule(async () => await RefreshInventory());
     }
@@ -343,6 +329,9 @@ public class InventoryViewModel : ViewModelBase
     {
         _inventoryService = null!;
         _smartMoveService = null!;
+        _bucketService = null!;
+        _filterService = null!;
+        _inventoryStore = null!;
         RefreshCommand = null!;
         SelectCharacterCommand = null!;
         SetBucketFilterCommand = null!;
@@ -352,5 +341,7 @@ public class InventoryViewModel : ViewModelBase
     private async Task RefreshInventory()
     {
         await _inventoryService.RefreshInventoryAsync();
+        // Sync Store with Service data (Decoupling step 1)
+        _inventoryStore.UpdateItems(_inventoryService.AllItems);
     }
 }

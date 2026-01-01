@@ -14,7 +14,20 @@ using DotNetBungieAPI.Service.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using Traveler.Core.Interfaces;
+
 namespace Traveler.Data.Auth;
+
+/// <summary>
+/// DTO for persisting authentication data
+/// </summary>
+public class AuthTokenData
+{
+    public string? AccessToken { get; set; }
+    public string? RefreshToken { get; set; }
+    public DateTime TokenExpiry { get; set; }
+    public long BungieMembershipId { get; set; }
+}
 
 /// <summary>
 /// Bungie OAuth2 (PKCE) authentication service with DotNetBungieAPI client management.
@@ -33,6 +46,7 @@ public class BungieAuthService
     private const string MembershipsUrl = "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/";
 
     private readonly HttpClient _httpClient;
+    private readonly ILocalDatabaseService _dbService; // New Dependency
     private IBungieClient? _bungieClient;
     
     // Token storage
@@ -48,10 +62,44 @@ public class BungieAuthService
 
     public bool IsAuthenticated => !string.IsNullOrEmpty(AccessToken) && TokenExpiry > DateTime.UtcNow;
 
-    public BungieAuthService()
+    public BungieAuthService(ILocalDatabaseService dbService)
     {
+        _dbService = dbService;
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Add("X-API-Key", ApiKey);
+        
+        // Try to load token from DB
+        TryLoadToken();
+    }
+    
+    private void TryLoadToken()
+    {
+        try
+        {
+            var tokenData = _dbService.Load<AuthTokenData>("auth_tokens", t => true); // Load single/first token
+            if (tokenData != null)
+            {
+                AccessToken = tokenData.AccessToken;
+                RefreshToken = tokenData.RefreshToken;
+                TokenExpiry = tokenData.TokenExpiry;
+                BungieMembershipId = tokenData.BungieMembershipId;
+                
+                if (IsAuthenticated)
+                {
+                    Console.WriteLine("[BungieAuth] Token loaded from DB and is VALID.");
+                    _ = ResolveMembershipAsync(); // Restore membership info background
+                }
+                else if (!string.IsNullOrEmpty(RefreshToken))
+                {
+                    Console.WriteLine("[BungieAuth] Token loaded from DB (Expired). Refreshing...");
+                     _ = RefreshTokenAsync();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[BungieAuth] Failed to load token: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -89,6 +137,15 @@ public class BungieAuthService
             _ = long.TryParse(tokenData.membership_id, out var membershipId);
             BungieMembershipId = membershipId;
             TokenExpiry = DateTime.UtcNow.AddSeconds(tokenData.expires_in);
+            
+            // SAVE TO DB
+            _dbService.Save(new AuthTokenData
+            {
+                AccessToken = AccessToken,
+                RefreshToken = RefreshToken,
+                TokenExpiry = TokenExpiry,
+                BungieMembershipId = BungieMembershipId
+            }, "auth_tokens");
 
             Console.WriteLine($"[BungieAuth] Token obtained. Expires: {TokenExpiry}");
 
