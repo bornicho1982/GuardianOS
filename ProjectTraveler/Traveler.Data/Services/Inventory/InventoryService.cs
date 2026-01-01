@@ -44,7 +44,269 @@ public class InventoryService : IInventoryService
     /// <summary>
     /// Event fired when inventory refresh is complete.
     /// </summary>
+    /// <summary>
+    /// Event fired when inventory refresh is complete.
+    /// </summary>
     public event Action? InventoryRefreshed;
+
+    public async Task<List<CharacterInfo>> GetCurrentUserCharactersAsync()
+    {
+        Console.WriteLine("[InventoryService] GetCurrentUserCharactersAsync called");
+        
+        if (!_authService.IsAuthenticated)
+        {
+            Console.WriteLine("[InventoryService] Not authenticated");
+            return new List<CharacterInfo>();
+        }
+
+        try
+        {
+            var membershipType = (int)_authService.DestinyMembershipType;
+            var membershipId = _authService.DestinyMembershipId;
+            // Components: 200 (Characters), 202 (CharacterProgressions)
+            var url = $"{BaseUrl}/Destiny2/{membershipType}/Profile/{membershipId}/?components=200,202";
+
+            Console.WriteLine($"[InventoryService] Fetching Characters: {url}");
+            
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"[InventoryService] API Error: {response.StatusCode}");
+                return new List<CharacterInfo>();
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            
+            if (!root.TryGetProperty("Response", out var profileResponse))
+                return new List<CharacterInfo>();
+
+            var characters = new List<CharacterInfo>();
+
+            // Parse Characters (Component 200)
+            if (profileResponse.TryGetProperty("characters", out var charComp) &&
+                charComp.TryGetProperty("data", out var charData))
+            {
+                // Parse Progressions (Component 202) for Season Rank
+                JsonElement? progressionsData = null;
+                if (profileResponse.TryGetProperty("characterProgressions", out var progComp) &&
+                    progComp.TryGetProperty("data", out var progData))
+                {
+                    progressionsData = progData;
+                }
+
+                foreach (var prop in charData.EnumerateObject())
+                {
+                    var charId = prop.Name;
+                    var character = prop.Value;
+                    
+                    // Basic Info
+                    var classType = character.TryGetProperty("classType", out var ct) ? ct.GetInt32() : 0;
+                    var className = classType switch { 0 => "Titan", 1 => "Hunter", 2 => "Warlock", _ => "Guardian" };
+                    var raceType = character.TryGetProperty("raceType", out var rt) ? rt.GetInt32() : 0;
+                    var raceName = raceType switch { 0 => "Human", 1 => "Awoken", 2 => "Exo", _ => "Unknown" };
+                    var light = character.TryGetProperty("light", out var l) ? l.GetInt32() : 0;
+                    var emblemPath = character.TryGetProperty("emblemPath", out var ep) ? ep.GetString() : "";
+                    var emblemBackgroundPath = character.TryGetProperty("emblemBackgroundPath", out var ebp) ? ebp.GetString() : "";
+
+                    // Season Rank Calculation (from Progressions)
+                    var seasonRank = 0;
+                    var seasonProgress = 0.0;
+                    
+                    if (progressionsData.HasValue && progressionsData.Value.TryGetProperty(charId, out var charProgs) &&
+                        charProgs.TryGetProperty("progressions", out var progsDict))
+                    {
+                        // Current Season Hash (approximate/dynamic needs manifest, but common hash is 1628407317 for season rank text, 
+                        // or we look for the active season progression. For now, we'll try a known hash or iterate)
+                        // TODO: Use Manifest to find current season hash. 
+                        // For prototype, we might skip precise hash lookup or use a reliable one if available.
+                        // However, usually the 'season' progression is prominent. 
+                        // Let's check for 'overview' progression or similar if we can't find specific hash.
+                    }
+
+                    var charInfo = new CharacterInfo
+                    {
+                        CharacterId = charId,
+                        ClassName = className,
+                        RaceName = raceName,
+                        LightLevel = light,
+                        EmblemPath = emblemPath ?? "",
+                        EmblemBackgroundPath = emblemBackgroundPath ?? "",
+                        SeasonRank = seasonRank, 
+                        SeasonProgressPercent = seasonProgress
+                    };
+                    
+                    characters.Add(charInfo);
+                }
+            }
+
+            // Update local cache
+            Characters.Clear();
+            foreach (var c in characters) Characters.Add(c);
+
+            return characters;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[InventoryService] Error getting characters: {ex.Message}");
+            return new List<CharacterInfo>();
+        }
+    }
+
+    /// <summary>
+    /// Gets the current vault item count from the profile.
+    /// Component 102 = ProfileInventories (includes vault)
+    /// </summary>
+    public async Task<(int used, int total)> GetVaultStatusAsync()
+    {
+        const int VAULT_BUCKET_HASH = 138197802; // General Vault bucket
+        const int VAULT_MAX_CAPACITY = 600;
+
+        if (!_authService.IsAuthenticated)
+            return (0, VAULT_MAX_CAPACITY);
+
+        try
+        {
+            var membershipType = (int)_authService.DestinyMembershipType;
+            var membershipId = _authService.DestinyMembershipId;
+            var url = $"{BaseUrl}/Destiny2/{membershipType}/Profile/{membershipId}/?components=102";
+
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return (0, VAULT_MAX_CAPACITY);
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            
+            if (doc.RootElement.TryGetProperty("Response", out var resp) &&
+                resp.TryGetProperty("profileInventory", out var inventory) &&
+                inventory.TryGetProperty("data", out var data) &&
+                data.TryGetProperty("items", out var items))
+            {
+                var count = items.GetArrayLength();
+                Console.WriteLine($"[InventoryService] Vault count: {count}/{VAULT_MAX_CAPACITY}");
+                return (count, VAULT_MAX_CAPACITY);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[InventoryService] GetVaultStatus error: {ex.Message}");
+        }
+
+        return (0, VAULT_MAX_CAPACITY);
+    }
+
+    /// <summary>
+    /// Gets profile currencies (Glimmer, Legendary Shards, Bright Dust, Silver).
+    /// Component 100 = Profiles (includes profileCurrencies)
+    /// </summary>
+    public async Task<Dictionary<uint, long>> GetCurrenciesAsync()
+    {
+        var currencies = new Dictionary<uint, long>();
+        
+        // Common currency hashes
+        const uint GLIMMER = 3159615086;
+        const uint LEGENDARY_SHARDS = 1022552290;
+        const uint BRIGHT_DUST = 2817410917;
+        const uint SILVER = 3147280338;
+
+        if (!_authService.IsAuthenticated)
+            return currencies;
+
+        try
+        {
+            var membershipType = (int)_authService.DestinyMembershipType;
+            var membershipId = _authService.DestinyMembershipId;
+            var url = $"{BaseUrl}/Destiny2/{membershipType}/Profile/{membershipId}/?components=100";
+
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return currencies;
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            if (doc.RootElement.TryGetProperty("Response", out var resp) &&
+                resp.TryGetProperty("profile", out var profile) &&
+                profile.TryGetProperty("data", out var data) &&
+                data.TryGetProperty("userInfo", out _))
+            {
+                // Note: Currencies are actually in a different component or need parsing from items
+                // For now, return placeholder - full implementation requires component 1400 (stringvariables)
+                Console.WriteLine("[InventoryService] Currency API stub - needs implementation");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[InventoryService] GetCurrencies error: {ex.Message}");
+        }
+
+        return currencies;
+    }
+
+    /// <summary>
+    /// Counts items in the Postmaster for a character.
+    /// Component 201 = CharacterInventories (bucket 215593132 = Postmaster)
+    /// </summary>
+    public async Task<int> GetPostmasterCountAsync(string characterId)
+    {
+        const uint POSTMASTER_BUCKET = 215593132;
+
+        if (!_authService.IsAuthenticated || string.IsNullOrEmpty(characterId))
+            return 0;
+
+        try
+        {
+            var membershipType = (int)_authService.DestinyMembershipType;
+            var membershipId = _authService.DestinyMembershipId;
+            var url = $"{BaseUrl}/Destiny2/{membershipType}/Profile/{membershipId}/?components=201";
+
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return 0;
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            if (doc.RootElement.TryGetProperty("Response", out var resp) &&
+                resp.TryGetProperty("characterInventories", out var charInvs) &&
+                charInvs.TryGetProperty("data", out var data) &&
+                data.TryGetProperty(characterId, out var charInv) &&
+                charInv.TryGetProperty("items", out var items))
+            {
+                int postmasterCount = 0;
+                foreach (var item in items.EnumerateArray())
+                {
+                    if (item.TryGetProperty("bucketHash", out var bucket) && 
+                        bucket.GetUInt32() == POSTMASTER_BUCKET)
+                    {
+                        postmasterCount++;
+                    }
+                }
+                Console.WriteLine($"[InventoryService] Postmaster count for {characterId}: {postmasterCount}");
+                return postmasterCount;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[InventoryService] GetPostmasterCount error: {ex.Message}");
+        }
+
+        return 0;
+    }
     
     public int MembershipType { get; private set; }
     public long DestinyMembershipId { get; private set; }

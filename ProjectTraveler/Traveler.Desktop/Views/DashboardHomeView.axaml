@@ -73,8 +73,33 @@
             <!-- COLUMNA IZQUIERDA: Personajes y Rotaciones -->
             <StackPanel Grid.Row="1" Grid.Column="0" Spacing="25" Margin="0,0,25,0">
                 
+                <!-- Loading Overlay -->
+                <Border IsVisible="{Binding IsLoading}" 
+                        Background="#CC000000" CornerRadius="16" Padding="30"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <StackPanel Spacing="15" HorizontalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True" Width="200" Height="4" 
+                                     Foreground="#FFD700" Background="#333"/>
+                        <TextBlock Text="{Binding LoadingMessage}" 
+                                   Foreground="#CCC" FontSize="13" TextAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Empty State (No characters) -->
+                <Border IsVisible="{Binding !Characters.Count}"
+                        Background="#0D0D0D" CornerRadius="16" Padding="40" MinHeight="140"
+                        BorderBrush="#222" BorderThickness="1">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                        <PathIcon Data="{StaticResource BungieIcon}" Width="48" Height="48" Foreground="#333"/>
+                        <TextBlock Text="No characters loaded" 
+                                   FontSize="16" Foreground="#666" TextAlignment="Center"/>
+                        <TextBlock Text="Link your Bungie account to see your Guardians" 
+                                   FontSize="12" Foreground="#444" TextAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
                 <!-- 1. Squad View (Lista Horizontal) -->
-                <ItemsControl ItemsSource="{Binding Characters}">
+                <ItemsControl ItemsSource="{Binding Characters}" IsVisible="{Binding Characters.Count}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Rows="1" HorizontalAlignment="Stretch"/>

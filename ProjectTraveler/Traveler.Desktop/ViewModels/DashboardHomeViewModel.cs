@@ -1,176 +1,283 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Traveler.Core.Models;
 using Traveler.Core.Services;
+using Traveler.Data.Auth;
+using Traveler.Core.Interfaces;
 using Avalonia.Media;
 
 namespace Traveler.Desktop.ViewModels
 {
     public partial class DashboardHomeViewModel : ObservableObject
     {
-        // Colecciones de Datos
+        // ===== COLLECTIONS =====
         [ObservableProperty]
-        private ObservableCollection<CharacterInfo> _characters;
+        private ObservableCollection<CharacterInfo> _characters = new();
 
         [ObservableProperty]
-        private ObservableCollection<Currency> _currencies;
+        private ObservableCollection<Currency> _currencies = new();
 
         [ObservableProperty]
-        private ObservableCollection<DailyRotation> _dailyActivities;
+        private ObservableCollection<DailyRotation> _dailyActivities = new();
 
         [ObservableProperty]
-        private ObservableCollection<VendorItem> _featuredVendors;
+        private ObservableCollection<VendorItem> _featuredVendors = new();
 
-        // Estado del Vault
+        // ===== VAULT STATUS =====
         [ObservableProperty]
         private double _vaultSpaceUsed;
 
         [ObservableProperty]
-        private double _vaultSpaceTotal;
+        private double _vaultSpaceTotal = 600;
 
         [ObservableProperty]
-        private string _vaultSpaceText;
+        private string _vaultSpaceText = "-- / 600";
 
         [ObservableProperty]
-        private IBrush _vaultSpaceColor;
+        private IBrush _vaultSpaceColor = SolidColorBrush.Parse("#4CAF50");
 
-        // Estado del Postmaster (Alertas)
+        // ===== POSTMASTER ALERTS =====
         [ObservableProperty]
         private bool _isPostmasterWarning;
 
         [ObservableProperty]
-        private string _postmasterStatusText;
+        private string _postmasterStatusText = string.Empty;
 
         [ObservableProperty]
-        private string _postmasterIconPath;
+        private string _postmasterIconPath = string.Empty;
 
-        // Estado de Sesión y Perfil
+        // ===== USER SESSION =====
         [ObservableProperty]
         private bool _isLoggedIn;
 
         [ObservableProperty]
-        private string _userName;
+        private string _userName = string.Empty;
 
         [ObservableProperty]
-        private string _userAvatarPath;
+        private string _userAvatarPath = string.Empty;
 
         [ObservableProperty]
-        private string _userTitle;
+        private string _userTitle = string.Empty;
 
-        public IRelayCommand LoginCommand { get; }
+        // ===== LOADING STATES =====
+        [ObservableProperty]
+        private bool _isLoading;
+
+        [ObservableProperty]
+        private string _loadingMessage = string.Empty;
+
+        // ===== COMMANDS =====
+        public IAsyncRelayCommand LoginCommand { get; }
         public IRelayCommand LogoutCommand { get; }
+        public IAsyncRelayCommand RefreshCommand { get; }
 
-        public DashboardHomeViewModel()
+        // ===== SERVICES =====
+        private readonly BungieAuthService _authService;
+        private readonly IInventoryService _inventoryService;
+
+        /// <summary>
+        /// Constructor with Dependency Injection - the ONLY constructor that should be used
+        /// </summary>
+        public DashboardHomeViewModel(BungieAuthService authService, IInventoryService inventoryService)
         {
-            // En una app real, inyectaríamos el servicio de Auth aquí
-            LoginCommand = new RelayCommand(SimulateLogin);
-            LogoutCommand = new RelayCommand(SimulateLogout);
-            LoadMockData();
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+            _inventoryService = inventoryService ?? throw new ArgumentNullException(nameof(inventoryService));
+
+            // Initialize Commands
+            LoginCommand = new AsyncRelayCommand(LoginAsync);
+            LogoutCommand = new RelayCommand(ExecuteLogout);
+            RefreshCommand = new AsyncRelayCommand(RefreshAllDataAsync);
+
+            // Initialize with default/placeholder data
+            InitializeDefaultState();
+
+            // If already authenticated, load real data
+            if (_authService.IsAuthenticated)
+            {
+                IsLoggedIn = true;
+                UserName = _authService.DisplayName ?? "Guardian";
+                UserTitle = "Online";
+                _ = RefreshAllDataAsync();
+            }
         }
 
-        private void SimulateLogin()
+        /// <summary>
+        /// Sets default visual state while not logged in
+        /// </summary>
+        private void InitializeDefaultState()
         {
-            IsLoggedIn = true;
-            UserName = "Guardian#1234";
-            UserAvatarPath = "/common/destiny2_content/icons/87dfeb3fb385a4a28966276707373972.jpg"; // Placeholder Avatar
-            UserTitle = "Paragon";
+            // Vault defaults
+            VaultSpaceUsed = 0;
+            VaultSpaceTotal = 600;
+            VaultSpaceText = "-- / 600";
+            VaultSpaceColor = SolidColorBrush.Parse("#4CAF50");
+
+            // Postmaster (hidden by default)
+            IsPostmasterWarning = false;
+
+            // Featured Vendors (static for now - TODO: API integration)
+            FeaturedVendors = new ObservableCollection<VendorItem>
+            {
+                new VendorItem 
+                { 
+                    VendorName = "Xûr", 
+                    Status = "Location Unknown", 
+                    VendorIcon = "/common/destiny2_content/icons/801bc8e189a6f92e88ed3d4d54266f99.jpg" 
+                },
+                new VendorItem 
+                { 
+                    VendorName = "Ada-1", 
+                    Status = "Tower, Annex", 
+                    VendorIcon = "/common/destiny2_content/icons/7dc93a4461771f9d28daf0b89ed27480.png" 
+                },
+                new VendorItem 
+                { 
+                    VendorName = "Banshee-44", 
+                    Status = "Tower, Courtyard", 
+                    VendorIcon = "/common/destiny2_content/icons/4bf99bb3d3e9368d12c5da6ea60c56ec.png" 
+                }
+            };
+
+            // Default currencies (empty until login)
+            Currencies = new ObservableCollection<Currency>
+            {
+                new Currency { Name = "Glimmer", Quantity = 0, Icon = "/common/destiny2_content/icons/6b1702878985223049da03c27e49ba3f.png" },
+                new Currency { Name = "Legendary Shards", Quantity = 0, Icon = "/common/destiny2_content/icons/5cebde6dd0315a061348b4a4e444762c.png" },
+                new Currency { Name = "Bright Dust", Quantity = 0, Icon = "/common/destiny2_content/icons/d9254c0e5568f65fa48566cf5bad26e5.png" },
+                new Currency { Name = "Silver", Quantity = 0, Icon = "/common/destiny2_content/icons/865c34cb24249a200702df9c4d920252.png" }
+            };
         }
 
-        private void SimulateLogout()
+        /// <summary>
+        /// Executes full OAuth login flow
+        /// </summary>
+        private async Task LoginAsync()
+        {
+            try
+            {
+                IsLoading = true;
+                LoadingMessage = "Opening Bungie.net...";
+
+                var success = await _authService.LoginAsync();
+                
+                if (success)
+                {
+                    IsLoggedIn = true;
+                    UserName = _authService.DisplayName ?? "Guardian";
+                    UserTitle = "Online";
+                    
+                    await RefreshAllDataAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DashboardVM] Login failed: {ex.Message}");
+                LoadingMessage = $"Login failed: {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+                LoadingMessage = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Refreshes all dashboard data from Bungie API
+        /// </summary>
+        private async Task RefreshAllDataAsync()
+        {
+            if (!_authService.IsAuthenticated)
+            {
+                System.Diagnostics.Debug.WriteLine("[DashboardVM] Not authenticated, skipping refresh");
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+                LoadingMessage = "Syncing with Bungie...";
+
+                // 1. Characters
+                LoadingMessage = "Loading characters...";
+                var characters = await _inventoryService.GetCurrentUserCharactersAsync();
+                Characters.Clear();
+                foreach (var c in characters)
+                {
+                    Characters.Add(c);
+                }
+
+                // 2. User Avatar (use first character's emblem)
+                if (characters.Count > 0)
+                {
+                    UserAvatarPath = characters[0].EmblemPath;
+                }
+
+                // 3. Vault Status (Real API)
+                LoadingMessage = "Checking vault...";
+                var (vaultUsed, vaultTotal) = await _inventoryService.GetVaultStatusAsync();
+                VaultSpaceUsed = vaultUsed;
+                VaultSpaceTotal = vaultTotal;
+                VaultSpaceText = $"{vaultUsed} / {vaultTotal}";
+                VaultSpaceColor = SolidColorBrush.Parse(vaultUsed > 550 ? "#FFC107" : vaultUsed > 500 ? "#FF9800" : "#4CAF50");
+
+                // 4. Postmaster Check (Real API)
+                if (characters.Count > 0)
+                {
+                    LoadingMessage = "Checking postmaster...";
+                    var postmasterCount = await _inventoryService.GetPostmasterCountAsync(characters[0].CharacterId);
+                    if (postmasterCount >= 18) // Postmaster has 21 slots max - warn at 18
+                    {
+                        IsPostmasterWarning = true;
+                        PostmasterStatusText = $"{characters[0].ClassName}'s Postmaster has {postmasterCount} items!";
+                        PostmasterIconPath = "/common/destiny2_content/icons/25d691a5470d0ae966236b281bf2ab8e.png";
+                    }
+                    else
+                    {
+                        IsPostmasterWarning = false;
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[DashboardVM] Refresh complete. {Characters.Count} characters, Vault: {vaultUsed}/{vaultTotal}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DashboardVM] Refresh failed: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+                LoadingMessage = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Logs out and clears all user data
+        /// </summary>
+        private void ExecuteLogout()
         {
             IsLoggedIn = false;
             UserName = string.Empty;
             UserAvatarPath = string.Empty;
             UserTitle = string.Empty;
-        }
-
-        private void LoadMockData()
-        {
-            // 1. Personajes (Squad View)
-            Characters = new ObservableCollection<CharacterInfo>
-            {
-                new CharacterInfo
-                {
-                    CharacterId = "1", ClassType = "Warlock", RaceName = "Exo",
-                    LightLevel = 1825, BasePowerLevel = 1810, ArtifactBonus = 15,
-                    EmblemBackgroundPath = "/common/destiny2_content/icons/f5304fcd2796417730e75525048d8b33.jpg",
-                    Title = "Godslayer",
-                    SeasonRank = 95, SeasonProgressPercent = 0.85, SeasonRewardIcon = "/common/destiny2_content/icons/SeasonRewardPlaceholder.jpg"
-                },
-                new CharacterInfo
-                {
-                    CharacterId = "2", ClassType = "Hunter", RaceName = "Human",
-                    LightLevel = 1822, BasePowerLevel = 1807, ArtifactBonus = 15,
-                    EmblemBackgroundPath = "/common/destiny2_content/icons/87dfeb3fb385a4a28966276707373972.jpg",
-                    Title = "Revenant",
-                    SeasonRank = 95, SeasonProgressPercent = 0.85, SeasonRewardIcon = ""
-                },
-                new CharacterInfo
-                {
-                    CharacterId = "3", ClassType = "Titan", RaceName = "Awoken",
-                    LightLevel = 1815, BasePowerLevel = 1800, ArtifactBonus = 15,
-                    EmblemBackgroundPath = "/common/destiny2_content/icons/2a6cb5690327ba290eb9e355e4b77943.jpg",
-                    Title = "Dredgen",
-                    SeasonRank = 95, SeasonProgressPercent = 0.85, SeasonRewardIcon = ""
-                }
-            };
-
-            // 2. Actividades Diarias
-            DailyActivities = new ObservableCollection<DailyRotation>
-            {
-                new DailyRotation
-                {
-                    ActivityName = "Chamber of Starlight",
-                    ActivityType = "Legend Lost Sector",
-                    Reward = "Exotic Arms",
-                    Modifiers = new List<string> { "Solar Burn", "Champions: Unstoppable" }
-                },
-                new DailyRotation
-                {
-                    ActivityName = "The Lightblade",
-                    ActivityType = "Grandmaster Nightfall",
-                    Reward = "Wendigo GL3 (Adept)",
-                    Modifiers = new List<string> { "Arc Burn", "Champions: Barrier" }
-                }
-            };
-
-            // 3. Vendedores Destacados
-            FeaturedVendors = new ObservableCollection<VendorItem>
-            {
-                new VendorItem { VendorName = "Ada-1", Status = "Selling Powerful Friends", VendorIcon = "/common/destiny2_content/icons/Ada1.jpg" },
-                new VendorItem { VendorName = "Banshee-44", Status = "God Roll Funnelweb", VendorIcon = "/common/destiny2_content/icons/Banshee44.jpg" },
-                new VendorItem { VendorName = "Xûr", Status = "At Watcher's Grave", VendorIcon = "/common/destiny2_content/icons/Xur.jpg" }
-            };
-
-            // 4. Divisas
-            Currencies = new ObservableCollection<Currency>
-            {
-                new Currency { Name = "Glimmer", Quantity = 250000, Icon = "/common/destiny2_content/icons/6b1702878985223049da03c27e49ba3f.png" },
-                new Currency { Name = "Ascendant Shard", Quantity = 10, Icon = "/common/destiny2_content/icons/12b28d689b93220336214376c9dbd390.png" },
-                new Currency { Name = "Enhancement Core", Quantity = 450, Icon = "/common/destiny2_content/icons/3973907a3469d80d2699f7d23d839fa3.png" },
-                new Currency { Name = "Silver", Quantity = 1500, Icon = "/common/destiny2_content/icons/865c34cb24249a200702df9c4d920252.png" }
-            };
-
-            // 4. Estado de Bóveda y Postmaster
-            VaultSpaceUsed = 580;
-            VaultSpaceTotal = 600;
-            VaultSpaceText = $"{VaultSpaceUsed} / {VaultSpaceTotal}";
-            VaultSpaceColor = SolidColorBrush.Parse(VaultSpaceUsed > 550 ? "#FFC107" : "#4CAF50"); // Amarillo si está lleno
-
-            // Simulación de Postmaster lleno
-            IsPostmasterWarning = true; 
-            PostmasterStatusText = "Postmaster is overflowing on Hunter!";
-            PostmasterIconPath = "/common/destiny2_content/icons/25d691a5470d0ae966236b281bf2ab8e.png"; // Kadi 55-30 or generic Engram glyph
+            Characters.Clear();
+            
+            // Reset to default state
+            InitializeDefaultState();
         }
     }
 
+    /// <summary>
+    /// Represents a currency/resource in Destiny 2
+    /// </summary>
     public class Currency
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public long Quantity { get; set; }
-        public string Icon { get; set; }
+        public string Icon { get; set; } = string.Empty;
     }
 }
+

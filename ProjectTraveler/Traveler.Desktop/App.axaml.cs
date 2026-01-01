@@ -85,7 +85,7 @@ public partial class App : Application
             // ===== VIEW MODELS =====
             
             // Dashboard Home (Landing Page)
-            var dashboardHomeVm = new DashboardHomeViewModel();
+            var dashboardHomeVm = new DashboardHomeViewModel(authService, inventoryService);
             
             // Main Views
             var inventoryVm = new InventoryViewModel(inventoryService, smartMoveService, bucketService, filterService);
