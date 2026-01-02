@@ -114,7 +114,7 @@ public partial class GuardianDetailWindow : Window
     }
 
     /// <summary>
-    /// Injects JavaScript to hide navigation elements for a cleaner embedded experience
+    /// Injects JavaScript to hide navigation elements for a cleaner embedded 3D canvas experience
     /// </summary>
     private void InjectCleanupScript()
     {
@@ -122,35 +122,73 @@ public partial class GuardianDetailWindow : Window
         
         try
         {
-            // Script to hide navigation bar and other UI elements on ParacausalForge
+            // Enhanced script to clean up ParacausalForge UI - leave only the 3D canvas
             var script = @"
                 (function() {
-                    // Hide navigation bar
-                    var nav = document.querySelector('nav');
-                    if (nav) nav.style.display = 'none';
+                    // Create style element for hiding common UI elements
+                    var style = document.createElement('style');
+                    style.innerHTML = `
+                        /* Hide headers, footers, navigation */
+                        header, footer, nav, .navbar, .nav-bar, 
+                        [class*='header'], [class*='footer'], [class*='nav-'],
+                        [class*='menu'], [class*='sidebar'], [class*='toolbar'] {
+                            display: none !important;
+                        }
+                        
+                        /* Hide ads, social, promotional elements */
+                        .ad-container, .ads, .advertisement,
+                        .social, .socials, [class*='social'],
+                        .share, [class*='share'], .promo, .banner,
+                        [class*='cookie'], [class*='consent'] {
+                            display: none !important;
+                        }
+                        
+                        /* Make body background transparent/dark */
+                        body {
+                            background-color: #0D0D0D !important;
+                            overflow: hidden !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+                        
+                        /* Hide any fixed positioned elements (popups, overlays) */
+                        [style*='position: fixed'], [style*='position:fixed'] {
+                            display: none !important;
+                        }
+                        
+                        /* Try to make canvas full screen */
+                        canvas {
+                            width: 100vw !important;
+                            height: 100vh !important;
+                        }
+                    `;
+                    document.head.appendChild(style);
                     
-                    // Hide header if present
-                    var header = document.querySelector('header');
-                    if (header) header.style.display = 'none';
+                    // Try to click ""Hide Menu"" button if it exists on ParacausalForge
+                    var hideMenuBtn = document.querySelector('[class*=""hide""], [class*=""Hide""], .hide-menu');
+                    if (hideMenuBtn) {
+                        hideMenuBtn.click();
+                        console.log('GuardianOS: Clicked Hide Menu button');
+                    }
                     
-                    // Hide footer if present
-                    var footer = document.querySelector('footer');
-                    if (footer) footer.style.display = 'none';
+                    // Remove any floating elements
+                    var floatingElements = document.querySelectorAll('[style*=""position: absolute""], [style*=""position:absolute""]');
+                    floatingElements.forEach(el => {
+                        if (!el.querySelector('canvas')) {
+                            el.style.display = 'none';
+                        }
+                    });
                     
-                    // Try to click hide menu button if exists
-                    var hideBtn = document.querySelector('.hide-menu, [class*=""hide""]');
-                    if (hideBtn) hideBtn.click();
-                    
-                    console.log('GuardianOS: Navigation elements hidden');
+                    console.log('GuardianOS: Cleanup script executed - UI elements hidden');
                 })();
             ";
             
             _webView.ExecuteScript(script);
-            Debug.WriteLine("[GuardianDetail] Cleanup script injected");
+            Console.WriteLine("[GuardianDetail] Enhanced cleanup script injected");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[GuardianDetail] Script execution failed: {ex.Message}");
+            Console.WriteLine($"[GuardianDetail] Script execution failed: {ex.Message}");
         }
     }
 
