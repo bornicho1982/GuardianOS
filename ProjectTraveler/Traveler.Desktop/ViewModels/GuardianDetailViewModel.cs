@@ -44,6 +44,28 @@ public class GuardianDetailViewModel : ViewModelBase
     public int TotalIntellect => Character.Intellect;
     public int TotalStrength => Character.Strength;
 
+    // 3D Guardian Viewer URL (ParacausalForge)
+    public string Target3DUrl { get; private set; } = "https://paracausalforge.com/guardian";
+
+    /// <summary>
+    /// Generates a URL with loadout item hashes for the 3D viewer.
+    /// TODO: Build dynamic URL with item hashes for full loadout visualization.
+    /// </summary>
+    /// <param name="itemHashes">List of equipped item hashes</param>
+    /// <returns>URL string for paracausalforge viewer</returns>
+    public string GenerateLoadoutUrl(List<uint>? itemHashes = null)
+    {
+        // Base URL - will be extended with item parameters in the future
+        // Example: https://paracausalforge.com/guardian?helmet=xxx&chest=yyy&...
+        if (itemHashes == null || itemHashes.Count == 0)
+            return Target3DUrl;
+        
+        // TODO: Implement dynamic URL building with actual item hashes
+        // var queryParams = string.Join("&", itemHashes.Select((h, i) => $"item{i}={h}"));
+        // return $"{Target3DUrl}?{queryParams}";
+        return Target3DUrl;
+    }
+
     // Stats Text (Horizontal) - kept for backwards compatibility
     public string HelmetStatsText => FormatStats(EquippedHelmet?.Stats);
     public string GauntletsStatsText => FormatStats(EquippedGauntlets?.Stats);

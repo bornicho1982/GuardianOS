@@ -186,70 +186,29 @@
                     </Border>
                 </StackPanel>
 
-                <!-- CENTER: Paper Doll -->
-                <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Helmet -->
-                    <Border Grid.Row="0" Width="72" Height="72" CornerRadius="8" Background="#2D2D30" ClipToBounds="True" Margin="0,0,0,6">
-                        <Grid>
-                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.IconUrl}" Stretch="UniformToFill"/>
-                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
-                            <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#CC111111" CornerRadius="4,0,4,0" Padding="4,1">
-                                <TextBlock Text="{Binding EquippedHelmet.EnergyCapacity}" Foreground="#EBC805" FontSize="11" FontWeight="Bold"/>
-                            </Border>
-                        </Grid>
-                    </Border>
-
-                    <!-- Arms - Chest - Arms -->
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
-                        <Border Width="60" Height="60" CornerRadius="8" Background="#2D2D30" Opacity="0.7" ClipToBounds="True">
-                            <Grid>
-                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.IconUrl}" Stretch="UniformToFill"/>
-                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
-                            </Grid>
+                <!-- CENTER: 3D Guardian WebView Viewer -->
+                <Border Grid.Column="1" Background="#1A1A1A" CornerRadius="12" ClipToBounds="True" Margin="16,0">
+                    <!-- Loading placeholder while WebView initializes -->
+                    <Grid>
+                        <Border Background="#2D2D30" CornerRadius="8" Padding="20" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                x:Name="LoadingPlaceholder">
+                            <StackPanel HorizontalAlignment="Center" Spacing="12">
+                                <TextBlock Text="Loading 3D Viewer..." 
+                                           Foreground="#AAA" FontSize="14" 
+                                           HorizontalAlignment="Center"/>
+                                <ProgressBar IsIndeterminate="True" 
+                                             Width="200" Height="4" 
+                                             Foreground="#EBC805"/>
+                            </StackPanel>
                         </Border>
-                        <Border Width="88" Height="88" CornerRadius="8" Background="#2D2D30" ClipToBounds="True">
-                            <Grid>
-                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedChest.IconUrl}" Stretch="UniformToFill"/>
-                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedChest.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
-                                <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#CC111111" CornerRadius="4,0,4,0" Padding="4,1">
-                                    <TextBlock Text="{Binding EquippedChest.EnergyCapacity}" Foreground="#EBC805" FontSize="11" FontWeight="Bold"/>
-                                </Border>
-                            </Grid>
-                        </Border>
-                        <Border Width="60" Height="60" CornerRadius="8" Background="#2D2D30" Opacity="0.7" ClipToBounds="True">
-                            <Grid>
-                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.IconUrl}" Stretch="UniformToFill"/>
-                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- Legs -->
-                    <Border Grid.Row="2" Width="72" Height="72" CornerRadius="8" Background="#2D2D30" ClipToBounds="True" Margin="0,6,0,6">
-                        <Grid>
-                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedLegs.IconUrl}" Stretch="UniformToFill"/>
-                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedLegs.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
-                            <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#CC111111" CornerRadius="4,0,4,0" Padding="4,1">
-                                <TextBlock Text="{Binding EquippedLegs.EnergyCapacity}" Foreground="#EBC805" FontSize="11" FontWeight="Bold"/>
-                            </Border>
-                        </Grid>
-                    </Border>
-
-                    <!-- Class Item -->
-                    <Border Grid.Row="3" Width="56" Height="56" CornerRadius="8" Background="#2D2D30" ClipToBounds="True">
-                        <Grid>
-                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedClassItem.IconUrl}" Stretch="UniformToFill"/>
-                            <asyncImageLoader:AdvancedImage Source="{Binding EquippedClassItem.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
-                        </Grid>
-                    </Border>
-                </Grid>
+                        
+                        <!-- WebView placeholder - will be replaced programmatically -->
+                        <Border x:Name="WebViewContainer" 
+                                Background="Transparent" 
+                                CornerRadius="8"/>
+                    </Grid>
+                </Border>
 
                 <!-- RIGHT: Armor Stats List -->
                 <StackPanel Grid.Column="2" Spacing="8">
