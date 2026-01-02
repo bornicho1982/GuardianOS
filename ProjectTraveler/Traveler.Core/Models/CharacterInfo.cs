@@ -6,6 +6,17 @@ namespace Traveler.Core.Models;
 public class CharacterInfo
 {
     public string CharacterId { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Destiny membership ID (needed for Bungie.net Armory 3D viewer)
+    /// </summary>
+    public long MembershipId { get; set; }
+    
+    /// <summary>
+    /// Platform membership type: 1=Xbox, 2=PSN, 3=Steam, 4=Blizzard, 5=Stadia, 10=Demon, 254=BungieNext
+    /// </summary>
+    public int MembershipType { get; set; }
+    
     public string ClassType { get; set; } = string.Empty; // Titan, Hunter, Warlock
     public string ClassName 
     { 

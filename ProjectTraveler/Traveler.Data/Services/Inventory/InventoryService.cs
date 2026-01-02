@@ -131,6 +131,8 @@ public class InventoryService : IInventoryService
                     var charInfo = new CharacterInfo
                     {
                         CharacterId = charId,
+                        MembershipId = _authService.DestinyMembershipId,
+                        MembershipType = (int)_authService.DestinyMembershipType,
                         ClassName = className,
                         RaceName = raceName,
                         LightLevel = light,

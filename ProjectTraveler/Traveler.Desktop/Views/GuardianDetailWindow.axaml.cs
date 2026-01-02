@@ -114,7 +114,7 @@ public partial class GuardianDetailWindow : Window
     }
 
     /// <summary>
-    /// Injects JavaScript to hide navigation elements for a cleaner embedded 3D canvas experience
+    /// Injects JavaScript to hide Bungie.net navigation elements for a cleaner embedded 3D viewer experience
     /// </summary>
     private void InjectCleanupScript()
     {
@@ -122,41 +122,70 @@ public partial class GuardianDetailWindow : Window
         
         try
         {
-            // Enhanced script to clean up ParacausalForge UI - leave only the 3D canvas
+            // Enhanced script to clean up Bungie.net Armory UI - leave only the 3D viewer
             var script = @"
                 (function() {
-                    // Create style element for hiding common UI elements
+                    // Create style element for hiding Bungie.net UI elements
                     var style = document.createElement('style');
                     style.innerHTML = `
-                        /* Hide headers, footers, navigation */
-                        header, footer, nav, .navbar, .nav-bar, 
-                        [class*='header'], [class*='footer'], [class*='nav-'],
-                        [class*='menu'], [class*='sidebar'], [class*='toolbar'] {
+                        /* Hide Bungie.net global navigation header */
+                        #bungie-header, .bungie-header, header, 
+                        [class*='GlobalHeader'], [class*='global-header'],
+                        [class*='bnet-header'], [class*='bungie-nav'] {
                             display: none !important;
                         }
                         
-                        /* Hide ads, social, promotional elements */
-                        .ad-container, .ads, .advertisement,
-                        .social, .socials, [class*='social'],
-                        .share, [class*='share'], .promo, .banner,
-                        [class*='cookie'], [class*='consent'] {
+                        /* Hide Bungie.net footer */
+                        footer, #bungie-footer, .bungie-footer,
+                        [class*='GlobalFooter'], [class*='global-footer'] {
                             display: none !important;
                         }
                         
-                        /* Make body background transparent/dark */
+                        /* Hide navigation bars and menus */
+                        nav, .nav, .navbar, .navigation,
+                        [class*='NavigationContainer'], [class*='nav-bar'],
+                        [class*='Breadcrumb'], [class*='breadcrumb'] {
+                            display: none !important;
+                        }
+                        
+                        /* Hide sidebars and action buttons */
+                        [class*='sidebar'], [class*='Sidebar'],
+                        [class*='action-button'], [class*='ActionButton'],
+                        [class*='share-button'], [class*='ShareButton'] {
+                            display: none !important;
+                        }
+                        
+                        /* Hide promotional/marketing content */
+                        [class*='promotion'], [class*='marketing'],
+                        [class*='cookie'], [class*='consent'],
+                        [class*='banner'], [class*='Banner'] {
+                            display: none !important;
+                        }
+                        
+                        /* Make body dark background */
                         body {
                             background-color: #0D0D0D !important;
                             overflow: hidden !important;
-                            margin: 0 !important;
-                            padding: 0 !important;
                         }
                         
-                        /* Hide any fixed positioned elements (popups, overlays) */
+                        /* Hide any fixed positioned overlays */
                         [style*='position: fixed'], [style*='position:fixed'] {
                             display: none !important;
                         }
                         
-                        /* Try to make canvas full screen */
+                        /* Make the 3D canvas container fill the viewport */
+                        [class*='armory'], [class*='Armory'],
+                        [class*='character-viewer'], [class*='CharacterViewer'],
+                        [class*='gear-viewer'], [class*='GearViewer'] {
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            width: 100vw !important;
+                            height: 100vh !important;
+                            z-index: 9999 !important;
+                        }
+                        
+                        /* Full screen canvas */
                         canvas {
                             width: 100vw !important;
                             height: 100vh !important;
@@ -164,27 +193,12 @@ public partial class GuardianDetailWindow : Window
                     `;
                     document.head.appendChild(style);
                     
-                    // Try to click ""Hide Menu"" button if it exists on ParacausalForge
-                    var hideMenuBtn = document.querySelector('[class*=""hide""], [class*=""Hide""], .hide-menu');
-                    if (hideMenuBtn) {
-                        hideMenuBtn.click();
-                        console.log('GuardianOS: Clicked Hide Menu button');
-                    }
-                    
-                    // Remove any floating elements
-                    var floatingElements = document.querySelectorAll('[style*=""position: absolute""], [style*=""position:absolute""]');
-                    floatingElements.forEach(el => {
-                        if (!el.querySelector('canvas')) {
-                            el.style.display = 'none';
-                        }
-                    });
-                    
-                    console.log('GuardianOS: Cleanup script executed - UI elements hidden');
+                    console.log('GuardianOS: Bungie.net Armory cleanup script executed');
                 })();
             ";
             
             _webView.ExecuteScript(script);
-            Console.WriteLine("[GuardianDetail] Enhanced cleanup script injected");
+            Console.WriteLine("[GuardianDetail] Bungie.net Armory cleanup script injected");
         }
         catch (Exception ex)
         {

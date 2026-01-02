@@ -44,13 +44,13 @@ public class GuardianDetailViewModel : ViewModelBase
     public int TotalIntellect => Character.Intellect;
     public int TotalStrength => Character.Strength;
 
-    // 3D Guardian Viewer URL (ParacausalForge) - Now dynamically generated
-    private const string BASE_3D_URL = "https://paracausalforge.com/guardian";
+    // 3D Guardian Viewer URL - Bungie.net Armory (shows REAL character with equipped gear)
+    // Format: https://www.bungie.net/7/en/Armory/Character/{membershipType}/{membershipId}/{characterId}
     
     /// <summary>
-    /// Dynamic URL with equipped item hashes for 3D visualization
+    /// Dynamic URL for Bungie.net Armory 3D viewer showing real equipped gear
     /// </summary>
-    public string Target3DUrl { get; private set; } = BASE_3D_URL;
+    public string Target3DUrl { get; private set; } = "";
 
     /// <summary>
     /// Gets the item hashes of all equipped armor pieces for the current character.
@@ -80,54 +80,47 @@ public class GuardianDetailViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Builds the dynamic 3D viewer URL with equipped item hashes.
-    /// Format: https://paracausalforge.com/guardian?hashes=xxx,yyy,zzz
+    /// Builds the Bungie.net Armory 3D viewer URL for this character.
+    /// Format: https://www.bungie.net/7/en/Armory/Character/{membershipType}/{membershipId}/{characterId}
+    /// This shows the REAL character with currently equipped gear, shaders, and ornaments.
     /// </summary>
     private void BuildDynamic3DUrl()
     {
-        var hashes = GetEquippedItemHashes();
+        // Construct Bungie.net Armory URL using character's membership data
+        var membershipType = Character.MembershipType;
+        var membershipId = Character.MembershipId;
+        var characterId = Character.CharacterId;
         
-        if (hashes.Count == 0)
+        if (membershipId == 0 || string.IsNullOrEmpty(characterId))
         {
-            Target3DUrl = BASE_3D_URL;
-            Console.WriteLine($"[GuardianDetailVM] No equipped items found, using base URL");
+            // Fallback to ParacausalForge if membership data is missing
+            Target3DUrl = "https://paracausalforge.com/guardian";
+            Console.WriteLine($"[GuardianDetailVM] Missing membership data, using fallback URL");
             return;
         }
         
-        // Build URL with comma-separated hashes
-        var hashString = string.Join(",", hashes);
-        Target3DUrl = $"{BASE_3D_URL}?hashes={hashString}";
+        // Build Bungie.net Armory URL
+        Target3DUrl = $"https://www.bungie.net/7/en/Armory/Character/{membershipType}/{membershipId}/{characterId}";
         
-        // Console output for verification (visible in terminal)
-        Console.WriteLine($"[GuardianDetailVM] ========== EQUIPPED ITEM HASHES ==========");
-        Console.WriteLine($"  Helmet:     {EquippedHelmet?.ItemHash} ({EquippedHelmet?.Name})");
-        Console.WriteLine($"  Gauntlets:  {EquippedGauntlets?.ItemHash} ({EquippedGauntlets?.Name})");
-        Console.WriteLine($"  Chest:      {EquippedChest?.ItemHash} ({EquippedChest?.Name})");
-        Console.WriteLine($"  Legs:       {EquippedLegs?.ItemHash} ({EquippedLegs?.Name})");
-        Console.WriteLine($"  ClassItem:  {EquippedClassItem?.ItemHash} ({EquippedClassItem?.Name})");
-        Console.WriteLine($"  Subclass:   {EquippedSubclass?.ItemHash} ({EquippedSubclass?.Name})");
-        Console.WriteLine($"  Kinetic:    {EquippedKinetic?.ItemHash} ({EquippedKinetic?.Name})");
-        Console.WriteLine($"  Energy:     {EquippedEnergy?.ItemHash} ({EquippedEnergy?.Name})");
-        Console.WriteLine($"  Power:      {EquippedPower?.ItemHash} ({EquippedPower?.Name})");
-        Console.WriteLine($"[GuardianDetailVM] Generated 3D URL: {Target3DUrl}");
-        Console.WriteLine($"[GuardianDetailVM] ==========================================");
+        // Console output for verification
+        Console.WriteLine($"[GuardianDetailVM] ========== BUNGIE ARMORY 3D VIEWER ==========");
+        Console.WriteLine($"  MembershipType: {membershipType} (2=PSN, 3=Steam, etc.)");
+        Console.WriteLine($"  MembershipId:   {membershipId}");
+        Console.WriteLine($"  CharacterId:    {characterId}");
+        Console.WriteLine($"  Class:          {Character.ClassName}");
+        Console.WriteLine($"[GuardianDetailVM] Generated URL: {Target3DUrl}");
+        Console.WriteLine($"[GuardianDetailVM] =============================================");
         
         this.RaisePropertyChanged(nameof(Target3DUrl));
     }
 
     /// <summary>
-    /// Generates a URL with loadout item hashes for the 3D viewer.
+    /// Returns the current Bungie Armory 3D viewer URL.
+    /// Note: Bungie Armory shows the actual equipped gear automatically, no hash parameters needed.
     /// </summary>
-    /// <param name="itemHashes">Optional override list of item hashes</param>
-    /// <returns>URL string for paracausalforge viewer</returns>
     public string GenerateLoadoutUrl(List<uint>? itemHashes = null)
     {
-        if (itemHashes == null || itemHashes.Count == 0)
-            return Target3DUrl; // Return already-built dynamic URL
-        
-        // Build URL with custom hashes
-        var hashString = string.Join(",", itemHashes);
-        return $"{BASE_3D_URL}?hashes={hashString}";
+        return Target3DUrl; // Bungie Armory shows real equipped gear automatically
     }
 
     // Stats Text (Horizontal) - kept for backwards compatibility
