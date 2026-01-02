@@ -44,26 +44,89 @@ public class GuardianDetailViewModel : ViewModelBase
     public int TotalIntellect => Character.Intellect;
     public int TotalStrength => Character.Strength;
 
-    // 3D Guardian Viewer URL (ParacausalForge)
-    public string Target3DUrl { get; private set; } = "https://paracausalforge.com/guardian";
+    // 3D Guardian Viewer URL (ParacausalForge) - Now dynamically generated
+    private const string BASE_3D_URL = "https://paracausalforge.com/guardian";
+    
+    /// <summary>
+    /// Dynamic URL with equipped item hashes for 3D visualization
+    /// </summary>
+    public string Target3DUrl { get; private set; } = BASE_3D_URL;
+
+    /// <summary>
+    /// Gets the item hashes of all equipped armor pieces for the current character.
+    /// Includes: Helmet, Gauntlets, Chest, Legs, ClassItem, and Subclass.
+    /// </summary>
+    /// <returns>List of item hashes for equipped armor</returns>
+    private List<uint> GetEquippedItemHashes()
+    {
+        var hashes = new List<uint>();
+        
+        // Armor pieces
+        if (EquippedHelmet?.ItemHash > 0) hashes.Add(EquippedHelmet.ItemHash);
+        if (EquippedGauntlets?.ItemHash > 0) hashes.Add(EquippedGauntlets.ItemHash);
+        if (EquippedChest?.ItemHash > 0) hashes.Add(EquippedChest.ItemHash);
+        if (EquippedLegs?.ItemHash > 0) hashes.Add(EquippedLegs.ItemHash);
+        if (EquippedClassItem?.ItemHash > 0) hashes.Add(EquippedClassItem.ItemHash);
+        
+        // Subclass (for element visualization)
+        if (EquippedSubclass?.ItemHash > 0) hashes.Add(EquippedSubclass.ItemHash);
+        
+        // Weapons (optional - for full loadout)
+        if (EquippedKinetic?.ItemHash > 0) hashes.Add(EquippedKinetic.ItemHash);
+        if (EquippedEnergy?.ItemHash > 0) hashes.Add(EquippedEnergy.ItemHash);
+        if (EquippedPower?.ItemHash > 0) hashes.Add(EquippedPower.ItemHash);
+        
+        return hashes;
+    }
+
+    /// <summary>
+    /// Builds the dynamic 3D viewer URL with equipped item hashes.
+    /// Format: https://paracausalforge.com/guardian?hashes=xxx,yyy,zzz
+    /// </summary>
+    private void BuildDynamic3DUrl()
+    {
+        var hashes = GetEquippedItemHashes();
+        
+        if (hashes.Count == 0)
+        {
+            Target3DUrl = BASE_3D_URL;
+            System.Diagnostics.Debug.WriteLine($"[GuardianDetailVM] No equipped items found, using base URL");
+            return;
+        }
+        
+        // Build URL with comma-separated hashes
+        var hashString = string.Join(",", hashes);
+        Target3DUrl = $"{BASE_3D_URL}?hashes={hashString}";
+        
+        // Debug output for verification
+        System.Diagnostics.Debug.WriteLine($"[GuardianDetailVM] Equipped Item Hashes:");
+        System.Diagnostics.Debug.WriteLine($"  Helmet:     {EquippedHelmet?.ItemHash} ({EquippedHelmet?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  Gauntlets:  {EquippedGauntlets?.ItemHash} ({EquippedGauntlets?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  Chest:      {EquippedChest?.ItemHash} ({EquippedChest?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  Legs:       {EquippedLegs?.ItemHash} ({EquippedLegs?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  ClassItem:  {EquippedClassItem?.ItemHash} ({EquippedClassItem?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  Subclass:   {EquippedSubclass?.ItemHash} ({EquippedSubclass?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  Kinetic:    {EquippedKinetic?.ItemHash} ({EquippedKinetic?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  Energy:     {EquippedEnergy?.ItemHash} ({EquippedEnergy?.Name})");
+        System.Diagnostics.Debug.WriteLine($"  Power:      {EquippedPower?.ItemHash} ({EquippedPower?.Name})");
+        System.Diagnostics.Debug.WriteLine($"[GuardianDetailVM] Generated 3D URL: {Target3DUrl}");
+        
+        this.RaisePropertyChanged(nameof(Target3DUrl));
+    }
 
     /// <summary>
     /// Generates a URL with loadout item hashes for the 3D viewer.
-    /// TODO: Build dynamic URL with item hashes for full loadout visualization.
     /// </summary>
-    /// <param name="itemHashes">List of equipped item hashes</param>
+    /// <param name="itemHashes">Optional override list of item hashes</param>
     /// <returns>URL string for paracausalforge viewer</returns>
     public string GenerateLoadoutUrl(List<uint>? itemHashes = null)
     {
-        // Base URL - will be extended with item parameters in the future
-        // Example: https://paracausalforge.com/guardian?helmet=xxx&chest=yyy&...
         if (itemHashes == null || itemHashes.Count == 0)
-            return Target3DUrl;
+            return Target3DUrl; // Return already-built dynamic URL
         
-        // TODO: Implement dynamic URL building with actual item hashes
-        // var queryParams = string.Join("&", itemHashes.Select((h, i) => $"item{i}={h}"));
-        // return $"{Target3DUrl}?{queryParams}";
-        return Target3DUrl;
+        // Build URL with custom hashes
+        var hashString = string.Join(",", itemHashes);
+        return $"{BASE_3D_URL}?hashes={hashString}";
     }
 
     // Stats Text (Horizontal) - kept for backwards compatibility
@@ -149,6 +212,9 @@ public class GuardianDetailViewModel : ViewModelBase
         this.RaisePropertyChanged(nameof(LegsStatsText));
         this.RaisePropertyChanged(nameof(ClassItemStatsText));
         this.RaisePropertyChanged(nameof(TotalStatsText));
+        
+        // Build dynamic 3D viewer URL with equipped item hashes
+        BuildDynamic3DUrl();
     }
 
     private string FormatStats(Dictionary<uint, int>? stats)
