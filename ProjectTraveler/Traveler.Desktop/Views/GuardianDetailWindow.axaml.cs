@@ -1,18 +1,15 @@
 using Avalonia.Controls;
-using Avalonia.Threading;
+using Avalonia.Interactivity;
 using Traveler.Desktop.ViewModels;
-using WebViewControl;
+using System.Diagnostics;
 
 namespace Traveler.Desktop.Views;
 
 public partial class GuardianDetailWindow : Window
 {
-    private WebView? _webView;
-
     public GuardianDetailWindow()
     {
         InitializeComponent();
-        this.Opened += OnWindowOpened;
     }
 
     public GuardianDetailWindow(GuardianDetailViewModel viewModel) : this()
@@ -20,55 +17,26 @@ public partial class GuardianDetailWindow : Window
         DataContext = viewModel;
     }
 
-    private void OnWindowOpened(object? sender, EventArgs e)
+    /// <summary>
+    /// Opens the 3D Guardian Viewer in the default browser
+    /// </summary>
+    private void OpenInBrowser_Click(object? sender, RoutedEventArgs e)
     {
-        // Initialize WebView after window is fully loaded
-        Dispatcher.UIThread.Post(async () =>
+        if (DataContext is GuardianDetailViewModel vm)
         {
-            await InitializeWebViewAsync();
-        });
-    }
-
-    private async Task InitializeWebViewAsync()
-    {
-        try
-        {
-            // Get the WebView container from XAML
-            var container = this.FindControl<Border>("WebViewContainer");
-            var loadingPlaceholder = this.FindControl<Border>("LoadingPlaceholder");
-
-            if (container == null) return;
-
-            // Create the WebView control
-            _webView = new WebView
+            try
             {
-                // Disable context menu for cleaner look
-                DisableBuiltinContextMenus = true
-            };
-
-            // Get the URL from ViewModel
-            if (DataContext is GuardianDetailViewModel vm)
-            {
-                // Navigate to the 3D viewer URL
-                _webView.Address = vm.Target3DUrl;
-                
-                // Hide loading placeholder once loaded
-                _webView.Navigated += (s, args) =>
+                // Open URL in default browser
+                Process.Start(new ProcessStartInfo
                 {
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        if (loadingPlaceholder != null)
-                            loadingPlaceholder.IsVisible = false;
-                    });
-                };
+                    FileName = vm.Target3DUrl,
+                    UseShellExecute = true
+                });
             }
-
-            // Add WebView to the container
-            container.Child = _webView;
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"[GuardianDetailWindow] WebView initialization failed: {ex.Message}");
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[GuardianDetail] Failed to open browser: {ex.Message}");
+            }
         }
     }
 }

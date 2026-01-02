@@ -186,26 +186,60 @@
                     </Border>
                 </StackPanel>
 
-                <!-- CENTER: 3D Guardian WebView Viewer -->
+                <!-- CENTER: Paper Doll + 3D Viewer Button -->
                 <Border Grid.Column="1" Background="#1A1A1A" CornerRadius="12" ClipToBounds="True" Margin="16,0">
-                    <!-- Loading placeholder while WebView initializes -->
-                    <Grid>
-                        <Border Background="#2D2D30" CornerRadius="8" Padding="20" 
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                x:Name="LoadingPlaceholder">
-                            <StackPanel HorizontalAlignment="Center" Spacing="12">
-                                <TextBlock Text="Loading 3D Viewer..." 
-                                           Foreground="#AAA" FontSize="14" 
-                                           HorizontalAlignment="Center"/>
-                                <ProgressBar IsIndeterminate="True" 
-                                             Width="200" Height="4" 
-                                             Foreground="#EBC805"/>
+                    <Grid RowDefinitions="*, Auto">
+                        <!-- Paper Doll (Armor Preview) -->
+                        <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Helmet -->
+                            <Border Grid.Row="0" Width="72" Height="72" CornerRadius="8" Background="#2D2D30" ClipToBounds="True" Margin="0,0,0,6">
+                                <Grid>
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.IconUrl}" Stretch="UniformToFill"/>
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedHelmet.WatermarkIconUrl, Converter={StaticResource BungieUrlConverter}}" Stretch="Uniform" Opacity="0.8"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Arms - Chest - Arms -->
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                <Border Width="60" Height="60" CornerRadius="8" Background="#2D2D30" Opacity="0.7" ClipToBounds="True">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <Border Width="88" Height="88" CornerRadius="8" Background="#2D2D30" ClipToBounds="True">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedChest.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
+                                <Border Width="60" Height="60" CornerRadius="8" Background="#2D2D30" Opacity="0.7" ClipToBounds="True">
+                                    <asyncImageLoader:AdvancedImage Source="{Binding EquippedGauntlets.IconUrl}" Stretch="UniformToFill"/>
+                                </Border>
                             </StackPanel>
-                        </Border>
+
+                            <!-- Legs -->
+                            <Border Grid.Row="2" Width="72" Height="72" CornerRadius="8" Background="#2D2D30" ClipToBounds="True" Margin="0,6,0,6">
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedLegs.IconUrl}" Stretch="UniformToFill"/>
+                            </Border>
+
+                            <!-- Class Item -->
+                            <Border Grid.Row="3" Width="56" Height="56" CornerRadius="8" Background="#2D2D30" ClipToBounds="True">
+                                <asyncImageLoader:AdvancedImage Source="{Binding EquippedClassItem.IconUrl}" Stretch="UniformToFill"/>
+                            </Border>
+                        </Grid>
                         
-                        <!-- WebView placeholder - will be replaced programmatically -->
-                        <Border x:Name="WebViewContainer" 
-                                Background="Transparent" 
+                        <!-- Open 3D Viewer Button -->
+                        <Button Grid.Row="1" 
+                                Content="🎮 View in 3D Viewer" 
+                                Click="OpenInBrowser_Click"
+                                HorizontalAlignment="Center"
+                                Margin="0,16,0,16"
+                                Background="#2D5A9E" 
+                                Foreground="White" 
+                                FontWeight="Bold"
+                                Padding="20,10"
                                 CornerRadius="8"/>
                     </Grid>
                 </Border>
