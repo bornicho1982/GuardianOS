@@ -107,8 +107,12 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <!-- Reutilizamos tu componente Organism -->
-                            <organisms:CharacterCardView DataContext="{Binding}" Margin="0,0,15,0" Height="140"/>
+                            <!-- Clickable wrapper for character detail -->
+                            <Button Command="{Binding $parent[ItemsControl].DataContext.OpenCharacterDetailCommand}"
+                                    CommandParameter="{Binding}"
+                                    Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand">
+                                <organisms:CharacterCardView DataContext="{Binding}" Margin="0,0,15,0" Height="140"/>
+                            </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

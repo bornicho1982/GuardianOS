@@ -105,6 +105,7 @@ namespace Traveler.Desktop.ViewModels
         public IAsyncRelayCommand LoginCommand { get; }
         public IRelayCommand LogoutCommand { get; }
         public IAsyncRelayCommand RefreshCommand { get; }
+        public IRelayCommand<CharacterInfo> OpenCharacterDetailCommand { get; }
 
         // ===== SERVICES =====
         private readonly BungieAuthService _authService;
@@ -122,6 +123,7 @@ namespace Traveler.Desktop.ViewModels
             LoginCommand = new AsyncRelayCommand(LoginAsync);
             LogoutCommand = new RelayCommand(ExecuteLogout);
             RefreshCommand = new AsyncRelayCommand(RefreshAllDataAsync);
+            OpenCharacterDetailCommand = new RelayCommand<CharacterInfo>(OpenCharacterDetail);
 
             // Initialize with default/placeholder data
             InitializeDefaultState();
@@ -413,6 +415,27 @@ namespace Traveler.Desktop.ViewModels
             
             // Reset to default state
             InitializeDefaultState();
+        }
+
+        /// <summary>
+        /// Opens the Guardian Detail Window for a specific character
+        /// </summary>
+        private void OpenCharacterDetail(CharacterInfo? character)
+        {
+            if (character == null) return;
+            
+            try
+            {
+                var viewModel = new GuardianDetailViewModel(character, _inventoryService);
+                var window = new Views.GuardianDetailWindow(viewModel);
+                window.Show();
+                
+                System.Diagnostics.Debug.WriteLine($"[DashboardVM] Opened detail for {character.ClassName}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DashboardVM] Failed to open character detail: {ex.Message}");
+            }
         }
     }
 
