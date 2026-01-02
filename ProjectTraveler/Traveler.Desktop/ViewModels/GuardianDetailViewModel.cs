@@ -90,7 +90,7 @@ public class GuardianDetailViewModel : ViewModelBase
         if (hashes.Count == 0)
         {
             Target3DUrl = BASE_3D_URL;
-            System.Diagnostics.Debug.WriteLine($"[GuardianDetailVM] No equipped items found, using base URL");
+            Console.WriteLine($"[GuardianDetailVM] No equipped items found, using base URL");
             return;
         }
         
@@ -98,18 +98,19 @@ public class GuardianDetailViewModel : ViewModelBase
         var hashString = string.Join(",", hashes);
         Target3DUrl = $"{BASE_3D_URL}?hashes={hashString}";
         
-        // Debug output for verification
-        System.Diagnostics.Debug.WriteLine($"[GuardianDetailVM] Equipped Item Hashes:");
-        System.Diagnostics.Debug.WriteLine($"  Helmet:     {EquippedHelmet?.ItemHash} ({EquippedHelmet?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  Gauntlets:  {EquippedGauntlets?.ItemHash} ({EquippedGauntlets?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  Chest:      {EquippedChest?.ItemHash} ({EquippedChest?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  Legs:       {EquippedLegs?.ItemHash} ({EquippedLegs?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  ClassItem:  {EquippedClassItem?.ItemHash} ({EquippedClassItem?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  Subclass:   {EquippedSubclass?.ItemHash} ({EquippedSubclass?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  Kinetic:    {EquippedKinetic?.ItemHash} ({EquippedKinetic?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  Energy:     {EquippedEnergy?.ItemHash} ({EquippedEnergy?.Name})");
-        System.Diagnostics.Debug.WriteLine($"  Power:      {EquippedPower?.ItemHash} ({EquippedPower?.Name})");
-        System.Diagnostics.Debug.WriteLine($"[GuardianDetailVM] Generated 3D URL: {Target3DUrl}");
+        // Console output for verification (visible in terminal)
+        Console.WriteLine($"[GuardianDetailVM] ========== EQUIPPED ITEM HASHES ==========");
+        Console.WriteLine($"  Helmet:     {EquippedHelmet?.ItemHash} ({EquippedHelmet?.Name})");
+        Console.WriteLine($"  Gauntlets:  {EquippedGauntlets?.ItemHash} ({EquippedGauntlets?.Name})");
+        Console.WriteLine($"  Chest:      {EquippedChest?.ItemHash} ({EquippedChest?.Name})");
+        Console.WriteLine($"  Legs:       {EquippedLegs?.ItemHash} ({EquippedLegs?.Name})");
+        Console.WriteLine($"  ClassItem:  {EquippedClassItem?.ItemHash} ({EquippedClassItem?.Name})");
+        Console.WriteLine($"  Subclass:   {EquippedSubclass?.ItemHash} ({EquippedSubclass?.Name})");
+        Console.WriteLine($"  Kinetic:    {EquippedKinetic?.ItemHash} ({EquippedKinetic?.Name})");
+        Console.WriteLine($"  Energy:     {EquippedEnergy?.ItemHash} ({EquippedEnergy?.Name})");
+        Console.WriteLine($"  Power:      {EquippedPower?.ItemHash} ({EquippedPower?.Name})");
+        Console.WriteLine($"[GuardianDetailVM] Generated 3D URL: {Target3DUrl}");
+        Console.WriteLine($"[GuardianDetailVM] ==========================================");
         
         this.RaisePropertyChanged(nameof(Target3DUrl));
     }
