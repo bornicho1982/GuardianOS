@@ -165,15 +165,39 @@ public class GuardianDetailViewModel : ViewModelBase
     {
         Character = character;
         _inventoryService = inventoryService;
-        LoadEquippedItems();
+        
+        // Start async loading (fire-and-forget but safe)
+        _ = LoadEquippedItemsAsync();
     }
 
-    private void LoadEquippedItems()
+    private async Task LoadEquippedItemsAsync()
     {
         var charIdStr = Character.CharacterId.ToString();
-        var equipped = _inventoryService.AllItems
+        
+        // Debug: Check AllItems count
+        Console.WriteLine($"[GuardianDetailVM] LoadEquippedItems for CharacterId: {charIdStr}");
+        Console.WriteLine($"[GuardianDetailVM] AllItems count before refresh: {_inventoryService.AllItems?.Count() ?? 0}");
+        
+        // If inventory is empty, trigger a refresh
+        if (_inventoryService.AllItems == null || _inventoryService.AllItems.Count == 0)
+        {
+            Console.WriteLine("[GuardianDetailVM] AllItems empty - refreshing inventory...");
+            try
+            {
+                await _inventoryService.RefreshInventoryAsync();
+                Console.WriteLine($"[GuardianDetailVM] AllItems count after refresh: {_inventoryService.AllItems?.Count() ?? 0}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GuardianDetailVM] Inventory refresh failed: {ex.Message}");
+            }
+        }
+        
+        var equipped = _inventoryService.AllItems?
             .Where(i => i.IsEquipped && i.Location == charIdStr)
-            .ToList();
+            .ToList() ?? new List<InventoryItem>();
+            
+        Console.WriteLine($"[GuardianDetailVM] Equipped items found: {equipped.Count}");
 
         EquippedKinetic = equipped.FirstOrDefault(i => i.BucketHash == BucketHashes.Kinetic);
         EquippedEnergy = equipped.FirstOrDefault(i => i.BucketHash == BucketHashes.Energy);
